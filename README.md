@@ -1,3 +1,3 @@
 hrdocker
 ========
-A SOA scafolding generating based on docker containers. 
+A SOA scafolding generator based on docker containers. 
