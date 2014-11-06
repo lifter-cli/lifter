@@ -1,0 +1,16 @@
+{
+  "name": "cli-sample",
+  "version": "0.0.1",
+  "description": "Trying to build something - ANYTHING! - on the command line.  ",
+  "author": "Jason Erpenbeck",
+  "engines": {
+    "node": ">=0.10"
+  },
+  "dependencies": {
+    "commander": "^2.5.0",
+    "prompt": "^0.2.0"
+  },
+  "bin": {
+    "realOG": "commanderSample.js"
+  }
+}
