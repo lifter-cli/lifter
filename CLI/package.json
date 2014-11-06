@@ -1,8 +1,8 @@
 {
-  "name": "cli-sample",
+  "name": "lifter",
   "version": "0.0.1",
-  "description": "Trying to build something - ANYTHING! - on the command line.  ",
-  "author": "Jason Erpenbeck",
+  "description": "lifter: A tool to make Docker Containers",
+  "author": "Topaz Planet",
   "engines": {
     "node": ">=0.10"
   },
@@ -11,6 +11,6 @@
     "prompt": "^0.2.0"
   },
   "bin": {
-    "realOG": "commanderSample.js"
+    "lifter": "lifter.js"
   }
 }
