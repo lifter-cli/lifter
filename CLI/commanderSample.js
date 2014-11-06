@@ -5,7 +5,17 @@ var prompt = require('prompt');
 
 console.log(process);
 
-var containerProperties = {};
+var containerProperties = {
+  mvc: null,
+  os: null,
+  db: null,
+  appServer: null,
+  launchPath: null,
+  launchCommand: null,
+  currentWorkingDir: null,
+  containerName: null,
+  dockerHubName: null
+};
 
 var picker = function(obj) {
   prompt.message = "Question!".white;
