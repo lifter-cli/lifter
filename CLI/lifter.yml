@@ -1,0 +1,9 @@
+currentWorkingDir: /Users/jasonerpenbeck/Documents/Hack-Reactor/hrdocker/CLI
+username: jason
+containerName: dock
+launchCommand: node
+launchPath: index.js
+linuxOS: CentOS
+appServer: Node with Express
+mvc: Backbone
+db: Redis
