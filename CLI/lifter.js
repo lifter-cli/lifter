@@ -2,143 +2,176 @@
 
 var program = require('commander');
 var prompt = require('prompt');
+var fs = require('fs');
+var yaml = require('js-yaml');
 
-console.log(process);
-
+// Initialiize object of container properties
 var containerProperties = {
-  mvc: null,
-  os: null,
-  db: null,
-  appServer: null,
-  launchPath: null,
-  launchCommand: null,
-  currentWorkingDir: null,
-  containerName: null,
-  dockerHubName: null
+  currentWorkingDir: process.cwd()
 };
 
+// Format prompt options, when needed
+var enumerateOptions = function(options) {
+  var str = '';
+  if(options !== undefined) {
+    for(var i=0;i<options.length;i++) {
+      str += (i+1) + '. ' + options[i] + '\n';
+    }
+  }
+  return str;
+};
+
+// Build prompt descriptions
+var makeDescription = function(text, options) {
+  return text + '\n' + enumerateOptions(options);
+};
+
+// Vaildate input
+var validChoice = function(obj, choice) {
+  return ((!obj.promptOptions) || obj.promptOptions.indexOf(choice) > -1) ? true : false;
+};
+
+// Ask question and store input
 var picker = function(obj) {
-  prompt.message = "Question!".white;
-  prompt.delimiter = " > < \n".green;
+  console.log('obj: ', obj);
+  prompt.message = "Question! > ".white;
+  prompt.delimiter = "".green;
 
   prompt.start();
 
   prompt.get({
     properties: {
       name: {
-        description: obj.promptText.magenta
+        description: makeDescription(obj.promptText,obj.promptOptions)
       }
     }
-  }, function (err, result) {
-    console.log(result);
+  }, function(err, result) {
 
-    if(obj.promptOptions.indexOf(parseInt(result.name) === -1)) {
-      console.log('Please make a choice.  Otherwise, we will put ',obj.promptOptions[0],'in your container.');
-      picker(obj);
-    } else {
-      containerProperties['mvc'] = {mvcCode: result.name, mvcName: listOfMVC[parseInt(result.name)]};
-    }
+      var value = (!obj.promptOptions) ? result.name : obj.promptOptions[parseInt(result.name) - 1];
 
-    if(result.name === '1') {
-      containerProperties.mvc = 'Angular';
-    } else if(result.name === '2') {
-      containerProperties.mvc = 'Backbone';
-    } else {
-      mvcUnclear();
-      pickMVC();
-    }
+      if(validChoice(obj,value)) {
+        containerProperties[obj.promptClass] = value;
 
-    containerProperties['mvc'] = {mvcCode: result.name, mvcName: listOfMVC[parseInt(result.name)]};
-    console.log(containerProperties);
-  });
+        // nextEvent handles decision trees
+        var nextEvent = typeof obj.nextClass === 'function' ? obj.nextClass(value) : obj.nextClass;
+//         console.log(nextEvent);
 
-}
-
-var promptSequence = [
-  {},
-  {},
-  {},
-  {},
-]
-
-
-/* picker({
-  promptText: 'Pick an MVC',
-  promptOptions: listOfMVC,
-  promptClass: MVC,
-  nextClass: DB
-});
-*/
-
-// function that asks user to pick an MVC
-var pickMVC = function() {
-  prompt.message = "Question!".white;
-  prompt.delimiter = " > < \n".green;
-
-  prompt.start();
-
-  prompt.get({
-    properties: {
-      name: {
-        description: "Pick an MVC that you'd like to use.  (Suggested: Angular)\n 1. Angular \n 2. Backbone".magenta
+        if(nextEvent !== null) {
+          picker(promptList[nextEvent]);
+        } else {
+          console.log('Good work.  Run lifter config to build a container.');
+          console.log(containerProperties);
+          var ymlDump = yaml.safeDump(containerProperties);
+          fs.writeFile('lifter.yml',ymlDump,function(err){
+            if(err) {console.log(err);}
+          });
+        }
+      } else {
+        console.log('Please make a choice.  Otherwise, we will put ',obj.promptOptions[0],'in your container.');
+        picker(obj);
       }
-    }
-  }, function (err, result) {
-    console.log(result);
-    if(result.name === '1') {
-      containerProperties.mvc = 'Angular';
-    } else if(result.name === '2') {
-      containerProperties.mvc = 'Backbone';
-    } else {
-      mvcUnclear();
-      pickMVC();
-    }
-
-    containerProperties['mvc'] = {mvcCode: result.name, mvcName: listOfMVC[parseInt(result.name)]};
-    console.log(containerProperties);
   });
+};
+
+// List of prompts
+// Using nextClass to sequence questions - which kinda sucks
+var promptList = {
+  username: {
+    promptText: 'What is your dockerHub username?',
+    promptClass: 'username',
+    nextClass: 'containerName'
+  },
+
+  containerName: {
+    promptText: 'Name your container',
+    promptClass: 'containerName',
+    nextClass: 'launchCommand'
+  },
+
+  launchCommand: {
+    promptText: 'Enter the command you want to launch when you start up your container.',
+    promptClass: 'launchCommand',
+    nextClass: 'launchPath'
+  },
+
+  launchPath: {
+    promptText: 'What is the filepath that corresponds to your command? \nType \'.\' if you want to execute your command from your current working directory.',
+    promptClass: 'launchPath',
+    nextClass: 'linuxOS'
+  },
+
+  linuxOS: {
+    promptText: 'Pick an OS',
+    promptOptions: ['CentOS', 'Ubuntu', 'Fedora', 'Red Hat', 'Linux'],
+    promptClass: 'linuxOS',
+    nextClass: 'db'
+    },
+
+  db: {
+    promptText: 'Pick a database',
+    promptOptions: ['mongoDB', 'Parse', 'mySQL', 'Redis'],
+    promptClass: 'db',
+    nextClass: 'scaffolding'
+    },
+
+  scaffolding: {
+    promptText: 'Do you want scaffolding?',
+    promptOptions: ['Yes!', 'Nope.'],
+    promptClass: 'scaffolding',
+    nextClass: function(answer) {
+        console.log('In nextClass key of scaffolding');
+        // nextClass is dependent on whether user wants scaffolding
+        if(answer === 'Yes!') {
+          return 'appServer';
+        } else {
+          return null;
+        }
+      }
+    },
+
+  appServer: {
+    promptText: 'Pick a back end',
+    promptOptions: ['Node with Express', 'Node without Express', 'Apache'],
+    promptClass: 'appServer',
+    nextClass: 'mvc'
+    },
+
+  mvc: {
+    promptText: 'Pick an MVC',
+    promptOptions: ['Angular', 'Backbone'],
+    promptClass: 'mvc',
+    nextClass: null
+    },
 
 };
 
-var mvcUnclear = function() {
-  console.log('Please make a choice.  Otherwise, we will put Angular in your container.');
-};
 
-var listsOfOptions = {
-  mvc: ['Angular', 'Backbone'],
-  os: ['CentOS', 'Ubuntu', 'Fedora', 'Red Hat', 'Linux'],
-  db: ['mongoDB', 'Parse', 'mySQL', 'Redis'],
-  appServer: ['Node w/Express', 'Node w/o Express', 'Apache']
-//   launchCommand: // command to launch app inside of Docker container
-//   launchPath: // relative path within Docker container
-//   currentWorkingDir: // ask if we should use current working director OR input something
-//   d
-
-};
-
-
-
-
-
+// CLI Details
 program
   .version('0.0.1')
-  .usage('Proof of concept')
-  .option('config', 'Builds YAML file based on user\'s desired configuration');
+  .usage('lifter - making Docker containers easier since 2014')
+  .option('config', 'Builds YAML file based on user\'s desired configuration')
   .option('init', 'Initializes container.');
 
 program
-  .command('MVC')
-  .description('List MVCs I can use.')
+  .command('config')
+  .description('Configure your container.')
   .action(function() {
-    pickMVC();
+    picker(promptList.username);
+  });
+
+program
+  .command('init')
+  .description('Build your container.')
+  .action(function() {
+    console.log('Time to build your container.');
   });
 
 program
   .command('*')
   .description('Handle odd responses')
   .action(function(env){
-    mvcUnclear();
-    pickMVC();
+    console.log('You must be confused.');
   });
 
 program.parse(process.argv);
