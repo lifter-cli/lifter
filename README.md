@@ -1,4 +1,5 @@
 [![Stories in Ready](https://badge.waffle.io/hrdocker/hrdocker.png?label=ready&title=Ready)](https://waffle.io/hrdocker/hrdocker)
+[![Build Status](https://drone.io/github.com/hrdocker/hrdocker/status.png)](https://drone.io/github.com/hrdocker/hrdocker/latest)
 
 hrdocker
 ========
