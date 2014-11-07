@@ -5,10 +5,12 @@ var prompt = require('prompt');
 var fs = require('fs');
 var yaml = require('js-yaml');
 
+// Initialiize object of container properties
 var containerProperties = {
   currentWorkingDir: process.cwd()
 };
 
+// Format prompt options, when needed
 var enumerateOptions = function(options) {
   var str = '';
   if(options !== undefined) {
@@ -19,17 +21,21 @@ var enumerateOptions = function(options) {
   return str;
 };
 
+// Build prompt descriptions
 var makeDescription = function(text, options) {
   return text + '\n' + enumerateOptions(options);
 };
 
+// Vaildate input
 var validChoice = function(obj, choice) {
   return ((!obj.promptOptions) || obj.promptOptions.indexOf(choice) > -1) ? true : false;
 };
 
+// Ask question and store input
 var picker = function(obj) {
-  prompt.message = "Question!".white;
-  prompt.delimiter = " > < \n".green;
+  console.log('obj: ', obj);
+  prompt.message = "Question! > ".white;
+  prompt.delimiter = "".green;
 
   prompt.start();
 
@@ -46,11 +52,15 @@ var picker = function(obj) {
       if(validChoice(obj,value)) {
         containerProperties[obj.promptClass] = value;
 
-        if(obj.nextClass !== null) {
-          picker(promptList[obj.nextClass]);
+        // nextEvent handles decision trees
+        var nextEvent = typeof obj.nextClass === 'function' ? obj.nextClass(value) : obj.nextClass;
+//         console.log(nextEvent);
+
+        if(nextEvent !== null) {
+          picker(promptList[nextEvent]);
         } else {
           console.log('Good work.  Run lifter config to build a container.');
-//           console.log(containerProperties);
+          console.log(containerProperties);
           var ymlDump = yaml.safeDump(containerProperties);
           fs.writeFile('lifter.yml',ymlDump,function(err){
             if(err) {console.log(err);}
@@ -63,6 +73,8 @@ var picker = function(obj) {
   });
 };
 
+// List of prompts
+// Using nextClass to sequence questions - which kinda sucks
 var promptList = {
   username: {
     promptText: 'What is your dockerHub username?',
@@ -83,7 +95,7 @@ var promptList = {
   },
 
   launchPath: {
-    promptText: 'What is the filepath that corresponds to your command?  Type \'.\' if you want to execute your command from your current working directory',
+    promptText: 'What is the filepath that corresponds to your command? \nType \'.\' if you want to execute your command from your current working directory.',
     promptClass: 'launchPath',
     nextClass: 'linuxOS'
   },
@@ -92,7 +104,29 @@ var promptList = {
     promptText: 'Pick an OS',
     promptOptions: ['CentOS', 'Ubuntu', 'Fedora', 'Red Hat', 'Linux'],
     promptClass: 'linuxOS',
-    nextClass: 'appServer'
+    nextClass: 'db'
+    },
+
+  db: {
+    promptText: 'Pick a database',
+    promptOptions: ['mongoDB', 'Parse', 'mySQL', 'Redis'],
+    promptClass: 'db',
+    nextClass: 'scaffolding'
+    },
+
+  scaffolding: {
+    promptText: 'Do you want scaffolding?',
+    promptOptions: ['Yes!', 'Nope.'],
+    promptClass: 'scaffolding',
+    nextClass: function(answer) {
+        console.log('In nextClass key of scaffolding');
+        // nextClass is dependent on whether user wants scaffolding
+        if(answer === 'Yes!') {
+          return 'appServer';
+        } else {
+          return null;
+        }
+      }
     },
 
   appServer: {
@@ -106,20 +140,16 @@ var promptList = {
     promptText: 'Pick an MVC',
     promptOptions: ['Angular', 'Backbone'],
     promptClass: 'mvc',
-    nextClass: 'db'
+    nextClass: null
     },
 
-  db: {
-    promptText: 'Pick a database',
-    promptOptions: ['mongoDB', 'Parse', 'mySQL', 'Redis'],
-    promptClass: 'db',
-    nextClass: null
-    }
 };
 
+
+// CLI Details
 program
   .version('0.0.1')
-  .usage('Proof of concept')
+  .usage('lifter - making Docker containers easier since 2014')
   .option('config', 'Builds YAML file based on user\'s desired configuration')
   .option('init', 'Initializes container.');
 
