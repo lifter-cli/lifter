@@ -1,9 +1,8 @@
 currentWorkingDir: /Users/jasonerpenbeck/Documents/Hack-Reactor/hrdocker/CLI
 username: jason
-containerName: dock
+containerName: chips
 launchCommand: node
-launchPath: index.js
+launchPath: .
 linuxOS: CentOS
-appServer: Node with Express
-mvc: Backbone
-db: Redis
+db: Parse
+scaffolding: Nope.
