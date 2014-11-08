@@ -1,6 +1,6 @@
-var prompt = require('prompt');
+var prompt = require('../node_modules/prompt');
 var fs = require('fs');
-var yaml = require('js-yaml');
+var yaml = require('../node_modules/js-yaml');
 var lifterPrompts = require('./lifterPrompts.js');
 
 // Format prompt options, when needed
@@ -23,6 +23,9 @@ var makeDescription = function(text, options) {
 var validChoice = function(obj, choice) {
   return ((!obj.promptOptions) || obj.promptOptions.indexOf(choice) > -1) ? true : false;
 };
+
+// valid ports
+// 1024 to 65535
 
 // Initialiize object of container properties
 var containerProperties = {

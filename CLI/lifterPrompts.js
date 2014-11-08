@@ -4,6 +4,12 @@ exports.promptList = {
   username: {
     promptText: 'What is your dockerHub username?',
     promptClass: 'username',
+    nextClass: 'password'
+  },
+
+  password: {
+    promptText: 'What is your dockerHub password?',
+    promptClass: 'password',
     nextClass: 'containerName'
   },
 
@@ -26,13 +32,13 @@ exports.promptList = {
   },
 
   portPrivate: {
-    promptText: 'What private port do you want to use?',
+    promptText: 'What private port do you want to use? (Example: 49160)',
     promptClass: 'portPrivate',
     nextClass: 'portPublic'
   },
 
   portPublic: {
-    promptText: 'What public port do you want to use?',
+    promptText: 'What public port do you want to use? (Example: 8080)',
     promptClass: 'portPublic',
     nextClass: 'linuxOS'
   },
@@ -46,7 +52,7 @@ exports.promptList = {
 
   db: {
     promptText: 'Pick a database',
-    promptOptions: ['mongoDB', 'Parse', 'mySQL', 'Redis'],
+    promptOptions: ['mongoDB', 'Parse', 'mySQL', 'Redis', 'No Database'],
     promptClass: 'db',
     nextClass: 'scaffolding'
   },
@@ -69,12 +75,18 @@ exports.promptList = {
     promptText: 'Pick a back end',
     promptOptions: ['Node with Express', 'Node without Express', 'Apache'],
     promptClass: 'appServer',
+    nextClass: 'envVar'
+  },
+
+  envVar: {
+    promptText: 'Enter any environmental variables your app needs to run.',
+    promptClass: 'envVar',
     nextClass: 'mvc'
   },
 
   mvc: {
     promptText: 'Pick an MVC',
-    promptOptions: ['Angular', 'Backbone'],
+    promptOptions: ['Angular', 'Backbone', 'No MVC'],
     promptClass: 'mvc',
     nextClass: null
   },

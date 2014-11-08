@@ -12,6 +12,6 @@
     "js-yaml": "^3.2.2"
   },
   "bin": {
-    "lifter": "lifter.js"
+    "lifter": "./CLI/lifter.js"
   }
 }

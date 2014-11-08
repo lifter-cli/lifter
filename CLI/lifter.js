@@ -1,14 +1,11 @@
 #! /usr/local/bin/node
 
-var program = require('commander');
-var prompt = require('prompt');
+var program = require('../node_modules/commander');
+var prompt = require('../node_modules/prompt');
 var fs = require('fs');
-var yaml = require('js-yaml');
+var yaml = require('../node_modules/js-yaml');
 var lifterConfig = require('./lifterConfig.js');
 var lifterPrompts = require('./lifterPrompts.js');
-
-console.log(lifterConfig);
-console.log(lifterPrompts);
 
 // CLI Details
 program
