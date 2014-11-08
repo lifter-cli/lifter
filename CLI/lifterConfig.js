@@ -1,6 +1,6 @@
-var prompt = require('prompt');
+var prompt = require('../node_modules/prompt');
 var fs = require('fs');
-var yaml = require('js-yaml');
+var yaml = require('../node_modules/js-yaml');
 var lifterPrompts = require('./lifterPrompts.js');
 
 // Format prompt options, when needed

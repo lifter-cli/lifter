@@ -26,13 +26,13 @@ exports.promptList = {
   },
 
   portPrivate: {
-    promptText: 'What private port do you want to use?',
+    promptText: 'What private port do you want to use? (Example: 49160)',
     promptClass: 'portPrivate',
     nextClass: 'portPublic'
   },
 
   portPublic: {
-    promptText: 'What public port do you want to use?',
+    promptText: 'What public port do you want to use? (Example: 8080)',
     promptClass: 'portPublic',
     nextClass: 'linuxOS'
   },
