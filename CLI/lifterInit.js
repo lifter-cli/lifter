@@ -4,20 +4,16 @@ var sys = require('sys');
 var exec = require('child_process').exec;
 
 
-var configFile = "test.yml";
+var configFile = "lifter.yml";
 
-// var settings = "";
+// yaml parsing
+// var settings;
 // fs.readFile(configFile, function (err, data) {
 //   if (err) throw err;
 //   settings = yaml.safeLoad(data);
 //   console.log(JSON.stringify(settings));
 // });
 
-var commandQueue = [
-  'boot2docker init',
-  'boot2docker up',
-  ''
-];
 
 
 // if (!hostsWritten) {
@@ -60,10 +56,10 @@ var exec_b2d_init = function() {
 
 // If b2d is powered off, power it on
 var boot_b2d = function() {
-  exec('boot2docker info | grep state', function (err, stdout, stderr) {
+  exec('boot2docker info | grep State', function (err, stdout, stderr) {
     if (err) console.log(err);
     if (/poweroff/.test(stdout)) {
-      console.log('')
+      exec_b2d_Up();
     } else if (/running/.test(stdout)) {
       
     }
@@ -104,15 +100,13 @@ var exec_b2d_Up = function() {
 
 var setEnvironmentVars = function(exportCmds) {
 // set environment variables if necessary
-  if (setEnvs) {
-    exportCmds.forEach(function(cmd) {
-      exec(cmd, function(err,stdout,stderr) {
-        console.log("EXECUTING", cmd);
-        if (err) console.log("exec err: ", stderr);
-        console.log(stdout);
-      });
+  exportCmds.forEach(function(cmd) {
+    exec(cmd, function(err,stdout,stderr) {
+      console.log("EXECUTING", cmd);
+      if (err) console.log("exec err: ", stderr);
+      console.log(stdout);
     });
-  }
+  });
 }
 
 // start_b2d();
