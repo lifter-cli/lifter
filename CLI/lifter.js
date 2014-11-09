@@ -6,6 +6,7 @@ var fs = require('fs');
 var yaml = require('../node_modules/js-yaml');
 var lifterConfig = require('./lifterConfig.js');
 var lifterPrompts = require('./lifterPrompts.js');
+var lifterInit = require('./lifterInit.js')
 
 // CLI Details
 program
@@ -26,6 +27,7 @@ program
   .description('Build your container.')
   .action(function() {
     console.log('Time to build your container.');
+    lifterInit.start_b2d();
   });
 
 program
@@ -33,6 +35,7 @@ program
   .description('Handle odd responses')
   .action(function(env){
     console.log('You must be confused.');
+
   });
 
 program.parse(process.argv);
