@@ -1,11 +1,11 @@
-currentWorkingDir: /Users/urvashireddy/youreddy.github/lifter/CLI
-username: youreddy
-password: zeenaprincess1
-containerName: main
-launchCommand: grunt
-launchPath: /src
-portPrivate: "2323"
-portPublic: "9000"
-linuxOS: CentOS
-db: mongoDB
-scaffolding: Nope.
+currentWorkingDir: 
+username: 
+password: 
+containerName: 
+launchCommand: 
+launchPath: 
+portPrivate: 
+portPublic: 
+linuxOS: 
+db: 
+scaffolding: 
