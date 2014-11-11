@@ -2,6 +2,7 @@
   "name": "lifter",
   "version": "0.0.1",
   "description": "lifter: A tool to make Docker Containers",
+  "repository" : { "type":"git", "url":"https://github.com/lifter-cli/lifter" },
   "author": "Topaz Planet",
   "engines": {
     "node": ">=0.10"

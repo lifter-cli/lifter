@@ -34,7 +34,7 @@ var containerProperties = {
 
 // Ask question and store input
 exports.picker = function(obj) {
-  console.log('obj: ', obj);
+  // console.log('obj: ', obj);
   prompt.message = "Question! > ".white;
   prompt.delimiter = "".green;
 
@@ -73,4 +73,3 @@ exports.picker = function(obj) {
       }
   });
 };
-
