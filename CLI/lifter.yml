@@ -1,9 +1,11 @@
-currentWorkingDir: /Users/jasonerpenbeck/Documents/Hack-Reactor/hrdocker/CLI
-username: jason
-containerName: main
-repoName: appCode
-launchCommand: node
-launchPath: .
-linuxOS: CentOS
-db: Parse
+currentWorkingDir: /Users/urvashireddy/youreddy.github/lifter/CLI
+username: youreddy
+password: ""
+containerName: ""
+launchCommand: ""
+launchPath: ""
+portPrivate: ""
+portPublic: ""
+linuxOS: Red Hat
+db: No Database
 scaffolding: Nope.

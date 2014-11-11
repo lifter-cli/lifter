@@ -7,6 +7,7 @@ var yaml = require('../node_modules/js-yaml');
 var lifterConfig = require('./lifterConfig.js');
 var lifterPrompts = require('./lifterPrompts.js');
 var lifterInit = require('./lifterInit.js')
+var lifterPush = require('./lifterPush.js');
 
 // CLI Details
 program
@@ -28,6 +29,14 @@ program
   .action(function() {
     console.log('Time to build your container.');
     lifterInit.start_b2d();
+  });
+
+program
+  .command('push')
+  .description('Commit and push your container\'s image to DockerHub')
+  .action(function() {
+    console.log('Time to send your image');
+    lifterPush.copyMounted();
   });
 
 program

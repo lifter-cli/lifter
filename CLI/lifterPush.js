@@ -22,7 +22,7 @@ var repo = content.repoName;
 var username = content.username;
 
 // Copy mounted volume into a directory called "app"
-var copyMounted = function() {
+exports.copyMounted = function() {
 
   // src is where the mounted files exist
   // app is where the copied files will be transeffered to
@@ -71,5 +71,4 @@ var pushImage = function() {
   });
 }
 
-copyMounted();
 
