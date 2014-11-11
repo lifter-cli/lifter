@@ -1,4 +1,4 @@
-[![Stories in Ready](https://badge.waffle.io/hrdocker/hrdocker.png?label=ready&title=Ready)](https://waffle.io/hrdocker/hrdocker)
+[![Stories in Ready](https://badge.waffle.io/lifter-cli/lifter.svg?label=ready&title=Ready)](http://waffle.io/lifter-cli/lifter)
 [![Build Status](https://travis-ci.org/lifter-cli/lifter.svg?branch=master)](https://travis-ci.org/lifter-cli/lifter)
 [![Coverage Status](https://coveralls.io/repos/hrdocker/hrdocker/badge.png)](https://coveralls.io/r/hrdocker/hrdocker)
 
