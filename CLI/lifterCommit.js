@@ -15,3 +15,23 @@ var readYML = function() {
   var ymlContents = yaml.safeLoad(content);
   return ymlContents;
 }
+
+// Copy mounted volume into a directory called "app"
+var copyMounted = function() {
+
+  // src is where the mounted files exist
+  // app is where the copied files will be transeffered to
+  var content = readYML();
+  var command = 'docker exec -i -t ' + content.containerName +' cp -r src/ /app';
+
+  console.log("COMMAND", command);
+  
+  exec(command, function(err, stdout, stderr){
+    if(err){ 
+      console.log("ERR: ", stderr);
+    } else {
+      console.log("Files were copied into /app")
+    }
+  });
+
+}
