@@ -38,4 +38,8 @@ program
 
   });
 
+if ( !program.args ){
+  console.log('Please enter in "lifter config" to set your container settings');
+}
+
 program.parse(process.argv);
