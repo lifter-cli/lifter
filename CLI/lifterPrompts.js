@@ -16,6 +16,12 @@ exports.promptList = {
   containerName: {
     promptText: 'Name your container',
     promptClass: 'containerName',
+    nextClass: 'repoName'
+  },
+
+  repoName: {
+    promptText: 'Name your repo',
+    promptClass: 'repoName',
     nextClass: 'launchCommand'
   },
 
