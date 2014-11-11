@@ -8,11 +8,13 @@ exports.addSpace = function(str,num) {
   return str;
 };
 
-exports.doesYMLExist = function(filename) {
-  return fs.open(file,'r',function(err,fd) {
+exports.doesFileExist = function(filename) {
+  return fs.open(filename,'r',function(err,fd) {
     if(err) {
+      console.log('false');
       return false;
     } else {
+      console.log('true');
       return true;
     }
   });
