@@ -1,8 +1,11 @@
-currentWorkingDir: /Users/jasonerpenbeck/Documents/Hack-Reactor/hrdocker/CLI
-username: jason
-containerName: chips
-launchCommand: node
-launchPath: .
-linuxOS: CentOS
-db: Parse
-scaffolding: Nope.
+currentWorkingDir: 
+username: 
+password: 
+containerName: 
+launchCommand: 
+launchPath: 
+portPrivate: 
+portPublic: 
+linuxOS: 
+db: 
+scaffolding: 

@@ -7,13 +7,15 @@ var yaml = require('../node_modules/js-yaml');
 var lifterConfig = require('./lifterConfig.js');
 var lifterPrompts = require('./lifterPrompts.js');
 var lifterInit = require('./lifterInit.js')
+var lifterPush = require('./lifterPush.js');
 
 // CLI Details
 program
   .version('0.0.1')
   .usage('lifter - making Docker containers easier since 2014')
   .option('config', 'Builds YAML file based on user\'s desired configuration')
-  .option('init', 'Initializes container.');
+  .option('init', 'Initializes container.')
+  .option('push', 'Commits your docker image and pushes it to docker hub');
 
 program
   .command('config')
@@ -28,6 +30,14 @@ program
   .action(function() {
     console.log('Time to build your container.');
     lifterInit.start_b2d();
+  });
+
+program
+  .command('push')
+  .description('Commit and push your container\'s image to DockerHub.')
+  .action(function() {
+    console.log('Time to send your image');
+    lifterPush.copyMounted();
   });
 
 program
