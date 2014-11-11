@@ -1,5 +1,5 @@
 [![Stories in Ready](https://badge.waffle.io/hrdocker/hrdocker.png?label=ready&title=Ready)](https://waffle.io/hrdocker/hrdocker)
-[![Build Status](https://drone.io/github.com/hrdocker/hrdocker/status.png)](https://drone.io/github.com/hrdocker/hrdocker/latest)
+[![Build Status](https://travis-ci.org/lifter-cli/lifter.svg?branch=master)](https://travis-ci.org/lifter-cli/lifter)
 [![Coverage Status](https://coveralls.io/repos/hrdocker/hrdocker/badge.png)](https://coveralls.io/r/hrdocker/hrdocker)
 
 hrdocker
