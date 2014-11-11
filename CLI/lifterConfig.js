@@ -24,9 +24,6 @@ var validChoice = function(obj, choice) {
   return ((!obj.promptOptions) || obj.promptOptions.indexOf(choice) > -1) ? true : false;
 };
 
-// valid ports
-// 1024 to 65535
-
 // Initialiize object of container properties
 var containerProperties = {
   currentWorkingDir: process.cwd()
