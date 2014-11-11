@@ -16,43 +16,60 @@ var readYML = function() {
   return ymlContents;
 }
 
+var content = readYML();
+var container = content.containerName;
+var repo = content.repoName;
+var username = content.username;
+
 // Copy mounted volume into a directory called "app"
 var copyMounted = function() {
 
   // src is where the mounted files exist
   // app is where the copied files will be transeffered to
-  var content = readYML();
-  var command = 'docker exec -i -t ' + content.containerName +' cp -r src/ /app';
+  var command = 'docker exec -i -t ' + container +' cp -r src/ /app';
+
+  console.log("COMMAND", command)
     
   exec(command, function(err, stdout, stderr){
     if(err){ 
       console.log("ERR: ", stderr);
     } else {
-      console.log("Files were copied into /app")
+      console.log("Files were copied into /app");
+      commitImage();
     }
   });
 }
 
+var commitImage = function() {
 
-// var commitImage = function() {
-
-//   var container = ymlContents.containerName;
-//   var repo = ymlContents.repoName;
-
-//   copyMounted();
-
-//   var command = 'docker commit ' + container + ' ' + repo + ' :latest';
+  var command = 'docker commit ' + container + ' ' + repo + ':latest';
   
-//   console.log("COMMAND", command);
+  console.log("COMMAND2", command);
 
-//   // exec(command, function(err, stdout, stderr){
-//   //   if(err){ 
-//   //     console.log("ERR: ", stderr);
-//   //   } else {
-//   //     console.log("Image was commited");
-//   //   }
-//   // });
-// }
+  exec(command, function(err, stdout, stderr){
+    if(err){ 
+      console.log("ERR: ", stderr);
+    } else {
+      console.log("Image was commited");
+      pushImage();
+    }
+  });
+}
 
+var pushImage = function() {
 
-// commitImage();
+  var command = 'docker push ' + username + '/' + repo + ':latest';
+  
+  console.log("COMMAND3", command);
+
+  exec(command, function(err, stdout, stderr){
+    if(err){ 
+      console.log("ERR: ", stderr);
+    } else {
+      console.log("Image was commited");
+    }
+  });
+}
+
+copyMounted();
+

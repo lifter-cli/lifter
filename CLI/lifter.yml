@@ -1,7 +1,7 @@
 currentWorkingDir: /Users/jasonerpenbeck/Documents/Hack-Reactor/hrdocker/CLI
 username: jason
-containerName: chips
-repoName: main
+containerName: main
+repoName: appCode
 launchCommand: node
 launchPath: .
 linuxOS: CentOS
