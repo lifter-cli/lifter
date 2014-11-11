@@ -68,35 +68,32 @@ var updateDockerContents = function(callback) {
 };
 
 var prepDockerFile = function() {
-  console.log(dockerFileContents);
   for(var i=0;i<dockerFileContents.length;i++) {
     if(dockerFileContents[i][0] !== '#') {
       dockerFileContents[i][0]= addSpace(dockerFileContents[i][0],Math.max(2,Math.max(0,8 - dockerFileContents[i][0].length)));
     }
     dockerFileContents[i] = dockerFileContents[i].join('');
   }
-
   return dockerFileContents.join('\n');
-
 };
 
 var writeDockerFile = function(contents) {
 
-  fs.writeFile('./'+SUPERVISOR_DIRNAME+'/DockerFile',contents,function(err,data) {
+  fs.writeFile('.'+'/DockerFile',contents,function(err,data) {
     if(err) {
       console.log(err);
       if(err.code === 'ENOENT') {
         fs.mkdir('./'+SUPERVISOR_DIRNAME,function(err) {
           if(err) {
-            console.log(SUPERVISOR_DIRNAME + 'directory already exists, but I am going to make a new Dockerfile regardless of whether one exists');
+//             console.log(SUPERVISOR_DIRNAME + 'directory already exists, but I am going to make a new Dockerfile regardless of whether one exists');
           } else {
-            console.log(SUPERVISOR_DIRNAME + ' has been created.  Check the directory to see if a Dockerfile exists.  (HINT: It should.)');
+//             console.log(SUPERVISOR_DIRNAME + ' has been created.  Check the directory to see if a Dockerfile exists.  (HINT: It should.)');
           }
           writeDockerFile(contents);
         });
       }
     } else {
-      console.log('Dockerfile exists now, but it looks like shit.');
+//       console.log('Dockerfile exists now, but it looks like shit.');
     }
   });
 };
