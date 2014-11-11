@@ -5,7 +5,7 @@ var fs = require('fs');
 
 /*** 
 
-lifterCommit currently assumes its within the root of the app container.
+lifterPush currently assumes its within the root of the app container.
 
 ***/
 
@@ -26,7 +26,7 @@ exports.copyMounted = function() {
 
   // src is where the mounted files exist
   // app is where the copied files will be transeffered to
-  var command = 'docker exec -i -t ' + container +' cp -r src/ /app';
+  var command = 'docker exec -i -t ' + container +' cp -r src/ /prod';
 
   console.log("COMMAND", command)
     
@@ -34,7 +34,7 @@ exports.copyMounted = function() {
     if(err){ 
       console.log("ERR: ", stderr);
     } else {
-      console.log("Files were copied into /app");
+      console.log("Files were copied into /prod");
       commitImage();
     }
   });
@@ -70,5 +70,7 @@ var pushImage = function() {
     }
   });
 }
+
+
 
 
