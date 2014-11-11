@@ -6,6 +6,10 @@
   "engines": {
     "node": ">=0.10"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/lifter-cli/lifter"
+  },
   "dependencies": {
     "commander": "^2.5.0",
     "prompt": "^0.2.0",
