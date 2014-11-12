@@ -3,7 +3,11 @@ var fs = require('fs');
 var yaml = require('../node_modules/js-yaml');
 var lifterPrompts = require('./lifterPrompts.js');
 
-// Format prompt options, when needed
+/**
+* Function that lists the number and name of options available for a question in the command line tool
+* @function
+* @param {array} options Array of selections availale to the user for a given question
+*/
 var enumerateOptions = function(options) {
   var str = '';
   if(options !== undefined) {
@@ -14,22 +18,40 @@ var enumerateOptions = function(options) {
   return str;
 };
 
-// Build prompt descriptions
+/**
+* Function that returns a string of the question and options (if any) for each prompt by the command line tool
+* @function
+* @param {string} text Question to be displayed by command line too
+* @param {array} options Array of selections availale to the user for a given question
+*/
 var makeDescription = function(text, options) {
   return text + '\n' + enumerateOptions(options);
 };
 
-// Vaildate input
+/**
+* Function that returns boolean relating to whether user made a valid choice from options provided in command line
+* @function
+* @param {array} obj Array of available prompt options
+* @param {text} choice String of selection made by user
+*/
 var validChoice = function(obj, choice) {
   return ((!obj.promptOptions) || obj.promptOptions.indexOf(choice) > -1) ? true : false;
 };
 
-// Initialiize object of container properties
+/**
+* Object containing all user input from prompt and an entry with the current working directory
+* @object
+*/
 var containerProperties = {
   currentWorkingDir: process.cwd()
 };
 
-// Ask question and store input
+/**
+* Function that prompts questions on command line, writes answers to containerProperties objects, and builds YML file when complete
+* THIS NEEDS TO BE MORE MODULAR
+* @function
+* @param {object} obj Object containing all attributes of prompted question
+*/
 exports.picker = function(obj) {
   // console.log('obj: ', obj);
   prompt.message = "Question! > ".white;
