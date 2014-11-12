@@ -4,6 +4,11 @@ var yaml = require('../node_modules/js-yaml');
 var globalDependencies = require('./globalDependencyList.js');
 var helpers = require('./helpers.js');
 
+/**
+* Array that constructs basic template to build Dockerfile
+* Each subarray of dockerFileContents will render as its own line in Dockerfile - THIS SEEMS HACKY
+* @array
+*/
 var dockerFileContents = [
 
 ['#','DOCKER-VERSION 0.3.4'],
@@ -11,17 +16,21 @@ var dockerFileContents = [
 ['MAINTAINER'],
 ['#','Enable EPEL for Node.js'],
 ['RUN', 'rpm -Uvh http://download.fedoraproject.org/pub/epel/6/i386/epel-release-6-8.noarch.rpm'],
-
 ['#','Install Node.js, npm, and git, etc.'],
 ['RUN', 'yum install -y npm'],
 ['RUN', 'yum install -y git'],
-
 ['EXPOSE'],
-
 ];
 
-var readYML = function(fileName,dockerFile) {
-  var ymlContents = yaml.safeLoad(fs.readFileSync(fileName,{encoding: 'utf-8'}));
+/**
+* Function that authenticates input username and password against Dockerhub API
+* @function
+* @memberof module:validation
+* @param {string} filename Filename of YML file that will be loaded and parsed
+* @param {array} dockerFile Array of sub-arrays that will render as a Dockerfile
+*/
+var readYML = function(filename,dockerFile) {
+  var ymlContents = yaml.safeLoad(fs.readFileSync(filename,{encoding: 'utf-8'}));
   for(var i=0;i<dockerFile.length;i++) {
 
     if(dockerFile[i][0] === 'FROM') {
@@ -36,6 +45,13 @@ var readYML = function(fileName,dockerFile) {
   }
 };
 
+/**
+* Function that searches root directory for files that require global dependencies
+* @function
+* @memberof module:validation
+* @param {string} dir Filepath of directory to check
+* @param {array} dockerFile Array of sub-arrays that will render as a Dockerfile
+*/
 var readDirectory = function(dir,dockerFile) {
   var dirContents = fs.readdirSync(dir);
 
@@ -58,6 +74,12 @@ var readDirectory = function(dir,dockerFile) {
   }
 };
 
+
+/**
+* Function that searches root directory for files that require global dependencies
+* @function
+* @param {function} callback Callback function that is invoked once Dockerfile is ready
+*/
 var updateDockerContents = function(callback) {
   readYML('lifter.yml',dockerFileContents);
   readDirectory('./',dockerFileContents);
@@ -66,6 +88,12 @@ var updateDockerContents = function(callback) {
   callback();
 };
 
+/**
+* Function that formats each line of Dockerfile
+* @function
+* @memberof module:validation
+* @param {array} dockerFile Array of sub-arrays that will render as a Dockerfile
+*/
 var prepDockerFile = function(dockerFile) {
   for(var i=0;i<dockerFile.length;i++) {
     if(dockerFile[i][0] !== '#') {
@@ -76,13 +104,19 @@ var prepDockerFile = function(dockerFile) {
   return dockerFile.join('\n');
 };
 
+
+/**
+* Function that creates Dockerfil
+* @function
+* @memberof module:validation
+* @param {string} contents String of Docker commands
+*/
 var writeDockerFile = function(contents) {
-  fs.writeFile('.'+'/DockerFile',contents,function(err,data) {
+  fs.writeFile('.'+'/Dockerfile',contents,function(err,data) {
     if(err) {
       console.log(err);
       }
-//     writeDockerFile(contents);
-    console.log('Dockerfile exists now, but it looks like shit.');
+    console.log('Dockerfile exists now.  High five!');
   });
 };
 

@@ -1,7 +1,14 @@
+/**
+* @module lifterPrompts
+*/
 var validation = require('./validation/validation.js');
-// List of prompts
-// Using nextClass to sequence questions - which kinda sucks
 
+/**
+* Object containing questions for CLI (each within their own object)
+* @object
+* @memberof module:lifterPrompts
+* @param {object} obj Object of objects each containing a question asked within command line interface, possible selectionoptions (if any), validation methods and conditional next questions
+*/
 exports.promptList = {
   username: {
     promptText: 'What is your dockerHub username?',
