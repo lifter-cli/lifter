@@ -45,6 +45,8 @@ var vmName = "myVM";
 
 
 var setupAzureVM = function() {
+  prompt.message = '';
+  prompt.delimiter = '';
   prompt.start();
   prompt.get(vmSetupQuestions.vmSetup, function(err,result){
     console.log("\nYour vm name: ", result.vm);
