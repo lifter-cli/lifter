@@ -1,11 +1,12 @@
 var fs = require('fs');
 var yaml = require('js-yaml');
 var exec = require('child_process').exec;
+var configFile = "lifter.yml";
+
 // execsync may or may not be useful at some point
 // var execSync = require('exec-sync');
 
 
-var configFile = "lifter.yml";
 
 // yaml parsing
 // var settings;
@@ -14,18 +15,6 @@ var configFile = "lifter.yml";
 //   settings = yaml.safeLoad(data);
 //   console.log(JSON.stringify(settings));
 // });
-
-
-
-// if (!hostsWritten) {
-//   exec('sudo ', function(error, stdout, stderr) {
-//   console.log('stdout: ' + stdout);
-//   console.log('stderr: ' + stderr);
-//   if (error) {
-//     console.log('exec error: ' + error);
-//   }
-// });
-// }
 
 // if boot2docker VM doesn't exist: init , else boot
 var start_b2d = function() {
@@ -158,6 +147,29 @@ var removeIPinHostsFile = function(ip){
   });
 }
 
+// create shell script to launch app
+var createShellScript = function() {
+  if(!fs.existsSync(configFile)) {
+    console.log('lifter.yml doesn\'t exist. Please run lifter config');
+    process.exit(1);
+  }
+
+  fs.readFile(configFile, function (err, data) {
+    if (err) throw err;
+    settings = yaml.safeLoad(data);
+
+    var shellFileContent = "#!/bin/sh\n";
+    shellFileContent += "cd " + settings.launchPath + "\n";
+    shellFileContent += settings.launchCommand;
+
+    fs.writeFile("app.sh", shellFileContent, function(err) {
+      if (err) console.log(err);
+      console.log("Launch script created: app.sh");
+    });
+  });
+}
+
+createShellScript();
 // start_b2d();
 // removeIPinHostsFile("192.123.123.42");
 // checkHostsFileForDockerhost();
