@@ -2,19 +2,20 @@
   "name": "lifter",
   "version": "0.0.1",
   "description": "lifter: A tool to make Docker Containers",
-  "repository" : { "type":"git", "url":"https://github.com/lifter-cli/lifter" },
-  "author": "Topaz Planet",
-  "engines": {
-    "node": ">=0.10"
-  },
   "repository": {
     "type": "git",
     "url": "https://github.com/lifter-cli/lifter"
   },
+  "author": "Topaz Planet",
+  "engines": {
+    "node": ">=0.10"
+  },
   "dependencies": {
     "commander": "^2.5.0",
     "prompt": "^0.2.0",
-    "js-yaml": "^3.2.2"
+    "js-yaml": "^3.2.2",
+    "inquirer": "^0.8.0",
+    "mocha": "^2.0.1"
   },
   "bin": {
     "lifter": "./CLI/lifter.js"
