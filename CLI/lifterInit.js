@@ -133,28 +133,6 @@ var checkHostsFileForDockerhost = function() {
     
 }
 
-// add dockerhost IP in /etc/hosts when not present
-var addDockerhostToHostsFile = function(ip) {
-  var cmd = 'echo ' + ip + ' dockerhost | sudo tee -a /etc/hosts';
-  // TODO: prompt user to confirm execution of this command
-  exec(cmd, function(err, stdout, stderr) {
-    if (err) console.log(stderr);
-    console.log("dockerhost IP added to /etc/hosts");
-    // console.log("STDOUT:",stdout);
-  });
-}
-
-// remove dockerhost IP in /etc/hosts when incorrect
-var removeIPinHostsFile = function(ip){
-  var cmd = 'sed \'/dockerhost/d\' /etc/hosts | sudo tee /etc/hosts';
-  // TODO: prompt user to confirm execution of this command
-  exec(cmd, function(err, stdout, stderr) {
-    // if (err) console.log(stderr);
-    console.log("incorrect IP removed from /etc/hosts");
-    addDockerhostToHostsFile(ip);
-  });
-}
-
 // create shell script to launch app
 var createShellScript = function() {
   if(!fs.existsSync(configFile)) {
@@ -188,7 +166,7 @@ var finishInit = function () {
 }
 // builder.buildDockerFile();
 // createShellScript();
-start_b2d();
+// start_b2d();
 // removeIPinHostsFile("192.123.123.42");
 // checkHostsFileForDockerhost();
 
