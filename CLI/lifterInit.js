@@ -1,20 +1,13 @@
 var fs = require('fs');
 var yaml = require('js-yaml');
 var exec = require('child_process').exec;
+var builder = require('./buildContainer.js');
 var configFile = "lifter.yml";
 
 // execsync may or may not be useful at some point
 // var execSync = require('exec-sync');
 
-
-
-// yaml parsing
-// var settings;
-// fs.readFile(configFile, function (err, data) {
-//   if (err) throw err;
-//   settings = yaml.safeLoad(data);
-//   console.log(JSON.stringify(settings));
-// });
+var exitInstructions = [];
 
 // if boot2docker VM doesn't exist: init , else boot
 var start_b2d = function() {
@@ -42,11 +35,11 @@ var exec_b2d_init = function() {
 
 // If b2d is powered off, power it on
 var boot_b2d = function() {
-  exec('boot2docker info | grep State', function (err, stdout, stderr) {
+  exec('boot2docker status', function (err, stdout, stderr) {
     if (err) console.log(err);
     if (/poweroff/.test(stdout)) {
       exec_b2d_Up();
-    } else  { // if (/running/.test(stdout)) {
+    } else { // if (/running/.test(stdout)) {
       console.log('boot2docker is already running');
       checkHostsFileForDockerhost();
       // TODO: what goes here?
@@ -111,40 +104,33 @@ var checkHostsFileForDockerhost = function() {
     var ip = /\d*\.\d*\.\d*\.\d*/.exec(stdout)[0];
     var ipRegex = new RegExp(ip);
     // change line if ip not in hosts file
+
+    createShellScript();
+    builder.buildDockerFile();
+    
+
     if (hostsWritten) {
       console.log('dockerhost found in /etc/hosts');
       if (!ipRegex.test(hosts)) {
         console.log('dockerhost IP incorrect... removing');
-        removeIPinHostsFile(ip);
+        // removeIPinHostsFile(ip);
+        exitInstructions.push(
+          'sed \'/dockerhost/d\' /etc/hosts | sudo tee /etc/hosts');
+        exitInstructions.push(
+          'echo ' + ip + ' dockerhost | sudo tee -a /etc/hosts');
+      } else {
+        console.log('dockerhost IP is correct');
       }
     } else {
       console.log('dockerhost not found in /etc/hosts... adding');
-      addDockerhostToHostsFile(ip);
+      exitInstructions.push(
+          'echo ' + ip + ' dockerhost | sudo tee -a /etc/hosts');
+      // addDockerhostToHostsFile(ip);
     }
+    // console.log(exitInstructions);
+    finishInit();
   });
     
-}
-
-// add dockerhost IP in /etc/hosts when not present
-var addDockerhostToHostsFile = function(ip) {
-  var cmd = 'echo ' + ip + ' dockerhost | sudo tee -a /etc/hosts';
-  // TODO: prompt user to confirm execution of this command
-  exec(cmd, function(err, stdout, stderr) {
-    if (err) console.log(stderr);
-    console.log("dockerhost IP added to /etc/hosts");
-    // console.log("STDOUT:",stdout);
-  });
-}
-
-// remove dockerhost IP in /etc/hosts when incorrect
-var removeIPinHostsFile = function(ip){
-  var cmd = 'sed \'/dockerhost/d\' /etc/hosts | sudo tee /etc/hosts';
-  // TODO: prompt user to confirm execution of this command
-  exec(cmd, function(err, stdout, stderr) {
-    // if (err) console.log(stderr);
-    console.log("incorrect IP removed from /etc/hosts");
-    addDockerhostToHostsFile(ip);
-  });
 }
 
 // create shell script to launch app
@@ -169,7 +155,17 @@ var createShellScript = function() {
   });
 }
 
-createShellScript();
+var finishInit = function () {
+  console.log("Program container(s) initialized.");
+  if (exitInstructions.length > 0) {
+    console.log("Run these commands:")
+    exitInstructions.forEach(function(str) {
+      console.log("    " + str);
+    });
+  }
+}
+// builder.buildDockerFile();
+// createShellScript();
 // start_b2d();
 // removeIPinHostsFile("192.123.123.42");
 // checkHostsFileForDockerhost();

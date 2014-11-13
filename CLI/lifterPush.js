@@ -1,7 +1,7 @@
 var exec = require('child_process').exec;
 var yaml = require('../node_modules/js-yaml');
 var fs = require('fs');
-console.log("INSIDE lifter push");
+// console.log("INSIDE lifter push");
 /*** 
 
 lifterPush currently assumes its within the root of the app container.

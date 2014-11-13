@@ -53,22 +53,22 @@ var readYML = function(filename,dockerFile) {
 * @param {array} dockerFile Array of sub-arrays that will render as a Dockerfile
 */
 var readDirectory = function(dir,dockerFile) {
-  var dirContents = fs.readdirSync(dir);
+  var files = fs.readdirSync(dir);
 
   for(var j=0;j<dockerFile.length;j++) {
-    console.log(dockerFile[j].indexOf('EXPOSE'));
+    // console.log(dockerFile[j].indexOf('EXPOSE'));
     if(dockerFile[j].indexOf('EXPOSE') > -1) {
       var splicePoint = j;
     }
   }
 
-  for(var i=0;i<dirContents.length;i++) {
-    if(globalDependencies.files.indexOf(dirContents[i]) > -1) {
-      console.log('splicePoint: ',splicePoint);
+  for(var i=0;i<files.length;i++) {
+    if(globalDependencies.files.indexOf(files[i]) > -1) {
+      var installCommand = globalDependencies.installCommands[files[i]];
       if(splicePoint) {
-      dockerFile.splice(splicePoint,0,globalDependencies.installCommands[dirContents[i]]);
+        dockerFile.splice(splicePoint,0,installCommand);
       } else {
-      dockerFile.push(globalDependencies.installCommands[dirContents[i]]);
+        dockerFile.push(installCommand);
       }
     }
   }
@@ -80,12 +80,12 @@ var readDirectory = function(dir,dockerFile) {
 * @function
 * @param {function} callback Callback function that is invoked once Dockerfile is ready
 */
-var updateDockerContents = function(callback) {
+var updateDockerContents = function() {
   readYML('lifter.yml',dockerFileContents);
   readDirectory('./',dockerFileContents);
   prepDockerFile(dockerFileContents);
-  console.log('Calling Callback');
-  callback();
+  fs.writeFileSync('.'+'/Dockerfile',dockerFileContents.join('\n'));
+  console.log('Dockerfile exists now.  High five!');
 };
 
 /**
@@ -106,21 +106,18 @@ var prepDockerFile = function(dockerFile) {
 
 
 /**
-* Function that creates Dockerfil
+* Function that creates Dockerfile
 * @function
 * @memberof module:validation
 * @param {string} contents String of Docker commands
 */
 var writeDockerFile = function(contents) {
-  fs.writeFile('.'+'/Dockerfile',contents,function(err,data) {
-    if(err) {
-      console.log(err);
-      }
-    console.log('Dockerfile exists now.  High five!');
-  });
+  fs.writeFileSync('.'+'/Dockerfile',contents);
+    
+    
 };
 
-updateDockerContents(function() {
-  writeDockerFile(dockerFileContents.join('\n'));
-});
+module.exports = {
+  buildDockerFile : updateDockerContents
+}
 

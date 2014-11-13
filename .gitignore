@@ -4,3 +4,4 @@ lifter.yml
 CLI/lifter.yml
 CLI/npm-debug.log
 app.sh
+Dockerfile
