@@ -7,8 +7,13 @@
 * @function
 * @memberof module:validation
 */
-exports.returnTrue = function() {
-  return true;
+exports.hasValue = function(obj) {
+  if(typeof obj.value === 'string' && obj.value.length > 0) {
+    return true;
+  } else {
+    return false;
+  }
+
 };
 
 /**
