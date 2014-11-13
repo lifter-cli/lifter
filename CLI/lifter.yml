@@ -1,11 +1,12 @@
-currentWorkingDir: 
-username: 
-password: 
-containerName: 
-launchCommand: 
-launchPath: 
-portPrivate: 
-portPublic: 
-linuxOS: 
-db: 
-scaffolding: 
+currentWorkingDir: /Users/urvashireddy/youreddy.github/lifter/CLI
+username: youreddy
+password: ""
+containerName: main
+repoName: myRepo
+launchCommand: ""
+launchPath: /src
+portPrivate: "3333"
+portPublic: "9000"
+linuxOS: CentOS
+db: mongoDB
+scaffolding: Nope.
