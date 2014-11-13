@@ -63,8 +63,10 @@ var createAzureVM = function(img, creds) {
   exec(command, function(err, stdout, stderr){
     if(err){
       if(/already exists/.test(stderr)){
-        console.log('A VM with the dns "' + creds[0] + '" already exists.');
+        console.log(('A VM with the dns "' + creds[0] + '" already exists.').red);
         setupAzureVM();
+      } else {
+        console.log("ERR: ", err);
       }
     } else {
       console.log("VM created");
