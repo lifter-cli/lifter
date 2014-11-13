@@ -8,6 +8,8 @@ var lifterConfig = require('./lifterConfig.js');
 var lifterPrompts = require('./lifterPrompts.js');
 var lifterInit = require('./lifterInit.js')
 var lifterPush = require('./lifterPush.js');
+var lifterDeploy = require('./lifterDeploy.js');
+
 
 /**
 * Object with methods describing version of command line tool as well as associated options
@@ -18,7 +20,8 @@ program
   .usage('lifter - making Docker containers easier since 2014')
   .option('config', 'Builds YAML file based on user\'s desired configuration')
   .option('init', 'Initializes container.')
-  .option('push', 'Commits your docker image and pushes it to docker hub');
+  .option('push', 'Commits your docker image and pushes it to docker hub')
+  .option('deploy', 'Deploy your application to Azure');
 
 /**
 * Object with method and description attached to 'lifter config' command
@@ -60,6 +63,14 @@ program
 * @Object
 */
 program
+  .command('deploy')
+  .description('Deploy your application')
+  .action(function() {
+    console.log('Time to deploy to Azure');
+    lifterDeploy.checkAzure();
+  });
+
+program
   .command('*')
   .description('Handle odd responses')
   .action(function(env){
@@ -68,7 +79,7 @@ program
   });
 
 if ( !program.args ){
-  console.log('Please enter in "lifter config" to set your container settings');
+  console.log('Please run "lifter config" to set your container settings');
 }
 
 program.parse(process.argv);

@@ -4,7 +4,7 @@ var vmSetupQuestions = require('./vmSetup.js');
 
 
 //check if user has azure-cli installed - #81
-var checkAzure = function(){
+exports.checkAzure = function(){
   exec('npm list -g --depth=0 | grep azure-cli', function(err, stdout, stderr){
     if(/azure-cli/.test(stdout)) {
       console.log("Azure-CLI found, opening Azure Management Portal in default browser...".green);
@@ -69,4 +69,3 @@ var createAzureVM = function(img, creds) {
   });
 }
 
-checkAzure();
