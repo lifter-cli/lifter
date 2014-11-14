@@ -14,15 +14,17 @@ exports.promptList = {
     promptText: 'What is your dockerHub username?',
     promptClass: 'username',
     validation: validation.hasValue,
-    nextClass: 'password'
+    nextClass: 'containerName'
   },
 
+/*
   password: {
     promptText: 'What is your dockerHub password?',
     promptClass: 'password',
     validation: validation.authenticateUser,
     nextClass: 'containerName'
   },
+*/
 
   containerName: {
     promptText: 'Name your container',
@@ -46,7 +48,7 @@ exports.promptList = {
   },
 
   launchPath: {
-    promptText: 'What is the filepath that corresponds to your command? \nType \'.\' if you want to execute your command from your current working directory.\n',
+    promptText: 'What is the filepath that corresponds to your command? \nType \'.\' if you want to execute your command from your current working directory.',
     promptClass: 'launchPath',
     validation: validation.hasValue,
     nextClass: 'portPrivate'
