@@ -1,22 +1,9 @@
 var prompt = require('../node_modules/prompt');
 var fs = require('fs');
+var util = require('util');
 var yaml = require('../node_modules/js-yaml');
 var lifterPrompts = require('./lifterPrompts.js');
-
-/**
-* Function that lists the number and name of options available for a question in the command line tool
-* @function
-* @param {array} options Array of selections availale to the user for a given question
-*/
-var enumerateOptions = function(options) {
-  var str = '';
-  if(options !== undefined) {
-    for(var i=0;i<options.length;i++) {
-      str += (i+1) + '. ' + options[i] + '\n';
-    }
-  }
-  return str;
-};
+var readline = require('readline');
 
 /**
 * Function that returns a string of the question and options (if any) for each prompt by the command line tool
@@ -25,7 +12,13 @@ var enumerateOptions = function(options) {
 * @param {array} options Array of selections availale to the user for a given question
 */
 var makeDescription = function(text, options) {
-  return text + '\n' + enumerateOptions(options);
+  util.puts(text);
+
+  if(options !== undefined) {
+    for(var i=0;i<options.length;i++) {
+      util.puts((i+1) + '. ' + options[i]);
+    }
+  }
 };
 
 /**
@@ -47,48 +40,54 @@ var containerProperties = {
 };
 
 /**
+* Function that creates instance of readline.createInterface, which makes asking questions slightly easier and handles certain keystrokes properly
+* @function
+* @param {object} obj Object initializing input and output
+*/
+var rl = readline.createInterface({
+  input: process.stdin,
+  output: process.stdout
+});
+
+
+/**
 * Function that prompts questions on command line, writes answers to containerProperties objects, and builds YML file when complete
 * THIS NEEDS TO BE MORE MODULAR
 * @function
 * @param {object} obj Object containing all attributes of prompted question
 */
 exports.picker = function(obj) {
-  // console.log('obj: ', obj);
-  prompt.message = "Question! > ".white;
-  prompt.delimiter = "".green;
 
-  prompt.start();
+// uses util.puts to render question and options for each question
+  makeDescription(obj.promptText, obj.promptOptions);
 
-  prompt.get({
-    properties: {
-      name: {
-        description: makeDescription(obj.promptText,obj.promptOptions)
-      }
-    }
-  }, function(err, result) {
+  rl.question('', function(text) {
 
-      var value = (!obj.promptOptions) ? result.name : obj.promptOptions[parseInt(result.name) - 1];
+    var value = (!obj.promptOptions) ? text : obj.promptOptions[parseInt(text) - 1];
 
       if(validChoice(obj,value)) {
         containerProperties[obj.promptClass] = value;
 
         // nextEvent handles decision trees
         var nextEvent = typeof obj.nextClass === 'function' ? obj.nextClass(value) : obj.nextClass;
-//         console.log(nextEvent);
 
         if(nextEvent !== null) {
           exports.picker(lifterPrompts.promptList[nextEvent]);
         } else {
-          console.log('Good work.  Run lifter config to build a container.');
-          console.log(containerProperties);
-          var ymlDump = yaml.safeDump(containerProperties);
-          fs.writeFile('lifter.yml',ymlDump,function(err){
-            if(err) {console.log(err);}
-          });
+            console.log('Good work.  Run lifter config to build a container.');
+            console.log(containerProperties);
+
+            rl.close();
+
+            var ymlDump = yaml.safeDump(containerProperties);
+
+            fs.writeFile('lifter.yml',ymlDump,function(err) {
+              if(err) {console.log(err);}
+            });
         }
       } else {
-        console.log('Please make a choice.  Otherwise, we will put ',obj.promptOptions[0],'in your container.');
-        exports.picker(obj);
+          console.log('Please make a choice.  Otherwise, we will put',obj.promptOptions[0],'in your container.');
+          exports.picker(obj);
       }
   });
 };
