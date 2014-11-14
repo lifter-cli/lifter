@@ -1,5 +1,5 @@
 #!/bin/bash
 
-echo "Testing bash script"
-STRING = "Hello World"
-echo $STRING
+echo "Testing docker ps inside vm, without sudo"
+
+docker ps -a
