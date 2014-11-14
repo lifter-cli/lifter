@@ -1,5 +1,5 @@
 #!/bin/bash
 
-echo "Testing docker ps inside vm, without sudo"
+echo "Testing docker ps inside vm, with"
 
-docker ps -a
+sudo docker ps -a
