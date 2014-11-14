@@ -2,22 +2,79 @@
   "name": "lifter",
   "version": "0.0.1",
   "description": "lifter: A tool to make Docker Containers",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/lifter-cli/lifter"
-  },
+  "repository" : { "type":"git", "url":"https://github.com/lifter-cli/lifter" },
   "author": "Topaz Planet",
   "engines": {
     "node": ">=0.10"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/lifter-cli/lifter"
   },
   "dependencies": {
     "commander": "^2.5.0",
     "prompt": "^0.2.0",
     "js-yaml": "^3.2.2",
-    "inquirer": "^0.8.0",
-    "mocha": "^2.0.1"
+    "bootstrap": "^3.3.1",
+    "director": "^1.2.3",
+    "flux": "^2.0.1",
+    "fluxxor": "^1.5.0",
+    "object-assign": "^1.0.0",
+    "react": "^0.12.0"
   },
   "bin": {
     "lifter": "./CLI/lifter.js"
+  },
+  "devDependencies": {
+    "browser-sync": "^1.6.5",
+    "del": "^0.1.3",
+    "gulp": "^3.8.10",
+    "gulp-autoprefixer": "^1.0.1",
+    "gulp-cache": "^0.2.4",
+    "gulp-changed": "^1.0.0",
+    "gulp-csscomb": "^3.0.3",
+    "gulp-gh-pages": "^0.4.0",
+    "gulp-htmlmin": "^0.2.0",
+    "gulp-if": "^1.2.5",
+    "gulp-imagemin": "^1.2.1",
+    "gulp-jsbeautifier": "^0.0.3",
+    "gulp-jshint": "^1.9.0",
+    "gulp-less": "^1.3.6",
+    "gulp-load-plugins": "^0.7.1",
+    "gulp-minify-css": "^0.3.11",
+    "gulp-plumber": "^0.6.6",
+    "gulp-render": "^0.2.0",
+    "gulp-replace": "^0.5.0",
+    "gulp-size": "^1.1.0",
+    "gulp-uglify": "^1.0.1",
+    "gulp-util": "^3.0.1",
+    "jest-cli": "^0.1.18",
+    "jshint": "^2.5.10",
+    "jshint-loader": "^0.8.0",
+    "jshint-stylish": "^1.0.0",
+    "jsx-loader": "^0.12.1",
+    "merge-stream": "^0.1.6",
+    "minimist": "^1.1.0",
+    "protractor": "^1.4.0",
+    "psi": "^0.1.5",
+    "react-tools": "^0.12.0",
+    "run-sequence": "^1.0.1",
+    "url-loader": "^0.5.5",
+    "webpack": "^1.4.13",
+    "webpack-dev-server": "^1.6.5"
+  },
+  "jest": {
+    "rootDir": "src",
+    "scriptPreprocessor": "../lifter-ui/config/preprocessor.js",
+    "unmockedModulePathPatterns": [
+      "react"
+    ]
+  },
+  "scripts": {
+    "start": "gulp",
+    "test": "jest",
+    "preupdate-webdriver": "npm install",
+    "update-webdriver": "webdriver-manager update"
   }
+
 }
