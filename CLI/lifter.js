@@ -78,8 +78,9 @@ program
 
   });
 
-if ( !program.args ){
-  console.log('Please run "lifter config" to set your container settings');
+if(!program.args) {
+  program.help();
+//   console.log('Please run "lifter config" to set your container settings');
 }
 
 program.parse(process.argv);
