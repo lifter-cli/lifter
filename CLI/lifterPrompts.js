@@ -13,7 +13,7 @@ exports.promptList = {
   username: {
     promptText: 'What is your dockerHub username?',
     promptClass: 'username',
-    validation: validation.returnTrue,
+    validation: validation.hasValue,
     nextClass: 'password'
   },
 
@@ -27,28 +27,28 @@ exports.promptList = {
   containerName: {
     promptText: 'Name your container',
     promptClass: 'containerName',
-    validation: validation.returnTrue,
+    validation: validation.hasValue,
     nextClass: 'repoName'
   },
 
   repoName: {
     promptText: 'Name your repo',
     promptClass: 'repoName',
-    validation: validation.returnTrue,
+    validation: validation.hasValue,
     nextClass: 'launchCommand'
   },
 
   launchCommand: {
     promptText: 'Enter the command you want to launch when you start up your container.',
     promptClass: 'launchCommand',
-    validation: validation.returnTrue,
+    validation: validation.hasValue,
     nextClass: 'launchPath'
   },
 
   launchPath: {
-    promptText: 'What is the filepath that corresponds to your command? \nType \'.\' if you want to execute your command from your current working directory.',
+    promptText: 'What is the filepath that corresponds to your command? \nType \'.\' if you want to execute your command from your current working directory.\n',
     promptClass: 'launchPath',
-    validation: validation.returnTrue,
+    validation: validation.hasValue,
     nextClass: 'portPrivate'
   },
 
@@ -108,7 +108,7 @@ exports.promptList = {
   envVar: {
     promptText: 'Enter any environmental variables your app needs to run.',
     promptClass: 'envVar',
-    validation: validation.returnTrue,
+    validation: validation.hasValue,
     nextClass: 'mvc'
   },
 
