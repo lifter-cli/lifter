@@ -128,9 +128,14 @@ var checkHostsFileForDockerhost = function() {
       // addDockerhostToHostsFile(ip);
     }
     // console.log(exitInstructions);
-    finishInit();
+    createLocalContainer();
   });
     
+}
+
+var getSettings = function() {
+  var yml = fs.readFileSync(configFile);
+  return yaml.safeLoad(yml);
 }
 
 // create shell script to launch app
@@ -152,6 +157,18 @@ var createShellScript = function() {
       if (err) console.log(err);
       console.log("Launch script created: app.sh");
     });
+  });
+}
+
+var createLocalContainer = function() {
+  var settings = getSettings();
+  var cmd = 'docker run --restart=always -p ' 
+  + settings.portPrivate + ':'
+  + settings.portPublic + ' -v ' 
+  + settings.launchPath 
+  + ':/src:ro sh /src/app.sh';
+  exec(cmd, function(err, stdout, stderr) {
+    finishInit();
   });
 }
 
