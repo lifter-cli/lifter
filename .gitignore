@@ -5,3 +5,8 @@ CLI/lifter.yml
 CLI/npm-debug.log
 app.sh
 Dockerfile
+
+lifter-ui/server/public
+lifter-ui/bower_components
+lifter-ui/node_modules
+lifter-ui/npm-debug.log
