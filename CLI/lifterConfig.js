@@ -27,8 +27,17 @@ var makeDescription = function(text, options) {
 * @param {array} obj Array of available prompt options
 * @param {text} choice String of selection made by user
 */
-var validChoice = function(obj, choice) {
-  return ((!obj.promptOptions) || obj.promptOptions.indexOf(choice) > -1) ? true : false;
+var validateResponse = function(obj,value) {
+  if(obj.promptClass === 'password') {
+    return obj.validation({'username': containerProperties.username, 'password': value});
+  }
+  else {
+    if(obj.promptOptions) {
+      return obj.validation({'value': value, options: obj.promptOptions});
+    } else {
+      return obj.validation({'value': value});
+    }
+  }
 };
 
 /**
@@ -63,9 +72,10 @@ exports.picker = function(obj) {
 
   rl.question('', function(text) {
 
+    // Assign value as either entered text or the the text of the option selected
     var value = (!obj.promptOptions) ? text : obj.promptOptions[parseInt(text) - 1];
 
-      if(validChoice(obj,value)) {
+      if(validateResponse(obj,value)) {
         containerProperties[obj.promptClass] = value;
 
         // nextEvent handles decision trees
@@ -79,6 +89,7 @@ exports.picker = function(obj) {
 
             rl.close();
 
+            // make YML file
             var ymlDump = yaml.safeDump(containerProperties);
 
             fs.writeFile('lifter.yml',ymlDump,function(err) {
@@ -86,7 +97,7 @@ exports.picker = function(obj) {
             });
         }
       } else {
-          console.log('Please make a choice.  Otherwise, we will put',obj.promptOptions[0],'in your container.');
+          // Error messages are in the appropriate validation functions
           exports.picker(obj);
       }
   });

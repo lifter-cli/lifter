@@ -10,14 +10,17 @@ var lifterInit = require('./lifterInit.js')
 var lifterPush = require('./lifterPush.js');
 var lifterDeploy = require('./lifterDeploy.js');
 
+// Doing this to make the help screen look correct
+program._name = 'lifter';
 
 /**
 * Object with methods describing version of command line tool as well as associated options
 * @Object
 */
+
 program
   .version('0.0.1')
-  .usage('lifter - making Docker containers easier since 2014')
+  .usage('\n  lifter - making Docker deployment easier since 2014')
   .option('config', 'Builds YAML file based on user\'s desired configuration')
   .option('init', 'Initializes container.')
   .option('push', 'Commits your docker image and pushes it to docker hub')
@@ -78,9 +81,9 @@ program
 
   });
 
-if(!program.args) {
+if(process.argv.length < 3) {
   program.help();
-//   console.log('Please run "lifter config" to set your container settings');
+  process.exit();
 }
 
 program.parse(process.argv);

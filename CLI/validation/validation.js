@@ -1,3 +1,6 @@
+// var request = require('request');
+// var container = require('./containerProperties.js');
+
 /**
 * @module validation
 */
@@ -11,9 +14,9 @@ exports.hasValue = function(obj) {
   if(typeof obj.value === 'string' && obj.value.length > 0) {
     return true;
   } else {
+    console.log('Please make a choice. Literally, anything would be better than just hitting \'enter\' before typing a single thing.');
     return false;
   }
-
 };
 
 /**
@@ -23,8 +26,30 @@ exports.hasValue = function(obj) {
 * @param {object} obj Object of parameters passed in with username and password
 */
 exports.authenticateUser = function(obj) {
-  // just for now
-  return true;
+
+  var options = {
+  url: 'https://index.docker.io/v1/users',
+  auth: {
+    username: username,
+    password: password
+    },
+    method: 'GET'
+  };
+
+/*
+  request(options,function(err, response, body){
+    if(err) {
+      console.log('Something went wrong.  Try again.');
+      return false;
+    } else {
+      if(!JSON.parse(body) === 'OK') {
+        console.log('Invalid password.  Try again.');
+        return false;
+      }
+      return true;
+    }
+  });
+*/
 };
 
 /**
@@ -37,6 +62,7 @@ exports.inPortRange = function(obj) {
   if(obj.value >=1024 && obj.value <=65535) {
     return true;
   } else {
+    console.log('Please choose a port between 1024 and 65535.  Thanks a bunch.');
     return false;
   }
 };
@@ -51,6 +77,7 @@ exports.inOptions = function(obj) {
   if(obj.options.indexOf(obj.value) >-1) {
     return true;
   } else {
+    console.log('Please choose an option from the list below.');
     return false;
   }
 };
