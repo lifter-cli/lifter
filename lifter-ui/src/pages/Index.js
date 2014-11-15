@@ -16,29 +16,31 @@ var DefaultLayout = require('../layouts/DefaultLayout');
  * AJAX request to our API to retrieve container information
  * Note: refactor this to the Store later
  */
-console.log('inside the default layout');
-// $.ajax(
-//
-// );
-
 var config = {
   dockerAPI: 'http://localhost:3123/api/docker/containers'
 };
 
-var getContainers = function(){
-  // console.log('jQuery', $);
-  // $.ajax({
-  //   url: config.dockerAPI,
-  //   type: 'GET',
-  //   success: function(data){
-  //     console.log(data);
-  //   }
-  // });
-};
-
-getContainers();
-
 var HomePage = React.createClass({
+
+  getInitialState: function(){
+    return {
+      containers: 'not yet loaded'
+    }
+  },
+
+  getContainers: function(){
+    var self = this;
+    $.ajax({
+      url: config.dockerAPI,
+      type: 'GET',
+      success: function(data){
+        console.log(data);
+        self.setState({
+          containers: data
+        });
+      }
+    });
+  },
 
   statics: {
     layout: DefaultLayout
@@ -48,11 +50,15 @@ var HomePage = React.createClass({
     PageActions.setTitle('Lifter UI');
   },
 
+  componentDidMount(){
+    this.getContainers();
+  },
+
   render() {
     return (
       <div className="container">
         <table className="table">
-        <caption>Optional table caption.</caption>
+        <caption>{this.state.containers}</caption>
         <thead>
           <tr>
             <th>#</th>
