@@ -104,19 +104,6 @@ var prepDockerFile = function(dockerFile) {
   return dockerFile.join('\n');
 };
 
-
-/**
-* Function that creates Dockerfile
-* @function
-* @memberof module:validation
-* @param {string} contents String of Docker commands
-*/
-var writeDockerFile = function(contents) {
-  fs.writeFileSync('.'+'/Dockerfile',contents);
-    
-    
-};
-
 module.exports = {
   buildDockerFile : updateDockerContents
 }
