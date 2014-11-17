@@ -86,8 +86,6 @@ var loginAzure = function() {
 
 //asks user to create vm credentials and grabs ubuntu image
 var setupAzureVM = function() {
-
-  var ubuntuImage = "b39f27a8b8c64d52b05eac6a62ebad85__Ubuntu-14_04-LTS-amd64-server-20140724-en-us-30GB";
   
   prompt.message = '';
   prompt.delimiter = '';
@@ -95,30 +93,32 @@ var setupAzureVM = function() {
 
   prompt.get(vmSetupQs.vmSetup, function(err,result){
     credentials = [result.vm, result.username, result.password];
-    createAzureVM(ubuntuImage, credentials);
+    createAzureVM(credentials);
   });
 }
 
 
 //create an Azure VM with the Ubuntu image
-var createAzureVM = function(img, creds) {
+var createAzureVM = function(creds) {
 
-  var command = 'azure vm docker create -e 22 -l "West US" '+ creds[0] +' "' + img + '" ' + creds[1] + ' ' + creds[2];
+  var ubuntuImage = "b39f27a8b8c64d52b05eac6a62ebad85__Ubuntu-14_04-LTS-amd64-server-20140724-en-us-30GB";
+
+  var command = 'azure vm docker create -e 22 -l "West US" '+ creds[0] +' "' + ubuntuImage + '" ' + creds[1] + ' ' + creds[2];
 
   exec(command, function(err, stdout, stderr){
     if(err){
-      if(/already exists/.test(stderr)){
+      if(/The specified DNS name is already taken|already exists/.test(stderr)){
         console.log(('A VM with the dns "' + creds[0] + '" already exists.').red);
         setupAzureVM();
       } else {
         console.log("ERR: ", err);
       }
     } else {
-      console.log("VM created");
+      console.log('Azure VM "'+ creds[0] + '" created');
+      // readYML();
     }
   });
 }
-
 
 
 
