@@ -112,6 +112,7 @@ var createAzureVM = function(creds) {
       }
     } else {
       console.log('Azure VM "'+ creds[0] + '" created');
+      console.log("Writing deploy script...");
       // readYML();
     }
   });
