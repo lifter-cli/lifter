@@ -222,10 +222,10 @@ gulp.task('serve', function(cb) {
     //   }
     // });
 
-    // gulp.watch(src.assets, ['assets']);
-    // gulp.watch(src.images, ['images']);
-    // gulp.watch(src.pages, ['pages']);
-    // gulp.watch(src.styles, ['styles']);
+     gulp.watch(src.assets, ['assets']);
+     gulp.watch(src.images, ['images']);
+     gulp.watch(src.pages, ['pages']);
+     gulp.watch(src.styles, ['styles']);
     // gulp.watch(DEST + '/**/*.*', function(file) {
     //   browserSync.reload(path.relative(__dirname, file.path));
     // });

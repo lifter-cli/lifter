@@ -16,29 +16,57 @@ var DefaultLayout = require('../layouts/DefaultLayout');
  * AJAX request to our API to retrieve container information
  * Note: refactor this to the Store later
  */
-console.log('inside the default layout');
-// $.ajax(
-//
-// );
-
 var config = {
   dockerAPI: 'http://localhost:3123/api/docker/containers'
 };
 
-var getContainers = function(){
-  // console.log('jQuery', $);
-  // $.ajax({
-  //   url: config.dockerAPI,
-  //   type: 'GET',
-  //   success: function(data){
-  //     console.log(data);
-  //   }
-  // });
+var getContainers = function(context){
+  var self = context;
+  $.ajax({
+    url: config.dockerAPI,
+    type: 'GET',
+    success: function(data){
+      console.log(data);
+      self.setState({
+        containers: data
+      });
+    }
+  });
 };
 
-getContainers();
 
-var HomePage = React.createClass({
+
+var ContainerRow = React.createClass({
+  // componentDidMount: function(){
+  //   this.setState({
+  //     name: container.names,
+  //     status: container.status,
+  //     ports: container.ports,
+  //     image: container.image,
+  //     command: container.command
+  //   });
+  // },
+
+  render() {
+    return (
+      <tr>
+        <td> {this.props.names} </td>
+        <td> {this.props.status} </td>
+        <td> {this.props.ports} </td>
+        <td> {this.props.image} </td>
+        <td> {this.props.command} </td>
+      </tr>
+    );
+  }
+});
+
+var ContainersTable = React.createClass({
+
+  getInitialState: function(){
+    return {
+      containers: []
+    };
+  },
 
   statics: {
     layout: DefaultLayout
@@ -48,38 +76,31 @@ var HomePage = React.createClass({
     PageActions.setTitle('Lifter UI');
   },
 
+  componentDidMount(){
+    getContainers(this);
+  },
+
   render() {
+    var rows = this.state.containers.map(function(value){
+      return (
+        <ContainerRow names='helloname' status={value.status} ports ={value.ports} image={value.image} command={value.command} />
+      )
+    });
     return (
       <div className="container">
         <table className="table">
-        <caption>Optional table caption.</caption>
+        // <caption>{this.state.containers}</caption>
         <thead>
           <tr>
-            <th>#</th>
-            <th>First Name</th>
-            <th>Last Name</th>
-            <th>Username</th>
+            <th>Name</th>
+            <th>Status</th>
+            <th>Ports</th>
+            <th>Image</th>
+            <th>Command</th>
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td>1</td>
-            <td>Mark</td>
-            <td>Otto</td>
-            <td>@mdo</td>
-          </tr>
-          <tr>
-            <td>2</td>
-            <td>Jacob</td>
-            <td>Thornton</td>
-            <td>@fat</td>
-          </tr>
-          <tr>
-            <td>3</td>
-            <td>Larry</td>
-            <td>the Bird</td>
-            <td>@twitter</td>
-          </tr>
+          {rows}
         </tbody>
       </table>
       </div>
@@ -88,4 +109,4 @@ var HomePage = React.createClass({
 
 });
 
-module.exports = HomePage;
+module.exports = ContainersTable;
