@@ -2,6 +2,8 @@
 * @module helpers
 */
 var fs = require('fs');
+var yaml = require('../node_modules/js-yaml');
+
 
 /**
 * Function that add spaces to a string - using it to format the Dockerfile
@@ -35,3 +37,16 @@ exports.doesFileExist = function(filename) {
     }
   });
 };
+
+/**
+* Function that reads the lifter.yml file
+* @function
+* @memberof module:helpers
+* 
+*/
+
+exports.readYAML = function() {
+  var content = fs.readFileSync('lifter.yml', {encoding: 'utf-8'});
+  var ymlContents = yaml.safeLoad(content);
+  return ymlContents;
+}
