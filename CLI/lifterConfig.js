@@ -1,4 +1,3 @@
-var prompt = require('../node_modules/prompt');
 var fs = require('fs');
 var util = require('util');
 var yaml = require('../node_modules/js-yaml');
@@ -58,6 +57,9 @@ var rl = readline.createInterface({
   output: process.stdout
 });
 
+var checkForExistingYML = function() {
+
+};
 
 /**
 * Function that prompts questions on command line, writes answers to containerProperties objects, and builds YML file when complete
@@ -79,12 +81,13 @@ exports.picker = function(obj) {
         containerProperties[obj.promptClass] = value;
 
         // nextEvent handles decision trees
-        var nextEvent = typeof obj.nextClass === 'function' ? obj.nextClass(value) : obj.nextClass;
+//         var nextEvent = typeof obj.nextClass === 'function' ? obj.nextClass(value) : obj.nextClass;
+        var nextEvent = obj.nextClass(value);
 
         if(nextEvent !== null) {
           exports.picker(lifterPrompts.promptList[nextEvent]);
         } else {
-            console.log('Good work.  Run lifter config to build a container.');
+            console.log('Good work.  Run lifter init to build a container.');
             console.log(containerProperties);
 
             rl.close();
