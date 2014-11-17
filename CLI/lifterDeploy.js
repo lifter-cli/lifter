@@ -4,10 +4,8 @@ var prompt = require('../node_modules/prompt');
 var vmSetupQs = require('./vmSetup.js');
 var yaml = require('../node_modules/js-yaml');
 
-
 //check if user has azure-cli installed - #81
 exports.checkAzure = function(){
-// var checkAzure = function() {
   exec('npm list -g --depth=0 | grep azure-cli', function(err, stdout, stderr){
     if(/azure-cli/.test(stdout)) {
       console.log("Azure-CLI found, opening Azure Management Portal in default browser...".green);
@@ -64,11 +62,9 @@ var getVMInfo = function(){
         console.log(err);
       } else {
         console.log("Writing deploy script...");
+        // readYML();
       }
-      // readYML();
     });
-
-
   });
 }
 
@@ -78,11 +74,14 @@ var loginAzure = function() {
     if(err){
       console.log("ERR: ", err);
     } else {
-      console.log("Please complete the following before continuing\n\n1. Sign into the Azure Management Portal in the browser that was opened\n2. A .publishsettings file will be downloaded, remember its location\n3. Run the following command: azure account import .publishsettings < .publishsettings file location>\n 4.Rerun lifter deploy".white);
+      console.log("Please complete the following before continuing\n\n"+
+      "1. Sign into the Azure Management Portal in the browser that was opened\n"+
+      "2. A .publishsettings file will be downloaded, remember its location\n"+
+      "3. Run the following command: azure account import .publishsettings < .publishsettings file location>\n"+
+      "4. Rerun lifter deploy".white);
     }
   });
 }
-
 
 //asks user to create vm credentials and grabs ubuntu image
 var setupAzureVM = function() {
@@ -97,12 +96,10 @@ var setupAzureVM = function() {
   });
 }
 
-
 //create an Azure VM with the Ubuntu image
 var createAzureVM = function(creds) {
 
   var ubuntuImage = "b39f27a8b8c64d52b05eac6a62ebad85__Ubuntu-14_04-LTS-amd64-server-20140724-en-us-30GB";
-
   var command = 'azure vm docker create -e 22 -l "West US" '+ creds[0] +' "' + ubuntuImage + '" ' + creds[1] + ' ' + creds[2];
 
   exec(command, function(err, stdout, stderr){
@@ -119,7 +116,3 @@ var createAzureVM = function(creds) {
     }
   });
 }
-
-
-
-// checkAzure();
