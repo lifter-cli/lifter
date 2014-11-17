@@ -28,7 +28,8 @@
     "object-assign": "^1.0.0",
     "prompt": "^0.2.0",
     "react": "^0.12.0",
-    "serve-favicon": "~2.1.3"
+    "serve-favicon": "~2.1.3",
+    "request": "^2.48.0"
   },
   "bin": {
     "lifter": "./CLI/lifter.js"

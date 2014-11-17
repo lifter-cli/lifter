@@ -1,9 +1,6 @@
 #! /usr/local/bin/node
 
 var program = require('../node_modules/commander');
-var prompt = require('../node_modules/prompt');
-var fs = require('fs');
-var yaml = require('../node_modules/js-yaml');
 var lifterConfig = require('./lifterConfig.js');
 var lifterPrompts = require('./lifterPrompts.js');
 var lifterInit = require('./lifterInit.js')
@@ -17,7 +14,6 @@ program._name = 'lifter';
 * Object with methods describing version of command line tool as well as associated options
 * @Object
 */
-
 program
   .version('0.0.1')
   .usage('\n  lifter - making Docker deployment easier since 2014')
@@ -62,7 +58,7 @@ program
   });
 
 /**
-* Object with method and description attached to any command not stipulated above
+* Object with method and description attached to 'lifter deploy' command
 * @Object
 */
 program
@@ -73,6 +69,10 @@ program
     lifterDeploy.checkAzure();
   });
 
+/**
+* Object with method and description attached to any command not stipulated above
+* @Object
+*/
 program
   .command('*')
   .description('Handle odd responses')
@@ -81,6 +81,10 @@ program
 
   });
 
+console.log(process.argv);
+
+// process.argv should always have two default arguments: '/usr/local/bin/node' and '/usr/local/bin/lifter'
+// if process.argv has a length of less than 3, presume that only 'lifter' has been entered (i.e. no additional commands)
 if(process.argv.length < 3) {
   program.help();
   process.exit();
