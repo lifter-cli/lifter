@@ -6,8 +6,8 @@ var yaml = require('../node_modules/js-yaml');
 
 
 //check if user has azure-cli installed - #81
-// exports.checkAzure = function(){
-var checkAzure = function() {
+exports.checkAzure = function(){
+// var checkAzure = function() {
   exec('npm list -g --depth=0 | grep azure-cli', function(err, stdout, stderr){
     if(/azure-cli/.test(stdout)) {
       console.log("Azure-CLI found, opening Azure Management Portal in default browser...".green);
@@ -62,7 +62,9 @@ var getVMInfo = function(){
     fs.appendFile('lifter.yml', toAppend,function(err){
       if(err) {
         console.log(err);
-    }
+      } else {
+        console.log("Writing deploy script...");
+      }
       // readYML();
     });
 
@@ -120,4 +122,4 @@ var createAzureVM = function(img, creds) {
 
 
 
-checkAzure();
+// checkAzure();
