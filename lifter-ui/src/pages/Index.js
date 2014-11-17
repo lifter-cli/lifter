@@ -34,6 +34,8 @@ var getContainers = function(context){
   });
 };
 
+
+
 var ContainerRow = React.createClass({
   // componentDidMount: function(){
   //   this.setState({
@@ -48,11 +50,11 @@ var ContainerRow = React.createClass({
   render() {
     return (
       <tr>
-        <td> {this.state.names} </td>
-        <td> {this.state.status} </td>
-        <td> {this.state.ports} </td>
-        <td> {this.state.image} </td>
-        <td> {this.state.command} </td>
+        <td> {this.props.names} </td>
+        <td> {this.props.status} </td>
+        <td> {this.props.ports} </td>
+        <td> {this.props.image} </td>
+        <td> {this.props.command} </td>
       </tr>
     );
   }
@@ -80,8 +82,9 @@ var ContainersTable = React.createClass({
 
   render() {
     var rows = this.state.containers.map(function(value){
-      console.log('each row', value);
-      <ContainerRow />
+      return (
+        <ContainerRow names='helloname' status={value.status} ports ={value.ports} image={value.image} command={value.command} />
+      )
     });
     return (
       <div className="container">
