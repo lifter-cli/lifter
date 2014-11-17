@@ -1,10 +1,13 @@
+var fs = require('fs');
 var exec = require('child_process').exec;
 var prompt = require('../node_modules/prompt');
-var vmSetupQuestions = require('./vmSetup.js');
+var vmSetupQs = require('./vmSetup.js');
+var yaml = require('../node_modules/js-yaml');
 
 
 //check if user has azure-cli installed - #81
-exports.checkAzure = function(){
+// exports.checkAzure = function(){
+var checkAzure = function() {
   exec('npm list -g --depth=0 | grep azure-cli', function(err, stdout, stderr){
     if(/azure-cli/.test(stdout)) {
       console.log("Azure-CLI found, opening Azure Management Portal in default browser...".green);
@@ -22,8 +25,48 @@ var checkSubscription = function() {
       console.log("Azure subscription not connected");
       loginAzure();
     } else {
+      whichVM();
+    }
+  });
+}
+
+//asks users if they are deploying to a new vm or to an existing one
+var whichVM = function(){
+  prompt.message = '';
+  prompt.delimiter = '';
+  prompt.start();
+
+  prompt.get(vmSetupQs.existingOrNew, function(err, result){
+    if(result.select === "existing"){
+      getVMInfo();
+    } else if (result.select === "new"){
       setupAzureVM();
     }
+  });
+}
+
+//asks user for their vm name and vm username, appends info to YAML file
+var getVMInfo = function(){
+  prompt.message = '';
+  prompt.delimiter = '';
+  prompt.start();
+
+  prompt.get(vmSetupQs.vmInfo, function(err, result){
+
+    if(err){
+      console.log("ERR: ", err);
+    }
+
+    var toAppend = "\nvmName: " + result.vmName + "\nvmUsername: " + result.vmUsername;
+
+    fs.appendFile('lifter.yml', toAppend,function(err){
+      if(err) {
+        console.log(err);
+    }
+      // readYML();
+    });
+
+
   });
 }
 
@@ -48,7 +91,7 @@ var setupAzureVM = function() {
   prompt.delimiter = '';
   prompt.start();
 
-  prompt.get(vmSetupQuestions.vmSetup, function(err,result){
+  prompt.get(vmSetupQs.vmSetup, function(err,result){
     credentials = [result.vm, result.username, result.password];
     createAzureVM(ubuntuImage, credentials);
   });
@@ -74,3 +117,7 @@ var createAzureVM = function(img, creds) {
   });
 }
 
+
+
+
+checkAzure();
