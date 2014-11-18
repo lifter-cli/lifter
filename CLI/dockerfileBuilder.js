@@ -1,7 +1,7 @@
 var fs = require('fs');
 var path = require('path');
 var yaml = require('../node_modules/js-yaml');
-var globalDependencies = require('./globalDependencyList.js');
+var dependencies = require('./globalDependencyList.js');
 var helpers = require('./helpers.js');
 
 /**
@@ -29,18 +29,18 @@ var dockerFileContents = [
 * @param {string} filename Filename of YML file that will be loaded and parsed
 * @param {array} dockerFile Array of sub-arrays that will render as a Dockerfile
 */
-var readYML = function(filename,dockerFile) {
-  var ymlContents = yaml.safeLoad(fs.readFileSync(filename,{encoding: 'utf-8'}));
+var addToDockerfile = function(dockerFile) {
+  var settings = helpers.readYAML();
   for(var i=0;i<dockerFile.length;i++) {
 
     if(dockerFile[i][0] === 'FROM') {
-      dockerFile[i].push(ymlContents.linuxOS);
+      dockerFile[i].push(settings.linuxOS);
     }
     if(dockerFile[i][0] === 'MAINTAINER') {
-      dockerFile[i].push(ymlContents.username);
+      dockerFile[i].push(settings.username);
     }
     if(dockerFile[i][0] === 'EXPOSE') {
-      dockerFile[i].push(ymlContents.portPublic);
+      dockerFile[i].push(settings.portPublic);
     }
   }
 };
@@ -56,15 +56,15 @@ var readDirectory = function(dir,dockerFile) {
   var files = fs.readdirSync(dir);
 
   for(var j=0;j<dockerFile.length;j++) {
-    // console.log(dockerFile[j].indexOf('EXPOSE'));
     if(dockerFile[j].indexOf('EXPOSE') > -1) {
       var splicePoint = j;
     }
   }
 
   for(var i=0;i<files.length;i++) {
-    if(globalDependencies.files.indexOf(files[i]) > -1) {
-      var installCommand = globalDependencies.installCommands[files[i]];
+    var file = files[i];
+    if(dependencies.files.indexOf(file) > -1) {
+      var installCommand = dependencies.installCommands[file];
       if(splicePoint) {
         dockerFile.splice(splicePoint,0,installCommand);
       } else {
@@ -80,11 +80,11 @@ var readDirectory = function(dir,dockerFile) {
 * @function
 * @param {function} callback Callback function that is invoked once Dockerfile is ready
 */
-var updateDockerContents = function() {
-  readYML('lifter.yml',dockerFileContents);
+var buildDockerFile = function() {
+  addToDockerfile(dockerFileContents);
   readDirectory('./',dockerFileContents);
   prepDockerFile(dockerFileContents);
-  fs.writeFileSync('.'+'/Dockerfile',dockerFileContents.join('\n'));
+  fs.writeFileSync('./Dockerfile',dockerFileContents.join('\n'));
   console.log('Dockerfile exists now.  High five!');
 };
 
@@ -97,7 +97,7 @@ var updateDockerContents = function() {
 var prepDockerFile = function(dockerFile) {
   for(var i=0;i<dockerFile.length;i++) {
     if(dockerFile[i][0] !== '#') {
-      dockerFile[i][0]= helpers.addSpace(dockerFile[i][0],Math.max(2,Math.max(0,8 - dockerFile[i][0].length)));
+      dockerFile[i][0]= helpers.addSpace(dockerFile[i][0],Math.max(2,8 - dockerFile[i][0].length));
     }
     dockerFile[i] = dockerFile[i].join('');
   }
@@ -105,6 +105,6 @@ var prepDockerFile = function(dockerFile) {
 };
 
 module.exports = {
-  buildDockerFile : updateDockerContents
+  buildDockerFile : buildDockerFile
 }
 
