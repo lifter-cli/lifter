@@ -3,8 +3,9 @@ var exec = require('child_process').exec;
 var prompt = require('../node_modules/prompt');
 var vmSetupQs = require('./vmSetup.js');
 var yaml = require('../node_modules/js-yaml');
+var helper = require('./helpers.js');
 
-//check if user has azure-cli installed - #81
+//check if user has azure-cli installed
 exports.checkAzure = function(){
   exec('npm list -g --depth=0 | grep azure-cli', function(err, stdout, stderr){
     if(/azure-cli/.test(stdout)) {
@@ -62,7 +63,7 @@ var getVMInfo = function(){
         console.log(err);
       } else {
         console.log("Writing deploy script...");
-        // readYML();
+        updateDeployScript();
       }
     });
   });
@@ -92,6 +93,7 @@ var setupAzureVM = function() {
 
   prompt.get(vmSetupQs.vmSetup, function(err,result){
     credentials = [result.vm, result.username, result.password];
+    console.log("Creating azure vm...");
     createAzureVM(credentials);
   });
 }
@@ -112,7 +114,32 @@ var createAzureVM = function(creds) {
       }
     } else {
       console.log('Azure VM "'+ creds[0] + '" created');
-      // readYML();
+      console.log("Writing deploy script...");
+      updateDeployScript();
     }
+  });
+}
+
+//updates deploy.sh file to include the correct docker images
+var updateDeployScript = function() {
+
+  var yamlContent = helper.readYAML();
+  var image = yamlContent.username + "/" + yamlContent.repoName + ":latest";
+
+  fs.readFile('deploy.sh', 'utf8', function (err,data) {
+    if (err) {
+      return console.log(err);
+    }
+
+    var replace = data.replace(/dockerRepoName/g, image);
+
+    fs.writeFile('deploy.sh', replace, 'utf8', function (err) {
+       if (err) {
+        return console.log(err);
+       } else {
+         console.log("Sending deploy script to VM");
+         // sendDeployScript(vmName, vmUsername);
+       }
+    });
   });
 }
