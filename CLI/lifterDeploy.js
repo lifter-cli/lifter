@@ -93,8 +93,15 @@ var setupAzureVM = function() {
 
   prompt.get(vmSetupQs.vmSetup, function(err,result){
     credentials = [result.vm, result.username, result.password];
-    console.log("Creating azure vm...");
-    createAzureVM(credentials);
+    var toAppend = "\nvmName: " + result.vm + "\nvmUsername: " + result.username;
+    fs.appendFile('lifter.yml', toAppend,function(err){
+      if(err) {
+        console.log(err);
+      } else {
+        console.log("Creating azure vm...");
+        createAzureVM(credentials);
+      }
+    });
   });
 }
 
@@ -137,9 +144,23 @@ var updateDeployScript = function() {
        if (err) {
         return console.log(err);
        } else {
-         console.log("Sending deploy script to VM");
-         // sendDeployScript(vmName, vmUsername);
+         console.log("Deploy script complete.");
+         sendDeployScript();
        }
     });
   });
+}
+
+//copies deploy script into vm
+var sendDeployScript = function(){
+
+  var yamlContent = helper.readYAML();
+  var sshPath = "ssh " +yamlContent.vmUsername+ "@" +yamlContent.vmName+ ".cloudapp.net";
+  
+  console.log("\nPlease run the following commands:\n\n" +
+              "1. Send the deploy script to your vm: " +sshPath+ " 'cat > deploy.sh; scp; cat /home/" +yamlContent.vmUsername+ "' < deploy.sh\n"+
+              "You will be prompted for the vm's password after running this command. If this is your first time ssh-ing into the vm,\n"+
+              "you will need to respond 'yes' when asked about authenticating the host\n\n"+
+              "2. ssh into your vm: "+sshPath+"\n\n"+
+              "3. Run the script inside your vm: sudo sh deploy.sh\n");
 }
