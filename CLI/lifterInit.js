@@ -1,11 +1,11 @@
 var fs = require('fs');
 var yaml = require('js-yaml');
 var exec = require('child_process').exec;
-var builder = require('./buildContainer.js');
+var builder = require('./dockerfileBuilder.js');
 var configFile = "lifter.yml";
 
 // execsync may or may not be useful at some point
-// var execSync = require('exec-sync');
+var execSync = require('exec-sync');
 
 var exitInstructions = [];
 
@@ -162,14 +162,28 @@ var createShellScript = function() {
 
 var createLocalContainer = function() {
   var settings = getSettings();
-  var cmd = 'docker run --restart=always -p ' 
+  //docker build -t username_on_docker_hub/create_new_repo_name .
+  var imageName = settings.username + '/' + settings.repoName;
+  var dbImageName = imageName + '_db';
+
+  var buildCmd = 'docker build -t ' 
+  + imageName + ' .';
+  var mongoRunCmd = 'docker run --restart=always --name ' 
+  + dbImageName + ' mongo:latest'
+  var appRunCmd = 'docker run --restart=always -p ' 
   + settings.portPrivate + ':'
   + settings.portPublic + ' -v ' 
   + settings.launchPath 
   + ':/src:ro sh /src/app.sh';
-  exec(cmd, function(err, stdout, stderr) {
-    finishInit();
-  });
+
+  console.log('Building application image...');
+  execSync(buildCmd);
+  console.log('Launching database container...');
+  execSync(mongoRunCmd);
+  console.log('Launching applicion container...');
+  execSync(appRunCmd);
+
+  finishInit();
 }
 
 var finishInit = function () {
@@ -181,11 +195,6 @@ var finishInit = function () {
     });
   }
 }
-// builder.buildDockerFile();
-// createShellScript();
-// start_b2d();
-// removeIPinHostsFile("192.123.123.42");
-// checkHostsFileForDockerhost();
 
 module.exports = {
   start_b2d: start_b2d
