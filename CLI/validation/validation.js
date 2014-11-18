@@ -53,13 +53,13 @@ exports.authenticateUser = function(obj) {
 };
 
 /**
-* Function that checks whether input ports are within available range
+* Function that checks whether input ports are valid
 * @function
 * @memberof module:validation
 * @param {object} obj Object with portPublic or portPrivate parameter
 */
 exports.inPortRange = function(obj) {
-  if(obj.value >=1024 && obj.value <=65535) {
+  if(obj.value >= 0 && obj.value <= 65535) {
     return true;
   } else {
     console.log('Please choose a port between 1024 and 65535.  Thanks a bunch.');
