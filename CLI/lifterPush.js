@@ -1,31 +1,15 @@
+var fs = require('fs');
 var exec = require('child_process').exec;
 var yaml = require('../node_modules/js-yaml');
-var fs = require('fs');
-// console.log("INSIDE lifter push");
-/*** 
+var helper = require('./helpers.js');
 
-lifterPush currently assumes its within the root of the app container.
-
-***/
-
-// Read YML file and return contents
-var readYML = function() {
-  var content = fs.readFileSync('lifter.yml', {encoding: 'utf-8'});
-  var ymlContents = yaml.safeLoad(content);
-  return ymlContents;
-}
-
-var content = readYML();
-var container = content.containerName;
-var repo = content.repoName;
-var username = content.username;
-
-// Copy mounted volume into a directory called "app"
+// copies the mounted volume (from /src) into a new directory(/prod)
 exports.copyMounted = function() {
 
+  var yamlContent = helper.readYAML();
   // src is where the mounted files exist
   // app is where the copied files will be transeffered to
-  var command = 'docker exec -i -t ' + container +' cp -r src/ /prod';
+  var command = 'docker exec -i -t ' + yamlContent.containerName +' cp -r src/ /prod';
     
   exec(command, function(err, stdout, stderr){
     if(err){ 
@@ -37,10 +21,11 @@ exports.copyMounted = function() {
   });
 }
 
-// Commit docker image
+// commits changes and creates a docker image
 var commitImage = function() {
 
-  var command = 'docker commit ' + container + ' ' + repo + ':latest';
+  var yamlContent = helper.readYAML();
+  var command = 'docker commit ' + yamlContent.containerName + ' ' + yamlContent.repoName + ':latest';
   
   exec(command, function(err, stdout, stderr){
     if(err){ 
@@ -52,10 +37,11 @@ var commitImage = function() {
   });
 }
 
-// Push image to docker hub
+// pushes docker image to docker hub
 var pushImage = function() {
 
-  var command = 'docker push ' + username + '/' + repo + ':latest';
+  var yamlContent = helper.readYAML();
+  var command = 'docker push ' + yamlContent.username + '/' + yamlContent.repoName + ':latest';
   
   exec(command, function(err, stdout, stderr){
     if(err){ 
