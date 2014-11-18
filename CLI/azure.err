@@ -1,8 +1,8 @@
-Mon Nov 17 2014 14:53:08 GMT-0800 (PST):
+Mon Nov 17 2014 15:46:46 GMT-0800 (PST):
 { [Error: The specified DNS name is already taken.]
   code: 'ConflictError',
   statusCode: 409,
-  requestId: 'f2db47f1ff43388c93c57e65cbf309de' }
+  requestId: '22dcccb561693ff4a0055ecfe087cd58' }
 Error: The specified DNS name is already taken.
     at Function.ServiceClient._normalizeError (/usr/local/lib/node_modules/azure-cli/node_modules/azure-common/lib/services/serviceclient.js:809:23)
     at /usr/local/lib/node_modules/azure-cli/node_modules/azure-common/lib/services/filters/errorhandlingfilter.js:44:29
