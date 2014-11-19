@@ -14,7 +14,7 @@ exports.hasValue = function(obj) {
   if(typeof obj.value === 'string' && obj.value.length > 0) {
     return true;
   } else {
-    console.log('Please make a choice. Literally, anything would be better than just hitting \'enter\' before typing a single thing.');
+    console.log('Please make a choice. Literally, anything would be better than just hitting \'enter\' before typing a single thing.'.red);
     return false;
   }
 };
@@ -59,10 +59,10 @@ exports.authenticateUser = function(obj) {
 * @param {object} obj Object with portPublic or portPrivate parameter
 */
 exports.inPortRange = function(obj) {
-  if(obj.value >= 0 && obj.value <= 65535) {
+  if(parseInt(obj.value) >= 0 && parseInt(obj.value) <= 65535 && obj.value.length>= 1) {
     return true;
   } else {
-    console.log('Please choose a port between 1024 and 65535.  Thanks a bunch.');
+    console.log('Please choose a port between 1024 and 65535.  Thanks a bunch.'.red);
     return false;
   }
 };
@@ -77,7 +77,7 @@ exports.inOptions = function(obj) {
   if(obj.options.indexOf(obj.value) >-1) {
     return true;
   } else {
-    console.log('Please choose an option from the list below.');
+    console.log('Please choose an option from the list below.'.red);
     return false;
   }
 };
