@@ -46,6 +46,7 @@ Once you are ready to deploy your application, you can either choose to create a
 
 ## FAQ
 Q: Can I use Lifter to deploy to AWS, Google, [insert favorite cloud service provider]?
+
 A: We currently support deployment to Microsoft Azure and may support other cloud service providers in the future.  The first three Lifter commands (config, init, and push) are applicable to deployments in any production environment and with some customization of the lifter deploy steps, our tool can be used to deploy to other cloud service providers.
 
 ## Team
