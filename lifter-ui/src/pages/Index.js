@@ -17,7 +17,7 @@ var DefaultLayout = require('../layouts/DefaultLayout');
  * Note: refactor this to the Store later
  */
 var config = {
-  dockerAPI: 'http://localhost:3123/api/docker/containers'
+  dockerAPI: 'http://localhost:3123/api/docker/containers/all'
 };
 
 var getContainers = function(context){
@@ -93,7 +93,8 @@ var ContainersTable = React.createClass({
 
   componentDidMount(){
     getContainers(this)
-    setInterval( function(){ getContainers(this) }, 3000);
+    var self = this;
+    setInterval( function(){ getContainers(self) }, 3000);
   },
 
   componentWillUnmount(){
@@ -102,8 +103,12 @@ var ContainersTable = React.createClass({
 
   render() {
     var rows = this.state.containers.map(function(container){
-      var ports = container.Ports[0].Type + ' ' + container.Ports[0].PublicPort +
-        ' (public) ->' + container.Ports[0].PrivatePort + ' (private)';
+      if ( container.Ports.length ) {
+        var ports = container.Ports[0].Type + ' ' + container.Ports[0].PublicPort +
+          ' (public) ->' + container.Ports[0].PrivatePort + ' (private)';
+      } else {
+        var ports = '';
+      }
       var nameAndLinks = parseContainerNames(container);
       return (
         <ContainerRow name={nameAndLinks.containerName} links={nameAndLinks.links} status={container.Status} ports = {ports}
@@ -132,4 +137,27 @@ var ContainersTable = React.createClass({
   }
 });
 
-module.exports = ContainersTable;
+var Header = React.createClass({
+  render() {
+    return (
+      <div>
+        Header - placeholder
+      </div>
+    )
+  }
+});
+
+
+var Display = React.createClass({
+  render() {
+    return (
+      <div>
+        <Header />
+        <div>
+          Display Table
+        </div>
+      </div>
+    );
+  }
+});
+module.exports = Display;
