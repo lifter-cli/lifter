@@ -7,6 +7,8 @@
  */
 
 module.exports = {
+  // Docker Remote API
+  GET_CONTAINERS_STATUS: 'GET_CONTAINERS_STATUS',
 
   // Route action types
   SET_CURRENT_ROUTE: 'SET_CURRENT_ROUTE',
