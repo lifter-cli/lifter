@@ -12,7 +12,7 @@ var yaml = require('../../node_modules/js-yaml');
 */
 
 var readYAML = function() {
-  var content = fs.readFileSync('lifter.yml', {encoding: 'utf-8'});
+  var content = fs.readFileSync('./.lifter/lifter.yml', {encoding: 'utf-8'});
   return yaml.safeLoad(content);
 }
 

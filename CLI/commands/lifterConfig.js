@@ -90,7 +90,7 @@ var askConfigQuestion = function(obj) {
             // make YML file
             var ymlDump = yaml.safeDump(containerProperties);
 
-            fs.writeFile('lifter.yml',ymlDump,function(err) {
+            fs.writeFile('./.lifter/lifter.yml',ymlDump,function(err) {
               if(err) {console.log(err);}
             });
         }

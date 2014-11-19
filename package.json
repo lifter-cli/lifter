@@ -35,7 +35,7 @@
     "serve-favicon": "~2.1.3"
   },
   "bin": {
-    "lifter": "./CLI/lifter.js"
+    "lifter": "./cli/lifter.js"
   },
   "devDependencies": {
     "browser-sync": "^1.6.5",
