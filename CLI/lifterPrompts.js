@@ -80,7 +80,7 @@ exports.promptList = {
   envVar: {
     promptText: 'Enter any environmental variables your app needs to run.',
     promptClass: 'envVar',
-    validation: validation.hasValue,
+    validation: validation.noValidation,
     nextClass: function() {return 'db';}
   },
 
@@ -89,7 +89,7 @@ exports.promptList = {
     promptOptions: ['mongoDB', 'mySQL', 'redis', 'No Database'],
     promptClass: 'db',
     validation: validation.inOptions,
-    nextClass: function() {return 'appServer';}
+    nextClass: function() {return null;}
   },
 
   // Temporarily disabling scaffolding (feature has not been developed yet)
@@ -108,21 +108,21 @@ exports.promptList = {
   //   }
   // },
 
-  appServer: {
-    promptText: 'Pick a back end',
-    promptOptions: ['Node with Express', 'Node without Express', 'Apache'],
-    promptClass: 'appServer',
-    validation: validation.inOptions,
-    nextClass: function() {return 'mvc';}
-  },
-
-
-  mvc: {
-    promptText: 'Pick an MVC',
-    promptOptions: ['Angular', 'Backbone', 'No MVC'],
-    promptClass: 'mvc',
-    validation: validation.inOptions,
-    nextClass: function() {return null;}
-  },
+  // appServer: {
+  //   promptText: 'Pick a back end',
+  //   promptOptions: ['Node with Express', 'Node without Express', 'Apache'],
+  //   promptClass: 'appServer',
+  //   validation: validation.inOptions,
+  //   nextClass: function() {return 'mvc';}
+  // },
+  //
+  //
+  // mvc: {
+  //   promptText: 'Pick an MVC',
+  //   promptOptions: ['Angular', 'Backbone', 'No MVC'],
+  //   promptClass: 'mvc',
+  //   validation: validation.inOptions,
+  //   nextClass: function() {return null;}
+  // },
 
 };

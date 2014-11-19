@@ -6,7 +6,7 @@
 */
 
 /**
-* Placeholder function that just returns true instead of running any sort of validation on input data
+* Checks to make sure they entered a non-empty response
 * @function
 * @memberof module:validation
 */
@@ -17,6 +17,15 @@ exports.hasValue = function(obj) {
     console.log('Please make a choice. Literally, anything would be better than just hitting \'enter\' before typing a single thing.'.red);
     return false;
   }
+};
+
+/**
+* Placeholder function that just returns true instead of running any sort of validation on input data
+* @function
+* @memberof module:validation
+*/
+exports.noValidation = function(obj) {
+  return true;
 };
 
 /**
