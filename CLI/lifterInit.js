@@ -71,14 +71,14 @@ var exec_b2d_Up = function() {
       exportCmds = cmds;
     }
 
-    // set environment variables if necessary, 
+    // set environment variables if necessary,
     // or check if dockerhost is IP correct
     if (setEnvs) {
       setEnvironmentVars(exportCmds);
     } else {
       checkHostsFileForDockerhost();
     }
-    
+
   });
 };
 
@@ -96,7 +96,7 @@ var setEnvironmentVars = function(exportCmds) {
 var checkHostsFileForDockerhost = function() {
   var hosts = fs.readFileSync('/etc/hosts');
   var hostsWritten = /dockerhost/.test(hosts);
-  
+
   exec('boot2docker ip', function(err, stdout, stderr) {
     if (err) console.log(stderr);
     // grab ip out of stdout
@@ -105,8 +105,7 @@ var checkHostsFileForDockerhost = function() {
     // change line if ip not in hosts file
 
     createShellScript();
-    builder.buildDockerFile();
-    
+    builder.buildDockerfile();
 
     if (hostsWritten) {
       console.log('dockerhost found in /etc/hosts');
@@ -129,7 +128,7 @@ var checkHostsFileForDockerhost = function() {
     // console.log(exitInstructions);
     createLocalContainer();
   });
-    
+
 }
 
 var getSettings = function() {
@@ -165,14 +164,14 @@ var createLocalContainer = function() {
   var imageName = settings.username + '/' + settings.repoName;
   var dbImageName = imageName + '_db';
 
-  var buildCmd = 'docker build -t ' 
+  var buildCmd = 'docker build -t '
   + imageName + ' .';
-  var mongoRunCmd = 'docker run --restart=always --name ' 
+  var mongoRunCmd = 'docker run --restart=always --name '
   + dbImageName + ' mongo:latest'
-  var appRunCmd = 'docker run --restart=always -p ' 
+  var appRunCmd = 'docker run --restart=always -p '
   + settings.portPrivate + ':'
-  + settings.portPublic + ' -v ' 
-  + settings.launchPath 
+  + settings.portPublic + ' -v '
+  + settings.launchPath
   + ':/src:ro sh /src/app.sh';
 
   console.log('Building application image...');

@@ -20,6 +20,50 @@ exports.hasValue = function(obj) {
 };
 
 /**
+* Function checks whether input is a valid Docker hub repo name
+* Rule #1: 3 - 30 characters.
+* Rule #2: Only lowercase letters, digits and _ - .
+* @function
+* @memberof module:validation
+*/
+exports.isValidRepoName = function(obj) {
+
+  if(typeof obj.value !=='string'){
+    console.log('Input is invalid because it is not a string');
+    return false;
+  }
+
+  if(!isRepoValidLength(obj.value)){
+    console.log('Input must be between 3- 30 characters');
+    return false;
+  }
+
+  if(!isRepoValidCharacters(obj.value)){
+    console.log('Input must be lowercase, number, or "_" "-" "." ');
+    return false;
+  }
+  return true;
+};
+
+var isRepoValidLength = function(string){
+  if(string.length < 3 || string.length > 30){
+    return false;
+  } else {
+    return true;
+  }
+};
+
+// NOTE: Hyphen is still throwing a false for some reason
+var isRepoValidCharacters = function(string){
+  // Regex tests for input must be lowercase, number, or "_" "-" "."
+  var regex = /^[a-z0-9_\-\\.]+$/;
+  if ( regex.test(string) ){
+    return true;
+  } else {
+    return false;
+  }
+}
+/**
 * Function that authenticates input username and password against Dockerhub API
 * @function
 * @memberof module:validation

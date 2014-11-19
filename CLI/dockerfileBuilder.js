@@ -6,10 +6,10 @@ var helpers = require('./helpers.js');
 
 /**
 * Array that constructs basic template to build Dockerfile
-* Each subarray of dockerFileContents will render as its own line in Dockerfile - THIS SEEMS HACKY
+* Each subarray of dockerfileContents will render as its own line in Dockerfile - THIS SEEMS HACKY
 * @array
 */
-var dockerFileContents = [
+var dockerfileContents = [
 
 ['#','DOCKER-VERSION 0.3.4'],
 ['FROM'],
@@ -27,20 +27,20 @@ var dockerFileContents = [
 * @function
 * @memberof module:validation
 * @param {string} filename Filename of YML file that will be loaded and parsed
-* @param {array} dockerFile Array of sub-arrays that will render as a Dockerfile
+* @param {array} dockerfile Array of sub-arrays that will render as a Dockerfile
 */
-var addToDockerfile = function(dockerFile) {
+var addToDockerfile = function(dockerfile) {
   var settings = helpers.readYAML();
-  for(var i=0;i<dockerFile.length;i++) {
+  for(var i=0;i<dockerfile.length;i++) {
 
-    if(dockerFile[i][0] === 'FROM') {
-      dockerFile[i].push(settings.linuxOS);
+    if(dockerfile[i][0] === 'FROM') {
+      dockerfile[i].push(settings.linuxOS);
     }
-    if(dockerFile[i][0] === 'MAINTAINER') {
-      dockerFile[i].push(settings.username);
+    if(dockerfile[i][0] === 'MAINTAINER') {
+      dockerfile[i].push(settings.username);
     }
-    if(dockerFile[i][0] === 'EXPOSE') {
-      dockerFile[i].push(settings.portPublic);
+    if(dockerfile[i][0] === 'EXPOSE') {
+      dockerfile[i].push(settings.portPublic);
     }
   }
 };
@@ -50,13 +50,13 @@ var addToDockerfile = function(dockerFile) {
 * @function
 * @memberof module:validation
 * @param {string} dir Filepath of directory to check
-* @param {array} dockerFile Array of sub-arrays that will render as a Dockerfile
+* @param {array} dockerfile Array of sub-arrays that will render as a Dockerfile
 */
-var readDirectory = function(dir,dockerFile) {
+var readDirectory = function(dir,dockerfile) {
   var files = fs.readdirSync(dir);
 
-  for(var j=0;j<dockerFile.length;j++) {
-    if(dockerFile[j].indexOf('EXPOSE') > -1) {
+  for(var j=0;j<dockerfile.length;j++) {
+    if(dockerfile[j].indexOf('EXPOSE') > -1) {
       var splicePoint = j;
     }
   }
@@ -66,9 +66,9 @@ var readDirectory = function(dir,dockerFile) {
     if(dependencies.files.indexOf(file) > -1) {
       var installCommand = dependencies.installCommands[file];
       if(splicePoint) {
-        dockerFile.splice(splicePoint,0,installCommand);
+        dockerfile.splice(splicePoint,0,installCommand);
       } else {
-        dockerFile.push(installCommand);
+        dockerfile.push(installCommand);
       }
     }
   }
@@ -80,11 +80,11 @@ var readDirectory = function(dir,dockerFile) {
 * @function
 * @param {function} callback Callback function that is invoked once Dockerfile is ready
 */
-var buildDockerFile = function() {
-  addToDockerfile(dockerFileContents);
-  readDirectory('./',dockerFileContents);
-  prepDockerFile(dockerFileContents);
-  fs.writeFileSync('./Dockerfile',dockerFileContents.join('\n'));
+var buildDockerfile = function() {
+  addToDockerfile(dockerfileContents);
+  readDirectory('./',dockerfileContents);
+  prepDockerfile(dockerfileContents);
+  fs.writeFileSync('./Dockerfile',dockerfileContents.join('\n'));
   console.log('Dockerfile exists now.  High five!');
 };
 
@@ -92,18 +92,18 @@ var buildDockerFile = function() {
 * Function that formats each line of Dockerfile
 * @function
 * @memberof module:validation
-* @param {array} dockerFile Array of sub-arrays that will render as a Dockerfile
+* @param {array} dockerfile Array of sub-arrays that will render as a Dockerfile
 */
-var prepDockerFile = function(dockerFile) {
-  for(var i=0;i<dockerFile.length;i++) {
+var prepDockerfile = function(dockerfile) {
+  for(var i=0;i<dockerfile.length;i++) {
     var lineStart = dockerfile[i][0];
     if(lineStart !== '#') {
       var cmdLength = lineStart.length;
       dockerfile[i][0] = lineStart + spaces(cmdLength);
     }
-    dockerFile[i] = dockerFile[i].join('');
+    dockerfile[i] = dockerfile[i].join('');
   }
-  return dockerFile.join('\n');
+  return dockerfile.join('\n');
 };
 
 /**
@@ -119,6 +119,5 @@ var spaces = function(num) {
 }
 
 module.exports = {
-  buildDockerFile : buildDockerFile
+  buildDockerfile : buildDockerfile
 }
-

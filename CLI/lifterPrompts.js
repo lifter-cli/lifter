@@ -36,7 +36,7 @@ exports.promptList = {
   repoName: {
     promptText: 'Name your repo',
     promptClass: 'repoName',
-    validation: validation.hasValue,
+    validation: validation.isValidRepoName,
     nextClass: function() {return 'launchCommand';}
   },
 
