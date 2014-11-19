@@ -3,6 +3,7 @@ var util = require('util');
 var yaml = require('../node_modules/js-yaml');
 var lifterPrompts = require('./lifterPrompts.js');
 var readline = require('readline');
+var colors = require('colors');
 
 /**
 * Function that returns a string of the question and options (if any) for each prompt by the command line tool
@@ -12,7 +13,6 @@ var readline = require('readline');
 */
 var makeDescription = function(text, options) {
   util.puts(text);
-
   if(options !== undefined) {
     for(var i=0;i<options.length;i++) {
       util.puts((i+1) + '. ' + options[i]);
@@ -52,14 +52,10 @@ var containerProperties = {
 * @function
 * @param {object} obj Object initializing input and output
 */
-var rl = readline.createInterface({
+var readCommandLine = readline.createInterface({
   input: process.stdin,
   output: process.stdout
 });
-
-var checkForExistingYML = function() {
-
-};
 
 /**
 * Function that prompts questions on command line, writes answers to containerProperties objects, and builds YML file when complete
@@ -68,11 +64,9 @@ var checkForExistingYML = function() {
 * @param {object} obj Object containing all attributes of prompted question
 */
 exports.picker = function(obj) {
-
 // uses util.puts to render question and options for each question
   makeDescription(obj.promptText, obj.promptOptions);
-
-  rl.question('', function(text) {
+  readCommandLine.question('', function(text) {
 
     // Assign value as either entered text or the the text of the option selected
     var value = (!obj.promptOptions) ? text : obj.promptOptions[parseInt(text) - 1];
@@ -81,7 +75,6 @@ exports.picker = function(obj) {
         containerProperties[obj.promptClass] = value;
 
         // nextEvent handles decision trees
-//         var nextEvent = typeof obj.nextClass === 'function' ? obj.nextClass(value) : obj.nextClass;
         var nextEvent = obj.nextClass(value);
 
         if(nextEvent !== null) {
@@ -90,7 +83,7 @@ exports.picker = function(obj) {
             console.log('Good work.  Run lifter init to build a container.');
             console.log(containerProperties);
 
-            rl.close();
+            readCommandLine.close();
 
             // make YML file
             var ymlDump = yaml.safeDump(containerProperties);

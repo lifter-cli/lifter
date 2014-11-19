@@ -68,9 +68,10 @@ exports.promptList = {
     nextClass: function() {return 'linuxOS';}
   },
 
+  // Future Linux OS options may include 'Ubuntu', 'Fedora', 'Red Hat', 'Linux'
   linuxOS: {
     promptText: 'Pick an OS',
-    promptOptions: ['centos:6', 'Ubuntu', 'Fedora', 'Red Hat', 'Linux'],
+    promptOptions: ['centos:6'],
     promptClass: 'linuxOS',
     validation: validation.inOptions,
     nextClass: function() {return 'db';}
@@ -78,26 +79,27 @@ exports.promptList = {
 
   db: {
     promptText: 'Pick a database',
-    promptOptions: ['mongoDB', 'Parse', 'mySQL', 'Redis', 'No Database'],
+    promptOptions: ['mongoDB', 'mySQL', 'redis', 'No Database'],
     promptClass: 'db',
     validation: validation.inOptions,
-    nextClass: function() {return 'scaffolding';}
+    nextClass: function() {return null;}
   },
 
-  scaffolding: {
-    promptText: 'Do you want scaffolding?',
-    promptOptions: ['Yes!', 'Nope.'],
-    promptClass: 'scaffolding',
-    validation: validation.inOptions,
-    nextClass: function(answer) {
-      console.log('In nextClass key of scaffolding');
-      if(answer === 'Yes!') {
-        return 'appServer';
-      } else {
-        return null;
-      }
-    }
-  },
+  // Temporarily disabling scaffolding (feature has not been developed yet)
+  // scaffolding: {
+  //   promptText: 'Do you want scaffolding?',
+  //   promptOptions: ['Yes!', 'Nope.'],
+  //   promptClass: 'scaffolding',
+  //   validation: validation.inOptions,
+  //   nextClass: function(answer) {
+  //     console.log('In nextClass key of scaffolding');
+  //     if(answer === 'Yes!') {
+  //       return 'appServer';
+  //     } else {
+  //       return null;
+  //     }
+  //   }
+  // },
 
   appServer: {
     promptText: 'Pick a back end',
