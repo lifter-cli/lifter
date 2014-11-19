@@ -56,15 +56,21 @@ var getVMInfo = function(){
       console.log("ERR: ", err);
     }
 
-    var toAppend = "\nvmName: " + result.vmName + "\nvmUsername: " + result.vmUsername;
-
-    fs.appendFile('lifter.yml', toAppend,function(err){
-      if(err) {
-        console.log(err);
-      } else {
-        console.log("Writing deploy script...");
-        updateDeployScript();
+    fs.readFile('lifter.yml', 'utf8', function (err,data) {
+      if (err) {
+        return console.log(err);
       }
+
+      var replace = data.replace(/vmNameHere/g, result.vmName).replace(/vmUsernameHere/g, result.vmUsername);
+
+      fs.writeFile('lifter.yml', replace, 'utf8', function (err) {
+         if (err) {
+          return console.log(err);
+         } else {
+           console.log("Writing deploy script...");
+           updateDeployScript();
+         }
+      });
     });
   });
 }
@@ -93,15 +99,7 @@ var setupAzureVM = function() {
 
   prompt.get(vmSetupQs.vmSetup, function(err,result){
     credentials = [result.vm, result.username, result.password];
-    var toAppend = "\nvmName: " + result.vm + "\nvmUsername: " + result.username;
-    fs.appendFile('lifter.yml', toAppend,function(err){
-      if(err) {
-        console.log(err);
-      } else {
-        console.log("Creating azure vm...");
-        createAzureVM(credentials);
-      }
-    });
+    createAzureVM(credentials);
   });
 }
 
@@ -121,8 +119,23 @@ var createAzureVM = function(creds) {
       }
     } else {
       console.log('Azure VM "'+ creds[0] + '" created');
-      console.log("Writing deploy script...");
-      updateDeployScript();
+
+      fs.readFile('lifter.yml', 'utf8', function (err,data) {
+        if (err) {
+          return console.log(err);
+        }
+
+        var replace = data.replace(/vmNameHere/g, creds[0]).replace(/vmUsernameHere/g, creds[1]);
+
+        fs.writeFile('lifter.yml', replace, 'utf8', function (err) {
+           if (err) {
+            return console.log(err);
+           } else {
+             console.log("Writing deploy script...");
+             updateDeployScript();
+           }
+        });
+      });
     }
   });
 }
