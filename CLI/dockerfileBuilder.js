@@ -96,13 +96,27 @@ var buildDockerFile = function() {
 */
 var prepDockerFile = function(dockerFile) {
   for(var i=0;i<dockerFile.length;i++) {
-    if(dockerFile[i][0] !== '#') {
-      dockerFile[i][0]= helpers.addSpace(dockerFile[i][0],Math.max(2,8 - dockerFile[i][0].length));
+    var lineStart = dockerfile[i][0];
+    if(lineStart !== '#') {
+      var cmdLength = lineStart.length;
+      dockerfile[i][0] = lineStart + spaces(cmdLength);
     }
     dockerFile[i] = dockerFile[i].join('');
   }
   return dockerFile.join('\n');
 };
+
+/**
+* Function returns number of spaces required after command in Dockerfile
+* @function
+* @memberof module:validation
+* @param {number} num Length of command converted to num of spaces
+*/
+var spaces = function(num) {
+  num = 8 - num;
+  num = num < 2 ? 2 : num;
+  return Array(num).join(" ");
+}
 
 module.exports = {
   buildDockerFile : buildDockerFile
