@@ -44,7 +44,9 @@ var validateResponse = function(obj,value) {
 * @object
 */
 var containerProperties = {
-  currentWorkingDir: process.cwd()
+  currentWorkingDir: process.cwd(),
+  vmName: "vmNameHere",
+  vmUsername: "vmUsernameHere"
 };
 
 /**
