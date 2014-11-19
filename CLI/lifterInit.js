@@ -37,12 +37,11 @@ var exec_b2d_init = function() {
 var boot_b2d = function() {
   exec('boot2docker status', function (err, stdout, stderr) {
     if (err) console.log(err);
-    if (/poweroff/.test(stdout)) {
-      exec_b2d_Up();
-    } else { // if (/running/.test(stdout)) {
+    if (/running/.test(stdout)) {
       console.log('boot2docker is already running');
       checkHostsFileForDockerhost();
-      // TODO: what goes here?
+    } else { //if (/poweroff/.test(stdout)) {
+      exec_b2d_Up();
     }
   });
 }
