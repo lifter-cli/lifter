@@ -18,7 +18,6 @@ var start_b2d = function() {
         exec_b2d_init();
       }
     } else {
-      console.log('boot2docker VM exists, checking to see if running...');
       boot_b2d();
     }
   });
@@ -41,6 +40,7 @@ var boot_b2d = function() {
       console.log('boot2docker is already running');
       checkHostsFileForDockerhost();
     } else { //if (/poweroff/.test(stdout)) {
+      console.log('boot2docker not running, powering on...');
       exec_b2d_Up();
     }
   });
@@ -51,44 +51,36 @@ var exec_b2d_Up = function() {
   var exportCmds = [];
   exec('boot2docker up', function(err, stdout, stderr) {
     if (err) console.log("exec err: ", err);
-    console.log('boot2docker VM powered on')
-    // check for boot2docker env vars
-    if (!process.env.DOCKER_HOST ||
-        !process.env.DOCKER_CERT_PATH ||
-        !process.env.DOCKER_TLS_VERIFY) {
-      setEnvs = true;
-      // parse out EXPORT commands
-      console.log("environment variables not set... parsing commands and running")
-      var cmds = stdout;
-      cmds = cmds.split("To connect the Docker client to the Docker daemon, please set:")[1];
-      cmds = cmds.replace( /\n/g, "#").split("#");
-      cmds = cmds.filter(function(item){
-        return item !== '';
-      });
-      cmds = cmds.map(function(value) {
-        return value.trim();
-      });
-      exportCmds = cmds;
-    }
+    console.log('boot2docker VM powered on');
 
-    // set environment variables if necessary,
-    // or check if dockerhost is IP correct
-    if (setEnvs) {
-      setEnvironmentVars(exportCmds);
-    } else {
-      checkHostsFileForDockerhost();
-    }
-
+    setEnvironmentVars(stdout);
   });
 };
 
-var setEnvironmentVars = function(exportCmds) {
+// take stdout from vm booting and parse out export commands
+var parseExportCommands = function(input) {
+  input = input.split("To connect the Docker client to the Docker daemon, please set:")[1];
+  input = input.replace( /\n/g, "#").split("#");
+  input = input.filter(function(item){
+    return item !== '';
+  });
+  input = input.map(function(value) {
+    return value.trim();
+  });
+  return input;
+}
+
+var setEnvironmentVars = function(input) {
+  exportCmds = parseExportCommands(input);
+
+  console.log('Setting environment variables');
   exportCmds.forEach(function(cmd) {
     exec(cmd, function(err,stdout,stderr) {
-      console.log("Executing:", cmd);
-      // if (err) console.log("exec err: ", stderr);
+      if (err) console.log("exec err: ", stderr);
     });
   });
+
+  // proceed to next step
   checkHostsFileForDockerhost();
 }
 
@@ -113,7 +105,7 @@ var checkHostsFileForDockerhost = function() {
         console.log('dockerhost IP incorrect... removing');
         // removeIPinHostsFile(ip);
         exitInstructions.push(
-          'sed \'/dockerhost/d\' /etc/hosts | sudo tee /etc/hosts');
+          'echo sed \'/dockerhost/d\' /etc/hosts | sudo tee /etc/hosts');
         exitInstructions.push(
           'echo ' + ip + ' dockerhost | sudo tee -a /etc/hosts');
       } else {
@@ -138,13 +130,17 @@ var getSettings = function() {
 
 // create shell script to launch app
 var createShellScript = function() {
-  if(!fs.existsSync(configFile)) {
-    console.log('lifter.yml doesn\'t exist. Please run lifter config');
-    process.exit(1);
-  }
+  // if(!fs.existsSync(configFile)) {
+  //   console.log('lifter.yml doesn\'t exist. Please run lifter config');
+  //   process.exit(1);
+  // }
 
   fs.readFile(configFile, function (err, data) {
-    if (err) throw err;
+    if (err) {
+      console.log("hi");
+      process.exit();
+      // throw err;
+    }
     settings = yaml.safeLoad(data);
 
     var shellFileContent = "#!/bin/sh\n";
