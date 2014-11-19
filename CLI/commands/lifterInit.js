@@ -1,8 +1,8 @@
 var fs = require('fs');
 var yaml = require('js-yaml');
 var exec = require('child_process').exec;
-var builder = require('./dockerfileBuilder.js');
-var configFile = "lifter.yml";
+var builder = require('../helpers/dockerfileBuilder.js');
+var configFile = "./.lifter/lifter.yml";
 
 // execsync may or may not be useful at some point
 var execSync = require('exec-sync');
@@ -151,7 +151,7 @@ var createShellScript = function() {
     shellFileContent += "cd " + settings.launchPath + "\n";
     shellFileContent += settings.launchCommand;
 
-    fs.writeFile("app.sh", shellFileContent, function(err) {
+    fs.writeFile("./.lifter/app.sh", shellFileContent, function(err) {
       if (err) console.log(err);
       console.log("Launch script created: app.sh");
     });

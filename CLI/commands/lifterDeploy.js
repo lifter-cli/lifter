@@ -1,12 +1,12 @@
 var fs = require('fs');
 var exec = require('child_process').exec;
-var prompt = require('../node_modules/prompt');
-var vmSetupQs = require('./vmSetup.js');
-var yaml = require('../node_modules/js-yaml');
-var helper = require('./helpers.js');
+var prompt = require('../../node_modules/prompt');
+var vmSetupQs = require('../prompts/vmSetup.js');
+var yaml = require('../../node_modules/js-yaml');
+var helper = require('../helpers/helpers.js');
 
 //check if user has azure-cli installed
-exports.checkAzure = function(){
+var checkAzure = function(){
   exec('npm list -g --depth=0 | grep azure-cli', function(err, stdout, stderr){
     if(/azure-cli/.test(stdout)) {
       console.log("Azure-CLI found, opening Azure Management Portal in default browser...".green);
@@ -56,14 +56,14 @@ var getVMInfo = function(){
       console.log("ERR: ", err);
     }
 
-    fs.readFile('lifter.yml', 'utf8', function (err,data) {
+    fs.readFile('./.lifter/lifter.yml', 'utf8', function (err,data) {
       if (err) {
         return console.log(err);
       }
 
       var replace = data.replace(/vmNameHere/g, result.vmName).replace(/vmUsernameHere/g, result.vmUsername);
 
-      fs.writeFile('lifter.yml', replace, 'utf8', function (err) {
+      fs.writeFile('./.lifter/lifter.yml', replace, 'utf8', function (err) {
          if (err) {
           return console.log(err);
          } else {
@@ -92,7 +92,7 @@ var loginAzure = function() {
 
 //asks user to create vm credentials and grabs ubuntu image
 var setupAzureVM = function() {
-  
+
   prompt.message = '';
   prompt.delimiter = '';
   prompt.start();
@@ -120,14 +120,14 @@ var createAzureVM = function(creds) {
     } else {
       console.log('Azure VM "'+ creds[0] + '" created');
 
-      fs.readFile('lifter.yml', 'utf8', function (err,data) {
+      fs.readFile('./.lifter/lifter.yml', 'utf8', function (err,data) {
         if (err) {
           return console.log(err);
         }
 
         var replace = data.replace(/vmNameHere/g, creds[0]).replace(/vmUsernameHere/g, creds[1]);
 
-        fs.writeFile('lifter.yml', replace, 'utf8', function (err) {
+        fs.writeFile('./.lifter/lifter.yml', replace, 'utf8', function (err) {
            if (err) {
             return console.log(err);
            } else {
@@ -146,14 +146,14 @@ var updateDeployScript = function() {
   var yamlContent = helper.readYAML();
   var image = yamlContent.username + "/" + yamlContent.repoName + ":latest";
 
-  fs.readFile('deploy.sh', 'utf8', function (err,data) {
+  fs.readFile('./.lifter/deploy.sh', 'utf8', function (err,data) {
     if (err) {
       return console.log(err);
     }
 
     var replace = data.replace(/dockerRepoName/g, image);
 
-    fs.writeFile('deploy.sh', replace, 'utf8', function (err) {
+    fs.writeFile('./.lifter/deploy.sh', replace, 'utf8', function (err) {
        if (err) {
         return console.log(err);
        } else {
@@ -169,11 +169,15 @@ var sendDeployScript = function(){
 
   var yamlContent = helper.readYAML();
   var sshPath = "ssh " +yamlContent.vmUsername+ "@" +yamlContent.vmName+ ".cloudapp.net";
-  
+
   console.log("\nPlease run the following commands:\n\n" +
-              "1. Send the deploy script to your vm: " +sshPath+ " 'cat > deploy.sh; scp; cat /home/" +yamlContent.vmUsername+ "' < deploy.sh\n"+
+              "1. Send the deploy script to your vm: " +sshPath+ " 'cat > ./.lifter/deploy.sh; scp; cat /home/" +yamlContent.vmUsername+ "' < deploy.sh\n"+
               "You will be prompted for the vm's password after running this command. If this is your first time ssh-ing into the vm,\n"+
               "you will need to respond 'yes' when asked about authenticating the host\n\n"+
               "2. ssh into your vm: "+sshPath+"\n\n"+
               "3. Run the script inside your vm: sudo sh deploy.sh\n");
+}
+
+module.exports = {
+  checkAzure: checkAzure
 }

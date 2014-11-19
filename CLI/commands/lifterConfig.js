@@ -1,7 +1,7 @@
 var fs = require('fs');
 var util = require('util');
-var yaml = require('../node_modules/js-yaml');
-var lifterPrompts = require('./lifterPrompts.js');
+var yaml = require('../../node_modules/js-yaml');
+var lifterPrompts = require('../prompts/lifterPrompts.js');
 var readline = require('readline');
 var colors = require('colors');
 
@@ -65,7 +65,7 @@ var readCommandLine = readline.createInterface({
 * @function
 * @param {object} obj Object containing all attributes of prompted question
 */
-exports.picker = function(obj) {
+var askConfigQuestion = function(obj) {
 // uses util.puts to render question and options for each question
   makeDescription(obj.promptText, obj.promptOptions);
   readCommandLine.question('', function(text) {
@@ -80,7 +80,7 @@ exports.picker = function(obj) {
         var nextEvent = obj.nextClass(value);
 
         if(nextEvent !== null) {
-          exports.picker(lifterPrompts.promptList[nextEvent]);
+          askConfigQuestion(lifterPrompts.promptList[nextEvent]);
         } else {
             console.log('Good work.  Run lifter init to build a container.');
             console.log(containerProperties);
@@ -90,13 +90,17 @@ exports.picker = function(obj) {
             // make YML file
             var ymlDump = yaml.safeDump(containerProperties);
 
-            fs.writeFile('lifter.yml',ymlDump,function(err) {
+            fs.writeFile('./.lifter/lifter.yml',ymlDump,function(err) {
               if(err) {console.log(err);}
             });
         }
       } else {
           // Error messages are in the appropriate validation functions
-          exports.picker(obj);
+          askConfigQuestion(obj);
       }
   });
 };
+
+module.exports = {
+  askConfigQuestion: askConfigQuestion
+}

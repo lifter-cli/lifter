@@ -1,4 +1,4 @@
-exports.vmSetup = {
+var vmSetup = {
     properties: {
       vm: {
         description: "Please select a name for your azure vm".white,
@@ -18,7 +18,7 @@ exports.vmSetup = {
     }
   };
 
-exports.existingOrNew = {
+var existingOrNew = {
   properties: {
     select: {
       description: "Are you deploying to an existing azure vm or creating a new one? (existing/new)".white,
@@ -29,15 +29,22 @@ exports.existingOrNew = {
   }
 }
 
-exports.vmInfo = {
+var vmInfo = {
   properties: {
     vmName: {
       description: "What is your vm name?".white,
       required: true
-    }, 
+    },
     vmUsername: {
       description: "What is your vm username?".white,
       required: true
     }
   }
+}
+
+module.exports = {
+  vmSetup : vmSetup,
+  existingOrNew : existingOrNew,
+  vmInfo : vmInfo
+
 }

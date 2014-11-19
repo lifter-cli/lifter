@@ -1,6 +1,3 @@
-// var request = require('request');
-// var container = require('./containerProperties.js');
-
 /**
 * @module validation
 */
@@ -10,7 +7,7 @@
 * @function
 * @memberof module:validation
 */
-exports.hasValue = function(obj) {
+var hasValue = function(obj) {
   if(typeof obj.value === 'string' && obj.value.length > 0) {
     return true;
   } else {
@@ -24,7 +21,7 @@ exports.hasValue = function(obj) {
 * @function
 * @memberof module:validation
 */
-exports.noValidation = function(obj) {
+var noValidation = function(obj) {
   return true;
 };
 
@@ -35,7 +32,7 @@ exports.noValidation = function(obj) {
 * @function
 * @memberof module:validation
 */
-exports.isValidRepoName = function(obj) {
+var isValidRepoName = function(obj) {
 
   if(typeof obj.value !=='string'){
     console.log('Input is invalid because it is not a string');
@@ -78,7 +75,7 @@ var isRepoValidCharacters = function(string){
 * @memberof module:validation
 * @param {object} obj Object of parameters passed in with username and password
 */
-exports.authenticateUser = function(obj) {
+var authenticateUser = function(obj) {
 
   var options = {
   url: 'https://index.docker.io/v1/users',
@@ -111,7 +108,7 @@ exports.authenticateUser = function(obj) {
 * @memberof module:validation
 * @param {object} obj Object with portPublic or portPrivate parameter
 */
-exports.inPortRange = function(obj) {
+var inPortRange = function(obj) {
   if(parseInt(obj.value) >= 0 && parseInt(obj.value) <= 65535 && obj.value.length>= 1) {
     return true;
   } else {
@@ -126,7 +123,7 @@ exports.inPortRange = function(obj) {
 * @memberof module:validation
 * @param {object} obj Object with input value and array of options
 */
-exports.inOptions = function(obj) {
+var inOptions = function(obj) {
   if(obj.options.indexOf(obj.value) >-1) {
     return true;
   } else {
@@ -134,3 +131,13 @@ exports.inOptions = function(obj) {
     return false;
   }
 };
+
+module.exports = {
+  hasValue: hasValue,
+  noValidation: noValidation,
+  isValidRepoName: isValidRepoName,
+  isRepoValidLength: isRepoValidLength,
+  isRepoValidCharacters: isRepoValidCharacters,
+  inPortRange: inPortRange,
+  inOptions: inOptions
+}

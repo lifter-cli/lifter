@@ -1,6 +1,6 @@
 var fs = require('fs');
 var path = require('path');
-var yaml = require('../node_modules/js-yaml');
+var yaml = require('../../node_modules/js-yaml');
 var dependencies = require('./globalDependencyList.js');
 var helpers = require('./helpers.js');
 
@@ -10,16 +10,15 @@ var helpers = require('./helpers.js');
 * @array
 */
 var dockerfileContents = [
-
-['#','DOCKER-VERSION 0.3.4'],
-['FROM'],
-['MAINTAINER'],
-['#','Enable EPEL for Node.js'],
-['RUN', 'rpm -Uvh http://download.fedoraproject.org/pub/epel/6/i386/epel-release-6-8.noarch.rpm'],
-['#','Install Node.js, npm, and git, etc.'],
-['RUN', 'yum install -y npm'],
-['RUN', 'yum install -y git'],
-['EXPOSE'],
+  ['#','DOCKER-VERSION 0.3.4'],
+  ['FROM'],
+  ['MAINTAINER'],
+  ['#','Enable EPEL for Node.js'],
+  ['RUN', 'rpm -Uvh http://download.fedoraproject.org/pub/epel/6/i386/epel-release-6-8.noarch.rpm'],
+  ['#','Install Node.js, npm, and git, etc.'],
+  ['RUN', 'yum install -y npm'],
+  ['RUN', 'yum install -y git'],
+  ['EXPOSE'],
 ];
 
 /**

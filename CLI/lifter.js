@@ -1,11 +1,11 @@
 #! /usr/local/bin/node
 
 var program = require('../node_modules/commander');
-var lifterConfig = require('./lifterConfig.js');
-var lifterPrompts = require('./lifterPrompts.js');
-var lifterInit = require('./lifterInit.js')
-var lifterPush = require('./lifterPush.js');
-var lifterDeploy = require('./lifterDeploy.js');
+var lifterConfig = require('./commands/lifterConfig.js');
+var lifterPrompts = require('./prompts/lifterPrompts.js');
+var lifterInit = require('./commands/lifterInit.js')
+var lifterPush = require('./commands/lifterPush.js');
+var lifterDeploy = require('./commands/lifterDeploy.js');
 
 // Doing this to make the help screen look correct
 program._name = 'lifter';
@@ -26,7 +26,7 @@ program
   .command('config')
   .description('Configure your container')
   .action(function() {
-    lifterConfig.picker(lifterPrompts.promptList.username);
+    lifterConfig.askConfigQuestion(lifterPrompts.promptList.username);
   });
 
 /**

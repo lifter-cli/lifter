@@ -1,10 +1,10 @@
 var fs = require('fs');
 var exec = require('child_process').exec;
-var yaml = require('../node_modules/js-yaml');
-var helper = require('./helpers.js');
+var yaml = require('../../node_modules/js-yaml');
+var helper = require('../helpers/helpers.js');
 
 // copies the mounted volume (from /src) into a new directory(/prod)
-exports.copyMounted = function() {
+var copyMounted = function() {
   var yamlContent = helper.readYAML();
   // src is where the mounted files exist
   // app is where the copied files will be transeffered to
@@ -45,3 +45,9 @@ var pushImage = function() {
     }
   });
 };
+
+module.exports = {
+  copyMounted: copyMounted
+}
+
+
