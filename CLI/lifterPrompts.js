@@ -74,6 +74,13 @@ exports.promptList = {
     promptOptions: ['centos:6'],
     promptClass: 'linuxOS',
     validation: validation.inOptions,
+    nextClass: function() {return 'envVar';}
+  },
+
+  envVar: {
+    promptText: 'Enter any environmental variables your app needs to run.',
+    promptClass: 'envVar',
+    validation: validation.hasValue,
     nextClass: function() {return 'db';}
   },
 
@@ -82,7 +89,7 @@ exports.promptList = {
     promptOptions: ['mongoDB', 'mySQL', 'redis', 'No Database'],
     promptClass: 'db',
     validation: validation.inOptions,
-    nextClass: function() {return null;}
+    nextClass: function() {return 'appServer';}
   },
 
   // Temporarily disabling scaffolding (feature has not been developed yet)
@@ -106,22 +113,16 @@ exports.promptList = {
     promptOptions: ['Node with Express', 'Node without Express', 'Apache'],
     promptClass: 'appServer',
     validation: validation.inOptions,
-    nextClass: function() {return 'envVar';}
-  },
-
-  envVar: {
-    promptText: 'Enter any environmental variables your app needs to run.',
-    promptClass: 'envVar',
-    validation: validation.hasValue,
     nextClass: function() {return 'mvc';}
   },
+
 
   mvc: {
     promptText: 'Pick an MVC',
     promptOptions: ['Angular', 'Backbone', 'No MVC'],
     promptClass: 'mvc',
     validation: validation.inOptions,
-    nextClass: function() {return 'null';}
+    nextClass: function() {return null;}
   },
 
 };
