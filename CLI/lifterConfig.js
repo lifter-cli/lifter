@@ -12,10 +12,10 @@ var colors = require('colors');
 * @param {array} options Array of selections availale to the user for a given question
 */
 var makeDescription = function(text, options) {
-  util.puts(text);
+  util.puts('> ' + text.green);
   if(options !== undefined) {
     for(var i=0;i<options.length;i++) {
-      util.puts((i+1) + '. ' + options[i]);
+      util.puts((i+1).toString().underline + '. '.underline + options[i].underline);
     }
   }
 };
@@ -44,7 +44,9 @@ var validateResponse = function(obj,value) {
 * @object
 */
 var containerProperties = {
-  currentWorkingDir: process.cwd()
+  currentWorkingDir: process.cwd(),
+  vmName: "vmNameHere",
+  vmUsername: "vmUsernameHere"
 };
 
 /**
