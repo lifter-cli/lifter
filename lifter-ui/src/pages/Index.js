@@ -21,36 +21,50 @@ var config = {
 };
 
 var getContainers = function(context){
-  var self = context;
   $.ajax({
     url: config.dockerAPI,
     type: 'GET',
     success: function(data){
       console.log(data);
-      self.setState({
+      context.setState({
         containers: data
       });
+    },
+    error: function(err){
+      console.log('error received', err);
     }
   });
 };
 
+var parseContainerNames = function(container){
+  var parsedNames = {};
+  container.Names.forEach(function(name){
 
+    // Handle names that are links
+    // If there are two '/', then it's a link
+    var nameRegex = /\/.*\//;
+    if ( nameRegex.test(name) ) {
+      var relationship = name.split('/');
+      var linkedContainerName = relationship[1];
+      var alias = relationship[2];
+      parsedNames.links = parsedNames.links || [];
+      parsedNames.links.push(
+        'Alias: ' + alias + ' Linked container: ' + linkedContainerName + ' '
+      );
+    } else {
+    // Else handle the actual container name
+      parsedNames.containerName = name;
+    }
+  });
+  return parsedNames;
+};
 
 var ContainerRow = React.createClass({
-  // componentDidMount: function(){
-  //   this.setState({
-  //     name: container.names,
-  //     status: container.status,
-  //     ports: container.ports,
-  //     image: container.image,
-  //     command: container.command
-  //   });
-  // },
-
   render() {
     return (
       <tr>
-        <td> {this.props.names} </td>
+        <td> {this.props.name} </td>
+        <td> {this.props.links} </td>
         <td> {this.props.status} </td>
         <td> {this.props.ports} </td>
         <td> {this.props.image} </td>
@@ -60,9 +74,10 @@ var ContainerRow = React.createClass({
   }
 });
 
+
 var ContainersTable = React.createClass({
 
-  getInitialState: function(){
+  getInitialState() {
     return {
       containers: []
     };
@@ -77,22 +92,31 @@ var ContainersTable = React.createClass({
   },
 
   componentDidMount(){
-    getContainers(this);
+    getContainers(this)
+    setInterval( function(){ getContainers(this) }, 3000);
+  },
+
+  componentWillUnmount(){
+    clearInterval();
   },
 
   render() {
-    var rows = this.state.containers.map(function(value){
+    var rows = this.state.containers.map(function(container){
+      var ports = container.Ports[0].Type + ' ' + container.Ports[0].PublicPort +
+        ' (public) ->' + container.Ports[0].PrivatePort + ' (private)';
+      var nameAndLinks = parseContainerNames(container);
       return (
-        <ContainerRow names='helloname' status={value.status} ports ={value.ports} image={value.image} command={value.command} />
+        <ContainerRow name={nameAndLinks.containerName} links={nameAndLinks.links} status={container.Status} ports = {ports}
+          image={container.Image} command={container.Command} />
       )
     });
     return (
       <div className="container">
         <table className="table">
-        // <caption>{this.state.containers}</caption>
         <thead>
           <tr>
             <th>Name</th>
+            <th>Links</th>
             <th>Status</th>
             <th>Ports</th>
             <th>Image</th>
@@ -106,7 +130,6 @@ var ContainersTable = React.createClass({
       </div>
     );
   }
-
 });
 
 module.exports = ContainersTable;
