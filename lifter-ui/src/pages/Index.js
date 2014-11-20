@@ -10,126 +10,52 @@
 
 var React = require('react');
 var PageActions = require('../actions/PageActions');
-var DefaultLayout = require('../layouts/DefaultLayout');
+var ContainersTable = require('./_ContainersTable');
+var DetailedView = require('./_DetailedView');
 
-/**
- * AJAX request to our API to retrieve container information
- * Note: refactor this to the Store later
- */
-var config = {
-  dockerAPI: 'http://localhost:3123/api/docker/containers'
-};
-
-var getContainers = function(context){
-  $.ajax({
-    url: config.dockerAPI,
-    type: 'GET',
-    success: function(data){
-      console.log(data);
-      context.setState({
-        containers: data
-      });
-    },
-    error: function(err){
-      console.log('error received', err);
-    }
-  });
-};
-
-var parseContainerNames = function(container){
-  var parsedNames = {};
-  container.Names.forEach(function(name){
-
-    // Handle names that are links
-    // If there are two '/', then it's a link
-    var nameRegex = /\/.*\//;
-    if ( nameRegex.test(name) ) {
-      var relationship = name.split('/');
-      var linkedContainerName = relationship[1];
-      var alias = relationship[2];
-      parsedNames.links = parsedNames.links || [];
-      parsedNames.links.push(
-        'Alias: ' + alias + ' Linked container: ' + linkedContainerName + ' '
-      );
-    } else {
-    // Else handle the actual container name
-      parsedNames.containerName = name;
-    }
-  });
-  return parsedNames;
-};
-
-var ContainerRow = React.createClass({
+var Header = React.createClass({
   render() {
     return (
-      <tr>
-        <td> {this.props.name} </td>
-        <td> {this.props.links} </td>
-        <td> {this.props.status} </td>
-        <td> {this.props.ports} </td>
-        <td> {this.props.image} </td>
-        <td> {this.props.command} </td>
-      </tr>
-    );
+      <div>
+        <div className="page-header">
+          <h1>Lifter UI<small>Monitor your containers</small></h1>
+        </div>
+        <ul className="nav nav-tabs">
+          <li role="presentation" className="active"><a href="#">Dashboard</a></li>
+          <li role="presentation"><a href="#">Detailed View</a></li>
+        </ul>
+      </div>
+    )
   }
 });
 
-
-var ContainersTable = React.createClass({
-
+var Display = React.createClass({
   getInitialState() {
     return {
-      containers: []
-    };
-  },
-
-  statics: {
-    layout: DefaultLayout
-  },
-
-  componentWillMount() {
-    PageActions.setTitle('Lifter UI');
-  },
-
-  componentDidMount(){
-    getContainers(this)
-    setInterval( function(){ getContainers(this) }, 3000);
-  },
-
-  componentWillUnmount(){
-    clearInterval();
+      dashboardView: false
+    }
   },
 
   render() {
-    var rows = this.state.containers.map(function(container){
-      var ports = container.Ports[0].Type + ' ' + container.Ports[0].PublicPort +
-        ' (public) ->' + container.Ports[0].PrivatePort + ' (private)';
-      var nameAndLinks = parseContainerNames(container);
-      return (
-        <ContainerRow name={nameAndLinks.containerName} links={nameAndLinks.links} status={container.Status} ports = {ports}
-          image={container.Image} command={container.Command} />
-      )
-    });
+    var currentView
+    if ( this.state.dashboardView ){
+      currentView = <ContainersTable />;
+    } else {
+      currentView = <DetailedView />;
+    }
     return (
       <div className="container">
-        <table className="table">
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Links</th>
-            <th>Status</th>
-            <th>Ports</th>
-            <th>Image</th>
-            <th>Command</th>
-          </tr>
-        </thead>
-        <tbody>
-          {rows}
-        </tbody>
-      </table>
+        <div className="row center">
+          <div className="col-xs-12 col-sm-8 col-md-10">
+            <Header />
+          </div>
+          <div className="col-xs-12 col-sm-8 col-md-10">
+            {currentView}
+          </div>
+        </div>
       </div>
     );
   }
 });
 
-module.exports = ContainersTable;
+module.exports = Display;

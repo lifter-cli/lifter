@@ -129,7 +129,7 @@ gulp.task('pages', function() {
       template: './src/pages/_template.html',
       data: function() { return data; }
     })
-    .on('error', function(err) { console.log(err); render.end(); });
+    .on('error', function(err) { console.log('hello',err); render.end(); });
 
   return gulp.src(src.pages)
     .pipe($.changed(DEST, {extension: '.html'}))
@@ -199,28 +199,6 @@ gulp.task('serve', function(cb) {
 
   runSequence('build', function() {
      nodemon({ script: './server/bin/www' })
-    // browserSync({
-    //   notify: false,
-    //   // Customize the BrowserSync console logging prefix
-    //   logPrefix: 'RSK',
-    //   // Run as an https by uncommenting 'https: true'
-    //   // Note: this uses an unsigned certificate which on first access
-    //   //       will present a certificate warning in the browser.
-    //   // https: true,
-    //   server: {
-    //     baseDir: DEST,
-    //     // Allow web page requests without .html file extension in URLs
-    //     middleware: function(req, res, cb) {
-    //       var uri = url.parse(req.url);
-    //       if (uri.pathname.length > 1 &&
-    //         path.extname(uri.pathname) === '' &&
-    //         fs.existsSync(DEST + uri.pathname + '.html')) {
-    //         req.url = uri.pathname + '.html' + (uri.search || '');
-    //       }
-    //       cb();
-    //     }
-    //   }
-    // });
 
      gulp.watch(src.assets, ['assets']);
      gulp.watch(src.images, ['images']);
