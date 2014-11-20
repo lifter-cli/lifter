@@ -68,7 +68,7 @@ var getVMInfo = function(){
           return console.log(err);
          } else {
            console.log("Writing deploy script...");
-           updateDeployScript();
+           writeDeployScript();
          }
       });
     });
@@ -132,7 +132,7 @@ var createAzureVM = function(creds) {
             return console.log(err);
            } else {
              console.log("Writing deploy script...");
-             updateDeployScript();
+             writeDeployScript();
            }
         });
       });
@@ -140,29 +140,39 @@ var createAzureVM = function(creds) {
   });
 }
 
-//updates deploy.sh file to include the correct docker images
-var updateDeployScript = function() {
+var writeDeployScript = function(){
 
   var yamlContent = helper.readYAML();
-  var image = yamlContent.username + "/" + yamlContent.repoName + ":latest";
+  var imageName = yamlContent.username + "/" + yamlContent.repoName + ":" + "latest";
 
-  fs.readFile('./.lifter/deploy.sh', 'utf8', function (err,data) {
+  var deployScript = 'cat /etc/default/docker.io | sed \'s/0.0.0.0/localhost/g\' | sed \'s/tlsverify/tls/\' | sudo tee /etc/default/docker.io\n' +
+                    
+                    'export DOCKER_OPTS="$(cat /etc/default/docker.io | grep DOCKER_OPTS | sed \'s/DOCKER_OPTS=//\' | sed \'s/\\\"//g\')"\n' +
+                    
+                    'sudo service docker.io restart\n' +
+                    
+                    'echo "Pulling image from DockerHub"\n' +
+                    'sudo docker $DOCKER_OPTS pull ' + imageName + '\n' +
+                    
+                    'echo "Starting a mongo container"\n' +
+                    'sudo docker $DOCKER_OPTS run --restart=always -d --name db mongo:latest\n' +
+                    
+                    'echo "Creating application container"\n' +
+                    'echo "Linking to mongo container"\n' +
+                    'echo "Running application script"\n' +
+                    
+                    'sudo docker $DOCKER_OPTS run --restart=always -it -p 80:9000 --link db:dbLink ' +imageName+ ' sh prod/src/app.sh\n' +
+                    
+                    'echo "Your application is deployed at: http://' +yamlContent.vmName+ '.cloudapp.net:80"';
+
+  fs.writeFile('./.lifter/deploy.sh', deployScript, function (err) {
     if (err) {
-      return console.log(err);
+      console.log("Err deploy script not written: ", err);
     }
-
-    var replace = data.replace(/dockerRepoName/g, image);
-
-    fs.writeFile('./.lifter/deploy.sh', replace, 'utf8', function (err) {
-       if (err) {
-        return console.log(err);
-       } else {
-         console.log("Deploy script complete.");
-         sendDeployScript();
-       }
-    });
+    console.log('It\'s saved!');
+    sendDeployScript();
   });
-}
+};
 
 //copies deploy script into vm
 var sendDeployScript = function(){
