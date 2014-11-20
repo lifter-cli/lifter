@@ -40,7 +40,6 @@ var DetailedView = React.createClass({
       <div>
         Detailed View
         <div>
-          {this.state.containerDetail}
         </div>
         <div>
           {properties}

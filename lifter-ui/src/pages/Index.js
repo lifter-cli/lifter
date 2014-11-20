@@ -17,7 +17,13 @@ var Header = React.createClass({
   render() {
     return (
       <div>
-        Header - placeholder
+        <div className="page-header">
+          <h1>Lifter UI<small>Monitor your containers</small></h1>
+        </div>
+        <ul className="nav nav-tabs">
+          <li role="presentation" className="active"><a href="#">Dashboard</a></li>
+          <li role="presentation"><a href="#">Detailed View</a></li>
+        </ul>
       </div>
     )
   }
@@ -38,10 +44,14 @@ var Display = React.createClass({
       currentView = <DetailedView />;
     }
     return (
-      <div>
-        <Header />
-        <div>
-          {currentView}
+      <div className="container">
+        <div className="row center">
+          <div className="col-xs-12 col-sm-8 col-md-10">
+            <Header />
+          </div>
+          <div className="col-xs-12 col-sm-8 col-md-10">
+            {currentView}
+          </div>
         </div>
       </div>
     );
