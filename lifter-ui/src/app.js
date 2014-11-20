@@ -43,12 +43,12 @@ AppDispatcher.register((payload) => {
  * into the specified layout, then mount to document.body.
  */
 function render(page) {
-  var layout = null, child = null, props = {};
-  while ((layout = page.type.layout || (page.defaultProps && page.defaultProps.layout))) {
-    child = React.createElement(page, props, child);
-    page = layout;
-  }
-  React.render(React.createElement(page, props, child), document.body);
+  // var layout = null, child = null, props = {};
+  // while ((layout = page.type.layout || (page.defaultProps && page.defaultProps.layout))) {
+  //   child = React.createElement(page, props, child);
+  //   page = layout;
+  // }
+  React.render(React.createElement(page /**, props, child **/), document.body);
 }
 
 // Define URL routes

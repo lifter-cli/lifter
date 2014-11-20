@@ -17,7 +17,7 @@ var DefaultLayout = require('../layouts/DefaultLayout');
  * Note: refactor this to the Store later
  */
 var config = {
-  dockerContainersAPI: 'http://localhost:3123/api/docker/containers/all'
+  dockerContainersAPI: 'http://localhost:3123/api/docker/containers/all',
   dockerContainerDetailAPI: 'http://localhost:3123/api/docker/container/'
 };
 
@@ -184,4 +184,4 @@ var Display = React.createClass({
   }
 });
 
-module.exports = Display;
+module.exports = ContainersTable;

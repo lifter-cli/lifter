@@ -15,16 +15,6 @@ var Navbar = require('../components/Navbar');
 
 
 /**
- * AJAX request to our API to retrieve container information
- * Note: refactor this to the Store later
- */
-console.log('inside the default layout');
-// $.ajax(
-//
-// );
-
-
-/**
  * Retrieve the current page metadata from the PageStore.
  * @returns {{title: string}}
  */
