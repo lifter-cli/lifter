@@ -26,7 +26,7 @@ var Header = React.createClass({
 var Display = React.createClass({
   getInitialState() {
     return {
-      dashboardView: true
+      dashboardView: false
     }
   },
 

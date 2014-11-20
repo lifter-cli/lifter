@@ -8,6 +8,22 @@ var config = {
   dockerContainerDetailAPI: 'http://localhost:3123/api/docker/container/'
 };
 
+var getContainerDetail = function(context, id){
+  $.ajax({
+    url: config.dockerContainerDetailAPI + id,
+    type: 'GET',
+    success: function(data){
+      console.log(data);
+      context.setState({
+        containerDetail: data
+      });
+    },
+    error: function(err){
+      console.log('error received', err);
+    }
+  });
+};
+
 var getContainers = function(context){
   $.ajax({
     url: config.dockerContainersAPI,
@@ -48,6 +64,7 @@ var parseContainerNames = function(container){
 };
 
 module.exports = {
+  getContainerDetail: getContainerDetail,
   getContainers: getContainers,
   parseContainerNames: parseContainerNames
 };
