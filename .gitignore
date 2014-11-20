@@ -4,6 +4,7 @@ lifter.yml
 CLI/lifter.yml
 CLI/npm-debug.log
 app.sh
+deploy.sh
 Dockerfile
 CLI/azure.err
 

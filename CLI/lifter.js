@@ -26,7 +26,7 @@ program
   .command('config')
   .description('Configure your container')
   .action(function() {
-    lifterConfig.askConfigQuestion(lifterPrompts.promptList.username);
+    lifterConfig.startQuestions(lifterPrompts.promptList.username);
   });
 
 /**

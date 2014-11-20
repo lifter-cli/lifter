@@ -48,16 +48,14 @@ var containerProperties = {
   vmName: "vmNameHere",
   vmUsername: "vmUsernameHere"
 };
-
-/**
-* Function that creates instance of readline.createInterface, which makes asking questions slightly easier and handles certain keystrokes properly
-* @function
-* @param {object} obj Object initializing input and output
-*/
-var readCommandLine = readline.createInterface({
-  input: process.stdin,
-  output: process.stdout
-});
+var readCommandLine;
+var startQuestions = function(obj) {
+  readCommandLine = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout
+  });
+  askConfigQuestion(obj);
+}
 
 /**
 * Function that prompts questions on command line, writes answers to containerProperties objects, and builds YML file when complete
@@ -66,6 +64,7 @@ var readCommandLine = readline.createInterface({
 * @param {object} obj Object containing all attributes of prompted question
 */
 var askConfigQuestion = function(obj) {
+
 // uses util.puts to render question and options for each question
   makeDescription(obj.promptText, obj.promptOptions);
   readCommandLine.question('', function(text) {
@@ -102,5 +101,5 @@ var askConfigQuestion = function(obj) {
 };
 
 module.exports = {
-  askConfigQuestion: askConfigQuestion
+  startQuestions: startQuestions
 }
