@@ -3,11 +3,9 @@ node_modules
 lifter.yml
 CLI/lifter.yml
 CLI/npm-debug.log
-app.sh
-deploy.sh
 Dockerfile
 CLI/azure.err
-
+.lifter/*
 lifter-ui/server/public
 lifter-ui/bower_components
 lifter-ui/node_modules
