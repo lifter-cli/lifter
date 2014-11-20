@@ -17,12 +17,13 @@ var DefaultLayout = require('../layouts/DefaultLayout');
  * Note: refactor this to the Store later
  */
 var config = {
-  dockerAPI: 'http://localhost:3123/api/docker/containers/all'
+  dockerContainersAPI: 'http://localhost:3123/api/docker/containers/all'
+  dockerContainerDetailAPI: 'http://localhost:3123/api/docker/container/'
 };
 
 var getContainers = function(context){
   $.ajax({
-    url: config.dockerAPI,
+    url: config.dockerContainersAPI,
     type: 'GET',
     success: function(data){
       console.log(data);
@@ -137,6 +138,16 @@ var ContainersTable = React.createClass({
   }
 });
 
+var DetailedView = React.createClass({
+  render() {
+    return (
+      <div>
+        Detailed View
+      </div>
+    )
+  }
+});
+
 var Header = React.createClass({
   render() {
     return (
@@ -149,15 +160,28 @@ var Header = React.createClass({
 
 
 var Display = React.createClass({
+  getInitialState() {
+    return {
+      dashboardView: false
+    }
+  },
+
   render() {
+    var currentView
+    if ( this.state.dashboardView ){
+      currentView = <ContainersTable />;
+    } else {
+      currentView = <DetailedView />;
+    }
     return (
       <div>
         <Header />
         <div>
-          Display Table
+          {currentView}
         </div>
       </div>
     );
   }
 });
+
 module.exports = Display;

@@ -31,7 +31,8 @@ router.get('/docker/containers/all', function(req, res) {
 });
 
 // Requests details for a specific container
-router.get('/docker/container', function(req, res) {
+router.get('/docker/container/:id', function(req, res) {
+  var containerID = req.params.id;
   var container = docker.getContainer('a02820a1e53d');
   // query API for container info
 
