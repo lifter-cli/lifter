@@ -48,6 +48,7 @@ var containerProperties = {
   vmName: "vmNameHere",
   vmUsername: "vmUsernameHere"
 };
+
 var readCommandLine;
 var startQuestions = function(obj) {
   readCommandLine = readline.createInterface({
@@ -82,15 +83,19 @@ var askConfigQuestion = function(obj) {
           askConfigQuestion(lifterPrompts.promptList[nextEvent]);
         } else {
             console.log('Good work.  Run lifter init to build a container.');
-            console.log(containerProperties);
+//             console.log(containerProperties);
 
             readCommandLine.close();
 
             // make YML file
             var ymlDump = yaml.safeDump(containerProperties);
 
-            fs.writeFile('./.lifter/lifter.yml',ymlDump,function(err) {
-              if(err) {console.log(err);}
+            fs.mkdir('./.lifter/', function(err) {
+
+              fs.writeFile('./.lifter/lifter.yml',ymlDump,function(err) {
+                if(err) {console.log(err);}
+              });
+
             });
         }
       } else {
