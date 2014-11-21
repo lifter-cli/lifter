@@ -81,6 +81,7 @@ var askConfigQuestion = function(obj) {
           containerProperties[obj.promptClass] = text;
         } else {
           containerProperties[obj.promptClass] = obj.yamlSyntax[obj.promptOptions[parseInt(text) - 1]];
+
           // add extra entry to handle db ports
           if(obj.promptClass === 'db') {
             console.log(obj.promptOptions[parseInt(text) - 1]);
