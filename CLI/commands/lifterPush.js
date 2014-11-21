@@ -22,7 +22,7 @@ var copyMounted = function() {
 // commits changes and creates a docker image
 var commitImage = function() {
   var yamlContent = helper.readYAML();
-  var command = 'docker commit ' + yamlContent.containerName + ' ' + yamlContent.repoName + ':latest';
+  var command = 'docker commit ' + yamlContent.containerName + ' ' + yamlContent.username + '/' + yamlContent.repoName + ':latest';
   exec(command, function(err, stdout, stderr){
     if(err){
       console.log("ERR: ", stderr);
