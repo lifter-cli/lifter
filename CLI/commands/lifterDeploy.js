@@ -181,7 +181,7 @@ var sendDeployScript = function(){
   var sshPath = "ssh " +yamlContent.vmUsername+ "@" +yamlContent.vmName+ ".cloudapp.net";
 
   console.log("\nPlease run the following commands:\n\n" +
-              "1. Send the deploy script to your vm: scp ./.lifter/deploy.sh " +sshPath+ ":/home/" +yamlContent.vmUsername+
+              "1. Send the deploy script to your vm: scp ./.lifter/deploy.sh " +sshPath+ ":/home/" +yamlContent.vmUsername+ "\n" +
               "You will be prompted for the vm's password after running this command. If this is your first time ssh-ing into the vm,\n"+
               "you will need to respond 'yes' when asked about authenticating the host\n\n"+
               "2. ssh into your vm: "+sshPath+"\n\n"+
