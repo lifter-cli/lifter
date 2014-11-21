@@ -73,8 +73,17 @@ var askConfigQuestion = function(obj) {
     // Assign value as either entered text or the the text of the option selected
     var value = (!obj.promptOptions) ? text : obj.promptOptions[parseInt(text) - 1];
 
+      // Validates response against question-specific validation method
       if(validateResponse(obj,value)) {
-        containerProperties[obj.promptClass] = value;
+
+        // Adds properly formatted answer to containerProperties object
+        if(!obj.promptOptions) {
+          containerProperties[obj.promptClass] = text;
+        } else {
+          containerProperties[obj.promptClass] = obj.yamlSyntax[obj.promptOptions[parseInt(text) - 1]];
+        }
+
+//         containerProperties[obj.promptClass] = yamlValue;
 
         // nextEvent handles decision trees
         var nextEvent = obj.nextClass(value);
