@@ -4,7 +4,7 @@ lifter.yml
 CLI/lifter.yml
 CLI/npm-debug.log
 Dockerfile
-CLI/azure.err
+*.err
 .lifter/*
 lifter-ui/server/public
 lifter-ui/bower_components
