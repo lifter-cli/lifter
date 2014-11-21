@@ -3,13 +3,12 @@
 */
 var fs = require('fs');
 var yaml = require('../../node_modules/js-yaml');
-var configFile = '../../.lifter/lifter.yml'
+var configFile = '../../.lifter/lifter.yml';
 
 /**
 * Function that reads the lifter.yml file
 * @function
 * @memberof module:helpers
-*
 */
 
 var readYAML = function() {
