@@ -1,6 +1,6 @@
 var dbSettings = {
 
-  mongo: {
+  mongoDB: {
     command: 'docker run --name db -d mongo',
     portExposed: 27017
     },
@@ -10,7 +10,7 @@ var dbSettings = {
     portExposed: 6379
     },
 
-  mysql: {
+  mySQL: {
     // setting MYSQL_ROOT_PASSWORD to 'mysecretpassword', but we can ask a question to specify this
     command: 'docker run --name db -e MYSQL_ROOT_PASSWORD=mysecretpassword -d mysql',
     portExposed: 3306

@@ -2,6 +2,7 @@ var fs = require('fs');
 var util = require('util');
 var yaml = require('../../node_modules/js-yaml');
 var lifterPrompts = require('../prompts/lifterPrompts.js');
+var dbDetails = require('../helpers/dbSettings.js');
 var readline = require('readline');
 var colors = require('colors');
 
@@ -72,8 +73,23 @@ var askConfigQuestion = function(obj) {
     // Assign value as either entered text or the the text of the option selected
     var value = (!obj.promptOptions) ? text : obj.promptOptions[parseInt(text) - 1];
 
+      // Validates response against question-specific validation method
       if(validateResponse(obj,value)) {
-        containerProperties[obj.promptClass] = value;
+
+        // Adds properly formatted answer to containerProperties object
+        if(!obj.promptOptions) {
+          containerProperties[obj.promptClass] = text;
+        } else {
+          containerProperties[obj.promptClass] = obj.yamlSyntax[obj.promptOptions[parseInt(text) - 1]];
+          // add extra entry to handle db ports
+          if(obj.promptClass === 'db') {
+            console.log(obj.promptOptions[parseInt(text) - 1]);
+            console.log(dbDetails.dbSettings[obj.promptOptions[parseInt(text) - 1]]);
+            containerProperties.dbPort = dbDetails.dbSettings[obj.promptOptions[parseInt(text) - 1]].portExposed;
+          }
+        }
+
+//         containerProperties[obj.promptClass] = yamlValue;
 
         // nextEvent handles decision trees
         var nextEvent = obj.nextClass(value);

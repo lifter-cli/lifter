@@ -72,6 +72,7 @@ var promptList = {
   linuxOS: {
     promptText: 'Pick an OS',
     promptOptions: ['centos:6'],
+    yamlSyntax: {'centos:6': 'centos:centos6'},
     promptClass: 'linuxOS',
     validation: validation.inOptions,
     nextClass: function() {return 'envVar';}
@@ -87,6 +88,7 @@ var promptList = {
   db: {
     promptText: 'Pick a database',
     promptOptions: ['mongoDB', 'mySQL', 'redis', 'No Database'],
+    yamlSyntax: {'mongoDB': 'mongoDB', 'mySQL': 'mySQL', 'redis': 'redis', 'No Database': 'None'},
     promptClass: 'db',
     validation: validation.inOptions,
     nextClass: function() {return null;}
