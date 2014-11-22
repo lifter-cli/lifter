@@ -2,7 +2,8 @@ var fs = require('fs');
 var yaml = require('js-yaml');
 var exec = require('child_process').exec;
 var builder = require('../helpers/dockerfileBuilder.js');
-var configFile = "./.lifter/lifter.yml";
+// var configFile = "./.lifter/lifter.yml";
+var helper = require('../helpers/helpers.js');
 
 // execsync may or may not be useful at some point
 var execSync = require('exec-sync');
@@ -135,24 +136,45 @@ var createShellScript = function() {
   //   process.exit(1);
   // }
 
-  fs.readFile(configFile, function (err, data) {
-    if (err) {
-      console.log("hi");
-      process.exit();
-      // throw err;
-    }
-    settings = yaml.safeLoad(data);
+  // fs.readFile(configFile, function (err, data) {
+  //   if (err) {
+  //     console.log("hi");
+  //     process.exit();
+  //     // throw err;
+  //   }
+    var settings = helper.readYAML();
 
-    var shellFileContent = "#!/bin/sh\n";
-    shellFileContent += "cd " + settings.launchPath + "\n";
-    shellFileContent += settings.launchCommand;
+    var shellFileContent = '#!/bin/sh\n' +
 
-    fs.writeFile("./.lifter/app.sh", shellFileContent, function(err) {
+                           // wait 10 seconds for containers to be configured
+                           'sleep 10\n' +
+
+                           'DB_PORT=' + settings.dbPort + "\n" +
+                           'CURL_OUTPUT=$(curl dbLink:$DB_PORT)\n' +
+                           // this success message is  specific to mongo, need to change
+                           'SUCCESS="It looks like you are trying to access MongoDB over HTTP on the native driver port."\n' +
+                           'LAUNCH_CMD="' + settings.launchCommand + '"\n' +
+
+                           // checking if application and database container are linked
+                           'until [[ $CURL_OUTPUT == $SUCCESS ]]\n' +
+                           // if they are not, waits 20seconds and checks again
+                           'do\n' +
+                           'echo "Linking database container"\n' +
+                           'sleep 20\n' +
+                           'CURL_OUTPUT=$(curl dbLink:$DB_PORT)\n' +
+                           // otherwise it runns the launch command
+                           'done\n' +
+                           'echo "Containers linked, running application launch command"\n' +
+                           'cd prod\n' +
+                           '$LAUNCH_CMD';
+
+    fs.writeFile("../../.lifter/app.sh", shellFileContent, function(err) {
       if (err) console.log(err);
       console.log("Launch script created: app.sh");
     });
-  });
+  // });
 }
+
 
 var createLocalContainer = function() {
   var settings = getSettings();
