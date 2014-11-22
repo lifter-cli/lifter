@@ -18,12 +18,8 @@ var Header = React.createClass({
     return (
       <div>
         <div className="page-header">
-          <h1>Lifter UI<small>Monitor your containers</small></h1>
+          <h1>Lifter UI <small> Monitor your containers</small></h1>
         </div>
-        <ul className="nav nav-tabs">
-          <li role="presentation" className="active"><a href="#">Dashboard</a></li>
-          <li role="presentation"><a href="#">Detailed View</a></li>
-        </ul>
       </div>
     )
   }
@@ -32,7 +28,7 @@ var Header = React.createClass({
 var Display = React.createClass({
   getInitialState() {
     return {
-      dashboardView: false
+      dashboardView: true
     }
   },
 
