@@ -10,3 +10,4 @@ lifter-ui/server/public
 lifter-ui/bower_components
 lifter-ui/node_modules
 lifter-ui/npm-debug.log
+lifter-ui/package.json

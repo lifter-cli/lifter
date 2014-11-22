@@ -94,17 +94,17 @@ gulp.task('assets', function() {
 });
 
 // Images
-gulp.task('images', function() {
-  src.images = 'src/images/**';
-  return gulp.src(src.images)
-    .pipe($.changed(DEST + '/images'))
-    .pipe($.imagemin({
-      progressive: true,
-      interlaced: true
-    }))
-    .pipe(gulp.dest(DEST + '/images'))
-    .pipe($.size({title: 'images'}));
-});
+// gulp.task('images', function() {
+//   src.images = 'src/images/**';
+//   return gulp.src(src.images)
+//     .pipe($.changed(DEST + '/images'))
+//     .pipe($.imagemin({
+//       progressive: true,
+//       interlaced: true
+//     }))
+//     .pipe(gulp.dest(DEST + '/images'))
+//     .pipe($.size({title: 'images'}));
+// });
 
 // HTML pages
 gulp.task('pages', function() {
@@ -189,7 +189,7 @@ gulp.task('bundle', function(cb) {
 
 // Build the app from source code
 gulp.task('build', ['clean'], function(cb) {
-  runSequence(['vendor', 'assets', 'images', 'pages', 'styles', 'bundle'], cb);
+  runSequence(['vendor', 'assets', /*'images',*/ 'pages', 'styles', 'bundle'], cb);
 });
 
 // Launch a lightweight HTTP Server
@@ -201,7 +201,7 @@ gulp.task('serve', function(cb) {
      nodemon({ script: './server/bin/www' })
 
      gulp.watch(src.assets, ['assets']);
-     gulp.watch(src.images, ['images']);
+    //  gulp.watch(src.images, ['images']);
      gulp.watch(src.pages, ['pages']);
      gulp.watch(src.styles, ['styles']);
     // gulp.watch(DEST + '/**/*.*', function(file) {
