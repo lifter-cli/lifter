@@ -85,13 +85,9 @@ var askConfigQuestion = function(obj) {
 
           // add extra entry to handle db ports
           if(obj.promptClass === 'db') {
-            console.log(obj.promptOptions[parseInt(text) - 1]);
-            console.log(dbDetails.dbSettings[obj.promptOptions[parseInt(text) - 1]]);
             containerProperties.dbPort = dbDetails.dbSettings[obj.promptOptions[parseInt(text) - 1]].portExposed;
           }
         }
-
-//         containerProperties[obj.promptClass] = yamlValue;
 
         // nextEvent handles decision trees
         var nextEvent = obj.nextClass(value);
