@@ -97,7 +97,7 @@ var checkHostsFileForDockerhost = function() {
 
 // create shell script to launch app
 var createShellScript = function() {
-  var settings = helper.readYAML();
+  var settings = helpers.readYAML();
 
   var shellFileContent = '#!/bin/sh\n' +
 
