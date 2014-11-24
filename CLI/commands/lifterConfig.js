@@ -85,7 +85,13 @@ var askConfigQuestion = function(obj) {
 
           // add extra entry to handle db ports
           if(obj.promptClass === 'db') {
-            containerProperties.dbPort = dbDetails.dbSettings[obj.promptOptions[parseInt(text) - 1]].portExposed;
+            // handle options when no database is selected
+            if(value === 'No Database') {
+              containerProperties.dbPort = null;
+            } else {
+              containerProperties.dbPort = dbDetails.dbSettings[obj.promptOptions[parseInt(text) - 1]].portExposed;
+            }
+
           }
         }
 
