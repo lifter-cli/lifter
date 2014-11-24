@@ -143,18 +143,18 @@ var createLocalContainer = function() {
   var buildCmd = ['docker', 
     ['build', '-t', imageName, '.']];
   var dbRunCmd = ['docker', 
-    ['run', '--restart=always', 
+    ['run', '--restart=always', '-d', 
      '--name', dbContainerName, dbImageName]];
   var appRunCmd = ['docker', 
     ['run', '--restart=always', 
      '--name', appContainerName, 
-     '--link', dbContainerName+':'+dbLinkName
+     '--link', dbContainerName+':'+dbLinkName,
      '-p', settings.portPrivate+':'+settings.portPublic, 
      '-v', settings.launchPath+':/src:ro', imageName, 'sh', '/src/app.sh']];
 
   dockerSpawnSeries([
     buildCmd,
-    mongoRunCmd,
+    dbRunCmd,
     appRunCmd
   ], finishInit);
 }
