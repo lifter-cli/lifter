@@ -55,17 +55,17 @@ var promptList = {
   },
 
   portPrivate: {
-    promptText: 'What private port do you want to use? (Example: 49160)',
+    promptText: 'What port does your application use? (Example: 49160)',
     promptClass: 'portPrivate',
     validation: validation.inPortRange,
     nextClass: function() {return 'portPublic';}
   },
 
   portPublic: {
-    promptText: 'What public port do you want to use? (Example: 8080)',
+    promptText: 'What port can access your Docker container? (Example: 80)',
     promptClass: 'portPublic',
     validation: validation.inPortRange,
-    nextClass: function() {return 'envVar';}
+    nextClass: function() {return 'db';}
   },
 
   // Future Linux OS options may include 'Ubuntu', 'Fedora', 'Red Hat', 'Linux'
@@ -80,12 +80,14 @@ var promptList = {
   },
 */
 
+/*
   envVar: {
     promptText: 'Enter any environmental variables your app needs to run.',
     promptClass: 'envVar',
     validation: validation.noValidation,
     nextClass: function() {return 'db';}
   },
+*/
 
   db: {
     promptText: 'Pick a database',
