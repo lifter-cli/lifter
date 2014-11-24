@@ -77,15 +77,18 @@ var askConfigQuestion = function(obj) {
       // Validates response against question-specific validation method
       if(validateResponse(obj,value)) {
 
+
         // Adds properly formatted answer to containerProperties object
         if(!obj.promptOptions) {
           containerProperties[obj.promptClass] = text;
+
+          // Adds dbContainerName property
+          if(obj.promptClass === 'containerName') {
+            containerProperties.dbContainerName = text + '-db';
+          }
+
         } else {
           containerProperties[obj.promptClass] = obj.yamlSyntax[obj.promptOptions[parseInt(text) - 1]];
-
-          if(obj.promptClass === 'containerName') {
-            containerProperties.dbContainerName = containerProperties[obj.promptClass] + '-db';
-          }
 
           // add extra db settings to containerProperties object
           if(obj.promptClass === 'db') {
