@@ -46,8 +46,9 @@ var validateResponse = function(obj,value) {
 */
 var containerProperties = {
   currentWorkingDir: process.cwd(),
-  vmName: "vmNameHere",
-  vmUsername: "vmUsernameHere"
+  linuxOS: 'centos:centos6',
+  vmName: 'vmNameHere',
+  vmUsername: 'vmUsernameHere'
 };
 
 var readCommandLine;
