@@ -133,16 +133,24 @@ var createShellScript = function() {
 var createLocalContainer = function() {
   var settings = helpers.readYAML();
   //docker build -t username_on_docker_hub/create_new_repo_name .
+  var appContainerName = settings.appContainerName;
   var imageName = settings.username + '/' + settings.repoName;
-  var dbImageName = imageName + '_db';
 
-  var buildCmd = ['docker', ['build', '-t', imageName, '.']];
-  var mongoRunCmd = ['docker', 
-    ['run', '--restart=always', '--name', dbImageName, 'mongo:latest']];
+  var dbContainerName = settings.dbContainerName;
+  var dbImageName = settings.dbTag;
+  var dbLinkName = dbContainerName+'-link';
+
+  var buildCmd = ['docker', 
+    ['build', '-t', imageName, '.']];
+  var dbRunCmd = ['docker', 
+    ['run', '--restart=always', 
+     '--name', dbContainerName, dbImageName]];
   var appRunCmd = ['docker', 
-    ['run', '--restart=always', '-p', 
-      settings.portPrivate+':'+settings.portPublic, 
-      '-v', settings.launchPath+':/src:ro', 'sh', '/src/app.sh']];
+    ['run', '--restart=always', 
+     '--name', appContainerName, 
+     '--link', dbContainerName+':'+dbLinkName
+     '-p', settings.portPrivate+':'+settings.portPublic, 
+     '-v', settings.launchPath+':/src:ro', imageName, 'sh', '/src/app.sh']];
 
   dockerSpawnSeries([
     buildCmd,
