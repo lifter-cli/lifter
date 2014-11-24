@@ -3,7 +3,7 @@
 */
 var fs = require('fs');
 var yaml = require('../../node_modules/js-yaml');
-var configFile = '../../.lifter/lifter.yml'
+var configFile = './.lifter/lifter.yml'
 
 /**
 * Function that takes in an array of tasks that will be individually
