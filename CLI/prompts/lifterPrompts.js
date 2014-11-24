@@ -65,10 +65,11 @@ var promptList = {
     promptText: 'What public port do you want to use? (Example: 8080)',
     promptClass: 'portPublic',
     validation: validation.inPortRange,
-    nextClass: function() {return 'linuxOS';}
+    nextClass: function() {return 'envVar';}
   },
 
   // Future Linux OS options may include 'Ubuntu', 'Fedora', 'Red Hat', 'Linux'
+/*
   linuxOS: {
     promptText: 'Pick an OS',
     promptOptions: ['centos:6'],
@@ -77,6 +78,7 @@ var promptList = {
     validation: validation.inOptions,
     nextClass: function() {return 'envVar';}
   },
+*/
 
   envVar: {
     promptText: 'Enter any environmental variables your app needs to run.',
