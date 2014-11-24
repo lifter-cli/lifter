@@ -145,7 +145,16 @@ var createAzureVM = function(creds) {
 var writeDeployScript = function(){
 
   var yamlContent = helper.readYAML();
-  var imageName = yamlContent.username + "/" + yamlContent.repoName + ":" + "latest";
+
+  var app = yamlContent.appContainerName
+  var appImage = yamlContent.username + "/" + yamlContent.repoName + ":" + "latest";
+  
+  var db = yamlContent.dbContainerName;
+  var dbImage = yamlContent.dbTag;
+  var dbLink = db + '-link';
+
+  var pub = yamlContent.portPublic;
+  var priv = yamlContent.portPrivate;
 
   var deployScript = 'cat /etc/default/docker.io | sed \'s/0.0.0.0/localhost/g\' | sed \'s/tlsverify/tls/\' | sudo tee /etc/default/docker.io\n' +
 
@@ -154,19 +163,18 @@ var writeDeployScript = function(){
                     'sudo service docker.io restart\n' +
 
                     'echo "Pulling image from DockerHub"\n' +
-                    'sudo docker $DOCKER_OPTS pull ' + imageName + '\n' +
+                    'sudo docker $DOCKER_OPTS pull ' +appImage+ '\n' +
 
                     'echo "Starting a mongo container"\n' +
-                    'sudo docker $DOCKER_OPTS run -d --name db mongo:latest\n' +
+                    'sudo docker $DOCKER_OPTS run -d --name ' +db+ ' ' +dbImage+ '\n' +
 
                     'echo "Creating application container"\n' +
                     'echo "Linking to mongo container"\n' +
                     'echo "Shutting down existing application container (if one exists)"\n' +
-                    'sudo docker $DOCKER_OPTS rm -f app' +
+                    'sudo docker $DOCKER_OPTS rm -f ' +app+
 
                     'echo "Running application script"\n' +
-
-                    'sudo docker $DOCKER_OPTS run --name app -it -p 80:9000 --link db:dbLink ' +imageName+ ' sh prod/app.sh\n' +
+                    'sudo docker $DOCKER_OPTS run --name ' +app+ ' -it -p ' +pub+ ':' +priv+ ' --link ' +db+ ':' +dbLink+ ' ' +appImage+ ' sh prod/app.sh\n' +
 
                     'echo "Your application is deployed at: http://' +yamlContent.vmName+ '.cloudapp.net:80"';
 
