@@ -123,7 +123,7 @@ var createShellScript = function() {
                          'cd prod\n' +
                          '$LAUNCH_CMD';
 
-  fs.writeFile("../../.lifter/app.sh", shellFileContent, function(err) {
+  fs.writeFile("./.lifter/app.sh", shellFileContent, function(err) {
     if (err) console.log(err);
     console.log("Launch script created: app.sh");
   });
