@@ -83,15 +83,20 @@ var askConfigQuestion = function(obj) {
         } else {
           containerProperties[obj.promptClass] = obj.yamlSyntax[obj.promptOptions[parseInt(text) - 1]];
 
-          // add extra entry to handle db ports
+          if(obj.promptClass === 'containerName') {
+            containerProperties.dbContainerName = containerProperties[obj.promptClass] + '-db';
+          }
+
+          // add extra db settings to containerProperties object
           if(obj.promptClass === 'db') {
             // handle options when no database is selected
             if(value === 'No Database') {
               containerProperties.dbPort = null;
+              containerProperties.dbTag = null;
             } else {
               containerProperties.dbPort = dbDetails.dbSettings[obj.promptOptions[parseInt(text) - 1]].portExposed;
+              containerProperties.dbTag = dbDetails.dbSettings[obj.promptOptions[parseInt(text) - 1]].defaultTag;
             }
-
           }
         }
 
