@@ -165,22 +165,22 @@ var writeDeployScript = function(){
                     'echo "Pulling image from DockerHub"\n' +
                     'sudo docker $DOCKER_OPTS pull ' +appImage+ '\n' +
 
-                    'echo "Starting a mongo container"\n' +
+                    'echo "Starting database container"\n' +
                     'sudo docker $DOCKER_OPTS run -d --name ' +db+ ' ' +dbImage+ '\n' +
 
-                    'echo "Creating application container"\n' +
-                    'echo "Linking to mongo container"\n' +
                     'echo "Shutting down existing application container (if one exists)"\n' +
-                    'sudo docker $DOCKER_OPTS rm -f ' +app+
+                    'sudo docker $DOCKER_OPTS rm -f ' +app+ '\n' +
 
+                    'echo "Creating application container"\n' +
+                    'echo "Linking to database container"\n' +
                     'echo "Running application script"\n' +
                     'sudo docker $DOCKER_OPTS run --name ' +app+ ' -it -p ' +pub+ ':' +priv+ ' --link ' +db+ ':' +dbLink+ ' ' +appImage+ ' sh prod/app.sh\n' +
 
-                    'echo "Your application is deployed at: http://' +yamlContent.vmName+ '.cloudapp.net:80"';
+                    'echo "Your application is deployed at: http://' +yamlContent.vmName+ '.cloudapp.net:' +pub+ '"';
 
   fs.writeFile('./.lifter/deploy.sh', deployScript, function (err) {
     if (err) {
-      console.log("Err deploy script not written: ", err);
+      console.log('Err deploy script not written: ', err);
     }
     console.log('Created deploy script');
     sendDeployScript();
@@ -193,12 +193,12 @@ var sendDeployScript = function(){
   var yamlContent = helper.readYAML();
   var sshPath = yamlContent.vmUsername+ "@" +yamlContent.vmName+ ".cloudapp.net";
 
-  console.log("\nPlease run the following commands:\n\n" +
-              "1. Send the deploy script to your vm: scp ./.lifter/deploy.sh " +sshPath+ ":/home/" +yamlContent.vmUsername+ "\n\n" +
-              "You will be prompted for the vm's password after running this command. If this is your first time ssh-ing into the vm,\n"+
-              "you will need to respond 'yes' when asked to authenticate the host\n\n"+
-              "2. ssh into your vm: ssh "+sshPath+"\n\n"+
-              "3. Run the script inside your vm: sh deploy.sh\n");
+  console.log('\nPlease run the following commands:\n\n' +
+              '1. Send the deploy script to your vm: scp ./.lifter/deploy.sh ' +sshPath+ ':/home/' +yamlContent.vmUsername+ '\n\n' +
+              'You will be prompted for the vm\'s password after running this command. If this is your first time ssh-ing into the vm,\n'+
+              'you will need to respond "yes" when asked to authenticate the host\n\n'+
+              '2. ssh into your vm: ssh ' +sshPath+ '\n\n'+
+              '3. Run the script inside your vm: sh deploy.sh\n');
 }
 
 module.exports = {
