@@ -137,7 +137,7 @@ var createLocalContainer = function() {
   var imageName = settings.username + '/' + settings.repoName;
 
   var dbContainerName = settings.dbContainerName;
-  var dbImageName = settings.dbImageName;
+  var dbImageName = settings.dbTag;
   var dbLinkName = dbContainerName+'-link';
 
   var buildCmd = ['docker', 
