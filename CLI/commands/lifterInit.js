@@ -97,7 +97,7 @@ var checkHostsFileForDockerhost = function() {
 
 // create shell script to launch app
 var createShellScript = function() {
-  var settings = helper.readYAML();
+  var settings = helpers.readYAML();
 
   var shellFileContent = '#!/bin/sh\n' +
 
@@ -123,7 +123,7 @@ var createShellScript = function() {
                          'cd prod\n' +
                          '$LAUNCH_CMD';
 
-  fs.writeFile("../../.lifter/app.sh", shellFileContent, function(err) {
+  fs.writeFile("./.lifter/app.sh", shellFileContent, function(err) {
     if (err) console.log(err);
     console.log("Launch script created: app.sh");
   });
