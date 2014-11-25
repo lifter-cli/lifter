@@ -7,6 +7,7 @@ var lifterInit = require('./commands/lifterInit.js')
 var lifterPush = require('./commands/lifterPush.js');
 var lifterDeploy = require('./commands/lifterDeploy.js');
 var lifterMonitor = require('./commands/lifterMonitor.js');
+var lifterShell = require('./commands/lifterShell.js');
 var exec = require('child_process').exec;
 
 // Doing this to make the help screen look correct
@@ -42,6 +43,13 @@ program
     console.log('Time to build your container.');
     lifterInit.start_b2d();
   });
+
+program
+  .command('shell')
+  .description('Grab command to enter shell')
+  .action(function() {
+    lifterShell.printCommand();
+  })
 
 /**
 * Object with method and description attached to 'lifter push' command
