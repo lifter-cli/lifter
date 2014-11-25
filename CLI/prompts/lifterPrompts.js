@@ -11,7 +11,9 @@ var validation = require('../validation/validation.js');
 */
 var promptList = {
   username: {
-    promptText: 'What is your Docker Hub username?\nIf you don\'t have a Docker Hub account, get one at https://hub.docker.com/account/signup/',
+    promptText: 'Please ensure you are in the parent directory of your application before continuing with Lifter Config\n' +
+      'What is your Docker Hub username?\nIf you don\'t have a Docker Hub account, ' +
+      'get one at https://hub.docker.com/account/signup/',
     promptClass: 'username',
     validation: validation.hasValue,
     nextClass: function() {return 'containerName';}
@@ -44,15 +46,15 @@ var promptList = {
     promptText: 'Enter the command you want to launch when you start up your container.',
     promptClass: 'launchCommand',
     validation: validation.hasValue,
-    nextClass: function() {return 'launchPath';}
-  },
-
-  launchPath: {
-    promptText: 'What is the filepath that corresponds to your command? \nType \'.\' if you want to execute your command this directory.',
-    promptClass: 'launchPath',
-    validation: validation.hasValue,
     nextClass: function() {return 'portPrivate';}
   },
+
+  // launchPath: {
+  //   promptText: 'What is the filepath that corresponds to your command? \nType \'.\' if you want to execute your command this directory.',
+  //   promptClass: 'launchPath',
+  //   validation: validation.hasValue,
+  //   nextClass: function() {return 'portPrivate';}
+  // },
 
   portPrivate: {
     promptText: 'What port does your application use? (Example: 49160)',
