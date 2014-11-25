@@ -5,7 +5,7 @@ var vmSetupQs = require('../prompts/vmSetup.js');
 var yaml = require('../../node_modules/js-yaml');
 var helper = require('../helpers/helpers.js');
 
-//check if user has azure-cli installed
+//checks if user has azure-cli installed
 var checkAzure = function(){
   exec('npm list -g --depth=0 | grep azure-cli', function(err, stdout, stderr){
     if(/azure-cli/.test(stdout)) {
@@ -17,7 +17,7 @@ var checkAzure = function(){
   });
 }
 
-//check if azure subscription is connected
+//checks if azure subscription is connected
 var checkSubscription = function() {
   exec('azure account show', function(err, stdout, stderr){
     if(/There is no current subscription/.test(stdout)){
@@ -76,7 +76,7 @@ var getVMInfo = function(){
   });
 }
 
-//ask the user to login to azure and connect their subscription
+// asks user to login to azure and connect their subscription
 var loginAzure = function() {
   exec('azure account download', function(err, stdout, stderr){
     if(err){
@@ -91,7 +91,7 @@ var loginAzure = function() {
   });
 }
 
-//asks user to create vm credentials and grabs ubuntu image
+// asks user to create vm credentials
 var setupAzureVM = function() {
 
   prompt.message = '';
@@ -105,7 +105,7 @@ var setupAzureVM = function() {
   });
 }
 
-//create an Azure VM with the Ubuntu image
+// creates an Azure VM with an Ubuntu image
 var createAzureVM = function(creds) {
 
   var ubuntuImage = 'b39f27a8b8c64d52b05eac6a62ebad85__Ubuntu-14_04-LTS-amd64-server-20140724-en-us-30GB';
@@ -142,6 +142,7 @@ var createAzureVM = function(creds) {
   });
 }
 
+// writes deploy script for vm
 var writeDeployScript = function(){
 
   var yamlContent = helper.readYAML();
@@ -183,11 +184,30 @@ var writeDeployScript = function(){
       console.log('Err deploy script not written: ', err);
     }
     console.log('Created deploy script');
-    sendDeployScript();
+    console.log('Checking vm status');
+    checkVMStatus();
   });
 };
 
-//copies deploy script into vm
+// checks if vm is ready for ssh
+var checkVMStatus = function() {
+
+  var yamlContent = helper.readYAML();
+  var command = 'azure vm show ' + yamlContent.vmName;
+
+  exec(command, function(err, stdout, stderr){
+    if(err){
+      console.log('ERR: ', err);
+    } else if(/"ReadyRole"/.test(stdout)){
+      console.log('VM status is "Ready", ready to send deploy script');
+      sendDeployScript();
+    } else {
+      setTimeout(checkVMStatus, 20000);
+    }
+  });
+}
+
+// copies deploy script into vm
 var sendDeployScript = function(){
 
   var yamlContent = helper.readYAML();
