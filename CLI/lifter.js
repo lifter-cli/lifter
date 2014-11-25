@@ -85,7 +85,7 @@ program
   .action(function() {
     console.log('Launching the Lifter UI to monitor your containers');
     console.log('Go to http://localhost:3123/');
-    lifterMonitor.lifterMonitor();
+    lifterMonitor.start();
   });
 
 /**

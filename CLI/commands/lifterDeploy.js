@@ -100,7 +100,9 @@ var setupAzureVM = function() {
 
   prompt.get(vmSetupQs.vmSetup, function(err,result){
     credentials = [result.vm, result.username, result.password];
-    console.log('Creating azure vm...');
+    // Creating new line to avoid over-writing the previous line
+    console.log('\nCreating azure vm...');
+
     createAzureVM(credentials);
   });
 }
@@ -149,7 +151,7 @@ var writeDeployScript = function(){
 
   var app = yamlContent.containerName;
   var appImage = yamlContent.username+ '/' +yamlContent.repoName+ ':latest';
-  
+
   var db = yamlContent.dbContainerName;
   var dbImage = yamlContent.dbTag;
   var dbLink = db + '-link';
@@ -177,6 +179,9 @@ var writeDeployScript = function(){
                     'echo "Running application script"\n' +
                     'sudo docker $DOCKER_OPTS run --name ' +app+ ' -it -p ' +pub+ ':' +priv+ ' --link ' +db+ ':' +dbLink+ ' ' +appImage+ ' sh prod/app.sh\n' +
 
+                    'echo "Before you can access your deployed application, you must open the following port: ' +pub +'\n';
+                    'echo "Please follow the instructions at: \n';
+                    'http://azure.microsoft.com/en-us/documentation/articles/virtual-machines-set-up-endpoints/ \n';
                     'echo "Your application is deployed at: http://' +yamlContent.vmName+ '.cloudapp.net:' +pub+ '"';
 
   fs.writeFile('./.lifter/deploy.sh', deployScript, function (err) {
@@ -202,7 +207,8 @@ var checkVMStatus = function() {
       console.log('VM status is "Ready", ready to send deploy script');
       sendDeployScript();
     } else {
-      setTimeout(checkVMStatus, 20000);
+      console.log('VM is not ready yet... retrying in 15 seconds')
+      setTimeout(checkVMStatus, 15000);
     }
   });
 }
