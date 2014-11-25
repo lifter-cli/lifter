@@ -149,7 +149,7 @@ var writeDeployScript = function(){
 
   var app = yamlContent.containerName;
   var appImage = yamlContent.username+ '/' +yamlContent.repoName+ ':latest';
-  
+
   var db = yamlContent.dbContainerName;
   var dbImage = yamlContent.dbTag;
   var dbLink = db + '-link';
@@ -177,6 +177,9 @@ var writeDeployScript = function(){
                     'echo "Running application script"\n' +
                     'sudo docker $DOCKER_OPTS run --name ' +app+ ' -it -p ' +pub+ ':' +priv+ ' --link ' +db+ ':' +dbLink+ ' ' +appImage+ ' sh prod/app.sh\n' +
 
+                    'echo "Before you can access your deployed application, you must open the following port: ' +pub +'\n';
+                    'echo "Please follow the instructions at: \n';
+                    'http://azure.microsoft.com/en-us/documentation/articles/virtual-machines-set-up-endpoints/ \n';
                     'echo "Your application is deployed at: http://' +yamlContent.vmName+ '.cloudapp.net:' +pub+ '"';
 
   fs.writeFile('./.lifter/deploy.sh', deployScript, function (err) {
