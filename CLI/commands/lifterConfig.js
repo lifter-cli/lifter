@@ -111,7 +111,7 @@ var askConfigQuestion = function(obj) {
           askConfigQuestion(lifterPrompts.promptList[nextEvent]);
         } else {
             console.log('If you have selected a database, make sure you update your application configurations\n' +
-            'and change the host of the database reference to dbLink (for example: mongodb://dbLink)');
+            'and change the host of the database reference to the following format: mongodb://appContainerName-db-link');
             console.log('Good work.  Run lifter init to build a container.');
 //             console.log(containerProperties);
 
