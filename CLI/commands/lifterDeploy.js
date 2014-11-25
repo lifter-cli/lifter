@@ -146,7 +146,7 @@ var writeDeployScript = function(){
 
   var yamlContent = helper.readYAML();
 
-  var app = yamlContent.appContainerName
+  var app = yamlContent.containerName;
   var appImage = yamlContent.username+ '/' +yamlContent.repoName+ ':latest';
   
   var db = yamlContent.dbContainerName;
