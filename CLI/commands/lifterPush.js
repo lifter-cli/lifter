@@ -5,15 +5,18 @@ var helper = require('../helpers/helpers.js');
 
 // copies the mounted volume (from /src) into a new directory(/prod)
 var copyMounted = function() {
+  console.log('Copying source code into container');
+
   var yamlContent = helper.readYAML();
   // src is where the mounted files exist
   // app is where the copied files will be transeffered to
-  var command = 'docker exec -i -t ' + yamlContent.containerName +' cp -r src/ /prod';
+  var command = 'docker exec ' + yamlContent.containerName +' cp -r src/ /prod';
   exec(command, function(err, stdout, stderr){
     if(err){
       console.log("ERR: ", stderr);
     } else {
-      console.log("Files were copied into /prod");
+      console.log("Source code copied: /prod");
+      console.log('Commiting changes to container...');
       commitImage();
     }
   });
@@ -27,7 +30,7 @@ var commitImage = function() {
     if(err){
       console.log("ERR: ", stderr);
     } else {
-      console.log("Image was commited");
+      console.log("Pushing changes to Docker Hub...");
       pushImage();
     }
   });
@@ -41,7 +44,7 @@ var pushImage = function() {
     if(err){
       console.log("ERR: ", stderr);
     } else {
-      console.log("Image was commited");
+      console.log("Your container's latest state is now on Docker Hub.\nType 'lifter deploy' to deploy your application containers.");
     }
   });
 };
