@@ -80,8 +80,11 @@ var readDirectory = function(dir,dockerfile) {
 * @param {function} callback Callback function that is invoked once Dockerfile is ready
 */
 var buildDockerfile = function() {
+  console.log('addtoDockerfile', dockerfileContents);
   addToDockerfile(dockerfileContents);
+  console.log('readDirectory', dockerfileContents);
   readDirectory('./',dockerfileContents);
+  console.log('prepDockerfile', dockerfileContents);
   prepDockerfile(dockerfileContents);
   fs.writeFileSync('./Dockerfile',dockerfileContents.join('\n'));
   console.log('Dockerfile exists now.  High five!');
@@ -95,12 +98,14 @@ var buildDockerfile = function() {
 */
 var prepDockerfile = function(dockerfile) {
   for(var i=0;i<dockerfile.length;i++) {
-    var lineStart = dockerfile[i][0];
-    if(lineStart !== '#') {
-      var cmdLength = lineStart.length;
-      dockerfile[i][0] = lineStart + spaces(cmdLength);
+    if (Array.isArray(dockerfile[i])) {
+      var lineStart = dockerfile[i][0];
+      if(lineStart !== '#') {
+        var cmdLength = lineStart.length;
+        dockerfile[i][0] = lineStart + spaces(cmdLength);
+      }
+      dockerfile[i] = dockerfile[i].join('');
     }
-    dockerfile[i] = dockerfile[i].join('');
   }
   return dockerfile.join('\n');
 };
