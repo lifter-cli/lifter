@@ -205,7 +205,8 @@ var checkVMStatus = function() {
       console.log('VM status is "Ready", ready to send deploy script');
       sendDeployScript();
     } else {
-      setTimeout(checkVMStatus, 20000);
+      console.log('VM is not ready yet... retrying in 15 seconds')
+      setTimeout(checkVMStatus, 15000);
     }
   });
 }
