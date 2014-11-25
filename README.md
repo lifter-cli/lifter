@@ -25,7 +25,7 @@ Even for familiar users of Docker, our tool is designed to reduce your time mana
 4. Run the `lifter init` command to start the Docker containers in your local dev environment
 5. Run the `lifter push` command to save the state of your application as a Docker image and push it to Docker Hub
 6. Run the `lifter deploy` command to deploy your application on a VM in your production environment
-7. Your containers are now up and running in both your development and production environments. You can monitor the status of your containers through our Lifter UI by going to `http://localhost:####/`
+7. Your containers are now up and running in both your development and production environments. You can monitor the status of your containers through our Lifter UI by going to `http://localhost:3123/`
 
 ## Indepth Guide of How Lifter Works
 This section explains what exactly is happening under the hood with each Lifter command.
