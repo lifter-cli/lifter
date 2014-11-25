@@ -99,13 +99,15 @@ var checkHostsFileForDockerhost = function() {
 var createShellScript = function() {
   var settings = helpers.readYAML();
 
+  var dbLink = settings.dbContainerName + '-link';
+
   var shellFileContent = '#!/bin/sh\n' +
 
                          // wait 10 seconds for containers to be configured
                          'sleep 10\n' +
 
                          'DB_PORT=' + settings.dbPort + "\n" +
-                         'CURL_OUTPUT=$(curl dbLink:$DB_PORT)\n' +
+                         'CURL_OUTPUT=$(curl ' +dbLink+ ':$DB_PORT)\n' +
                          // this success message is  specific to mongo, need to change
                          'SUCCESS="It looks like you are trying to access MongoDB over HTTP on the native driver port."\n' +
                          'LAUNCH_CMD="' + settings.launchCommand + '"\n' +
@@ -116,7 +118,7 @@ var createShellScript = function() {
                          'do\n' +
                          'echo "Linking database container"\n' +
                          'sleep 20\n' +
-                         'CURL_OUTPUT=$(curl dbLink:$DB_PORT)\n' +
+                         'CURL_OUTPUT=$(curl ' +dbLink+ ':$DB_PORT)\n' +
                          // otherwise it runns the launch command
                          'done\n' +
                          'echo "Containers linked, running application launch command"\n' +
@@ -128,7 +130,6 @@ var createShellScript = function() {
     console.log("Launch script created: app.sh");
   });
 }
-
 
 var createLocalContainer = function() {
   var settings = helpers.readYAML();
