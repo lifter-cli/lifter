@@ -9,10 +9,10 @@ var helper = require('../helpers/helpers.js');
 var checkAzure = function(){
   exec('npm list -g --depth=0 | grep azure-cli', function(err, stdout, stderr){
     if(/azure-cli/.test(stdout)) {
-      console.log("Azure-CLI found, checking subscription connection...".green);
+      console.log('Azure-CLI found, checking subscription connection...'.green);
       checkSubscription();
     } else {
-      console.log("Exiting lifter...\n\nPlease install the azure command line tool and rerun lifter deploy:\nnpm install -g azure-cli".white);
+      console.log('Exiting lifter...\n\nPlease install the azure command line tool and rerun lifter deploy:\nnpm install -g azure-cli'.white);
     }
   });
 }
@@ -21,10 +21,10 @@ var checkAzure = function(){
 var checkSubscription = function() {
   exec('azure account show', function(err, stdout, stderr){
     if(/There is no current subscription/.test(stdout)){
-      console.log("Azure subscription not connected");
+      console.log('Azure subscription not connected');
       loginAzure();
     } else {
-      console.log("Subscription connected");
+      console.log('Subscription connected');
       whichVM();
     }
   });
@@ -37,9 +37,9 @@ var whichVM = function(){
   prompt.start();
 
   prompt.get(vmSetupQs.existingOrNew, function(err, result){
-    if(result.select === "existing"){
+    if(result.select === 'existing'){
       getVMInfo();
-    } else if (result.select === "new"){
+    } else if (result.select === 'new'){
       setupAzureVM();
     }
   });
@@ -54,7 +54,7 @@ var getVMInfo = function(){
   prompt.get(vmSetupQs.vmInfo, function(err, result){
 
     if(err){
-      console.log("ERR: ", err);
+      console.log('ERR: ', err);
     }
 
     fs.readFile('./.lifter/lifter.yml', 'utf8', function (err,data) {
@@ -68,7 +68,7 @@ var getVMInfo = function(){
          if (err) {
           return console.log(err);
          } else {
-           console.log("Writing deploy script...");
+           console.log('Writing deploy script...');
            writeDeployScript();
          }
       });
@@ -80,13 +80,13 @@ var getVMInfo = function(){
 var loginAzure = function() {
   exec('azure account download', function(err, stdout, stderr){
     if(err){
-      console.log("ERR: ", err);
+      console.log('ERR: ', err);
     } else {
-      console.log("Please complete the following before continuing\n\n"+
-      "1. Sign into the Azure Management Portal in the browser that was opened\n"+
-      "2. A .publishsettings file will be downloaded, remember its location\n"+
-      "3. Run the following command: azure account import .publishsettings < .publishsettings file location>\n"+
-      "4. Rerun lifter deploy".white);
+      console.log('Please complete the following before continuing\n\n'+
+      '1. Sign into the Azure Management Portal in the browser that was opened\n'+
+      '2. A .publishsettings file will be downloaded, remember its location\n'+
+      '3. Run the following command: azure account import .publishsettings < .publishsettings file location>\n'+
+      '4. Rerun lifter deploy'.white);
     }
   });
 }
@@ -100,7 +100,7 @@ var setupAzureVM = function() {
 
   prompt.get(vmSetupQs.vmSetup, function(err,result){
     credentials = [result.vm, result.username, result.password];
-    console.log("Creating azure vm...");
+    console.log('Creating azure vm...');
     createAzureVM(credentials);
   });
 }
@@ -108,7 +108,7 @@ var setupAzureVM = function() {
 //create an Azure VM with the Ubuntu image
 var createAzureVM = function(creds) {
 
-  var ubuntuImage = "b39f27a8b8c64d52b05eac6a62ebad85__Ubuntu-14_04-LTS-amd64-server-20140724-en-us-30GB";
+  var ubuntuImage = 'b39f27a8b8c64d52b05eac6a62ebad85__Ubuntu-14_04-LTS-amd64-server-20140724-en-us-30GB';
   var command = 'azure vm docker create -e 22 -l "West US" '+ creds[0] +' "' + ubuntuImage + '" ' + creds[1] + ' ' + creds[2];
 
   exec(command, function(err, stdout, stderr){
@@ -117,7 +117,7 @@ var createAzureVM = function(creds) {
         console.log(('A VM with the dns "' + creds[0] + '" already exists.').red);
         setupAzureVM();
       } else {
-        console.log("ERR: ", err);
+        console.log('ERR: ', err);
       }
     } else {
       console.log('Azure VM "'+ creds[0] + '" created');
@@ -133,7 +133,7 @@ var createAzureVM = function(creds) {
            if (err) {
             return console.log(err);
            } else {
-             console.log("Writing deploy script...");
+             console.log('Writing deploy script...');
              writeDeployScript();
            }
         });
@@ -145,7 +145,16 @@ var createAzureVM = function(creds) {
 var writeDeployScript = function(){
 
   var yamlContent = helper.readYAML();
-  var imageName = yamlContent.username + "/" + yamlContent.repoName + ":" + "latest";
+
+  var app = yamlContent.appContainerName
+  var appImage = yamlContent.username+ '/' +yamlContent.repoName+ ':latest';
+  
+  var db = yamlContent.dbContainerName;
+  var dbImage = yamlContent.dbTag;
+  var dbLink = db + '-link';
+
+  var pub = yamlContent.portPublic;
+  var priv = yamlContent.portPrivate;
 
   var deployScript = 'cat /etc/default/docker.io | sed \'s/0.0.0.0/localhost/g\' | sed \'s/tlsverify/tls/\' | sudo tee /etc/default/docker.io\n' +
 
@@ -154,25 +163,24 @@ var writeDeployScript = function(){
                     'sudo service docker.io restart\n' +
 
                     'echo "Pulling image from DockerHub"\n' +
-                    'sudo docker $DOCKER_OPTS pull ' + imageName + '\n' +
+                    'sudo docker $DOCKER_OPTS pull ' +appImage+ '\n' +
 
-                    'echo "Starting a mongo container"\n' +
-                    'sudo docker $DOCKER_OPTS run -d --name db mongo:latest\n' +
+                    'echo "Starting database container"\n' +
+                    'sudo docker $DOCKER_OPTS run -d --name ' +db+ ' ' +dbImage+ '\n' +
+
+                    'echo "Shutting down existing application container (if one exists)"\n' +
+                    'sudo docker $DOCKER_OPTS rm -f ' +app+ '\n' +
 
                     'echo "Creating application container"\n' +
-                    'echo "Linking to mongo container"\n' +
-                    'echo "Shutting down existing application container (if one exists)"\n' +
-                    'sudo docker $DOCKER_OPTS rm -f app' +
-
+                    'echo "Linking to database container"\n' +
                     'echo "Running application script"\n' +
+                    'sudo docker $DOCKER_OPTS run --name ' +app+ ' -it -p ' +pub+ ':' +priv+ ' --link ' +db+ ':' +dbLink+ ' ' +appImage+ ' sh prod/app.sh\n' +
 
-                    'sudo docker $DOCKER_OPTS run --name app -it -p 80:9000 --link db:dbLink ' +imageName+ ' sh prod/app.sh\n' +
-
-                    'echo "Your application is deployed at: http://' +yamlContent.vmName+ '.cloudapp.net:80"';
+                    'echo "Your application is deployed at: http://' +yamlContent.vmName+ '.cloudapp.net:' +pub+ '"';
 
   fs.writeFile('./.lifter/deploy.sh', deployScript, function (err) {
     if (err) {
-      console.log("Err deploy script not written: ", err);
+      console.log('Err deploy script not written: ', err);
     }
     console.log('Created deploy script');
     sendDeployScript();
@@ -183,14 +191,14 @@ var writeDeployScript = function(){
 var sendDeployScript = function(){
 
   var yamlContent = helper.readYAML();
-  var sshPath = yamlContent.vmUsername+ "@" +yamlContent.vmName+ ".cloudapp.net";
+  var sshPath = yamlContent.vmUsername+ '@' +yamlContent.vmName+ '.cloudapp.net';
 
-  console.log("\nPlease run the following commands:\n\n" +
-              "1. Send the deploy script to your vm: scp ./.lifter/deploy.sh " +sshPath+ ":/home/" +yamlContent.vmUsername+ "\n\n" +
-              "You will be prompted for the vm's password after running this command. If this is your first time ssh-ing into the vm,\n"+
-              "you will need to respond 'yes' when asked to authenticate the host\n\n"+
-              "2. ssh into your vm: ssh "+sshPath+"\n\n"+
-              "3. Run the script inside your vm: sh deploy.sh\n");
+  console.log('\nPlease run the following commands:\n\n' +
+              '1. Send the deploy script to your vm: scp ./.lifter/deploy.sh ' +sshPath+ ':/home/' +yamlContent.vmUsername+ '\n\n' +
+              'You will be prompted for the vm\'s password after running this command. If this is your first time ssh-ing into the vm,\n'+
+              'you will need to respond "yes" when asked to authenticate the host\n\n'+
+              '2. ssh into your vm: ssh ' +sshPath+ '\n\n'+
+              '3. Run the script inside your vm: sh deploy.sh\n');
 }
 
 module.exports = {
