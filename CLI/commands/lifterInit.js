@@ -133,7 +133,7 @@ var createShellScript = function() {
 var createLocalContainer = function() {
   var settings = helpers.readYAML();
   //docker build -t username_on_docker_hub/create_new_repo_name .
-  var appContainerName = settings.appContainerName;
+  var appContainerName = settings.containerName;
   var imageName = settings.username + '/' + settings.repoName;
 
   var dbContainerName = settings.dbContainerName;
