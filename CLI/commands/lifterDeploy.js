@@ -100,7 +100,9 @@ var setupAzureVM = function() {
 
   prompt.get(vmSetupQs.vmSetup, function(err,result){
     credentials = [result.vm, result.username, result.password];
-    console.log('Creating azure vm...');
+    // Creating new line to avoid over-writing the previous line
+    console.log('\nCreating azure vm...');
+
     createAzureVM(credentials);
   });
 }
