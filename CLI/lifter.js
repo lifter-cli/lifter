@@ -6,6 +6,8 @@ var lifterPrompts = require('./prompts/lifterPrompts.js');
 var lifterInit = require('./commands/lifterInit.js')
 var lifterPush = require('./commands/lifterPush.js');
 var lifterDeploy = require('./commands/lifterDeploy.js');
+var lifterMonitor = require('./commands/lifterMonitor.js');
+var exec = require('child_process').exec;
 
 // Doing this to make the help screen look correct
 program._name = 'lifter';
@@ -63,6 +65,19 @@ program
   .action(function() {
     console.log('Time to deploy to Azure');
     lifterDeploy.checkAzure();
+  });
+
+/**
+* Object with method and description attached to 'lifter deploy' command
+* @Object
+*/
+program
+  .command('monitor')
+  .description('Monitor your containers ')
+  .action(function() {
+    console.log('Launching the Lifter UI to monitor your containers');
+    console.log('Go to http://localhost:3123/');
+    lifterMonitor.lifterMonitor();
   });
 
 /**

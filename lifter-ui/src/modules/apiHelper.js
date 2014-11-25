@@ -4,8 +4,8 @@
  */
 
 var config = {
-  dockerContainersAPI: 'http://localhost:3123/api/docker/containers/all',
-  dockerContainerDetailAPI: 'http://localhost:3123/api/docker/container/'
+  dockerContainersAPI: '/api/docker/containers/all',
+  dockerContainerDetailAPI: '/api/docker/container/'
 };
 
 var getContainerDetail = function(context, id){
