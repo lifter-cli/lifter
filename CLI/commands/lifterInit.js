@@ -158,7 +158,7 @@ var createLocalContainer = function() {
     ['run', '--restart=always',
      '--name', appContainerName,
      '--link', dbContainerName+':'+dbLinkName,
-     '-p', settings.portPrivate+':'+settings.portPublic,
+     '-p', settings.portPublic+':'+settings.portPrivate,
      '-v', settings.currentWorkingDir+':/src:ro', imageName, 'sh', '/src/.lifter/app.sh']];
 
   dockerSpawnSeries([
