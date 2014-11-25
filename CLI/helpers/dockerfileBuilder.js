@@ -62,6 +62,13 @@ var readDirectory = function(dir,dockerfile) {
 
   for(var i=0;i<files.length;i++) {
     var file = files[i];
+
+    // All file names will be matched in lower case for consistency
+    // E.g. gruntfile might be named 'Gruntfile.js' or 'gruntfile.js'
+    if(typeof file === 'string') {
+      file = file.toLowerCase();
+    }
+
     if(dependencies.files.indexOf(file) > -1) {
       var installCommand = dependencies.installCommands[file];
       if(splicePoint) {
@@ -80,11 +87,8 @@ var readDirectory = function(dir,dockerfile) {
 * @param {function} callback Callback function that is invoked once Dockerfile is ready
 */
 var buildDockerfile = function() {
-  console.log('addtoDockerfile', dockerfileContents);
   addToDockerfile(dockerfileContents);
-  console.log('readDirectory', dockerfileContents);
   readDirectory('./',dockerfileContents);
-  console.log('prepDockerfile', dockerfileContents);
   prepDockerfile(dockerfileContents);
   fs.writeFileSync('./Dockerfile',dockerfileContents.join('\n'));
   console.log('Dockerfile exists now.  High five!');
