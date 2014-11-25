@@ -26,7 +26,13 @@ var spawnSeries = function(tasks, callback) {
   }
   var run = function() {
     var task = tasks[completed];
-    console.log("RUNNING:", task);
+
+    var commandText = "docker ";
+      for(var i = 6; i < task[1].length; i++) {
+        commandText += task[1][i] + " ";
+      }
+    console.log("RUNNING:", commandText);
+
     var proc = spawn.apply(null, task);
     proc.stdout.on('data', function(data) {
       console.log(data.toString());
@@ -35,7 +41,13 @@ var spawnSeries = function(tasks, callback) {
       console.log(data.toString());
     });
     proc.on('exit', function(code) {
-      // console.log('EXIT CODE:', code);
+      // show error code if error
+      if (code !== 0) {
+        console.log('DOCKER COMMAND RAN:');
+        console.log(commandText);
+        console.log('EXITED WITH CODE:', code);
+      }
+
       iterate();
     });
   }

@@ -38,7 +38,7 @@ var boot_b2d = function() {
     if (err) console.log(err);
     if (/running/.test(stdout)) {
       console.log('boot2docker is already running');
-      finishInit();
+      createShellScript();
     } else { //if (/poweroff/.test(stdout)) {
       console.log('boot2docker not running, powering on...');
       exec_b2d_Up();
@@ -52,7 +52,7 @@ var exec_b2d_Up = function() {
   exec('boot2docker up', function(err, stdout, stderr) {
     if (err) console.log("exec err: ", err);
     console.log('boot2docker VM powered on');
-    finishInit();
+    createShellScript();
   });
 };
 
@@ -67,9 +67,6 @@ var checkHostsFileForDockerhost = function() {
     var ip = /\d*\.\d*\.\d*\.\d*/.exec(stdout)[0];
     var ipRegex = new RegExp(ip);
     // change line if ip not in hosts file
-
-    createShellScript();
-    builder.buildDockerfile();
 
     if (hostsWritten) {
       console.log('dockerhost found in /etc/hosts');
@@ -90,13 +87,14 @@ var checkHostsFileForDockerhost = function() {
       // addDockerhostToHostsFile(ip);
     }
     // console.log(exitInstructions);
-    createLocalContainer();
   });
 
 }
 
 // create shell script to launch app
 var createShellScript = function() {
+  // asynchronously build dockerfile
+  builder.buildDockerfile();
   var settings = helpers.readYAML();
 
   var dbLink = settings.dbContainerName + '-link';
@@ -108,6 +106,7 @@ var createShellScript = function() {
 
                          'DB_PORT=' + settings.dbPort + "\n" +
                          'CURL_OUTPUT=$(curl ' +dbLink+ ':$DB_PORT)\n' +
+
                          // this success message is  specific to mongo, need to change
                          'SUCCESS="It looks like you are trying to access MongoDB over HTTP on the native driver port."\n' +
                          'LAUNCH_CMD="' + settings.launchCommand + '"\n' +
@@ -119,19 +118,27 @@ var createShellScript = function() {
                          'echo "Linking database container"\n' +
                          'sleep 20\n' +
                          'CURL_OUTPUT=$(curl ' +dbLink+ ':$DB_PORT)\n' +
+
                          // otherwise it runns the launch command
                          'done\n' +
                          'echo "Containers linked, running application launch command"\n' +
-                         'cd prod\n' +
+                         'cd /src\n' +
                          '$LAUNCH_CMD';
 
   fs.writeFile("./.lifter/app.sh", shellFileContent, function(err) {
     if (err) console.log(err);
     console.log("Launch script created: app.sh");
+    createLocalContainer();
   });
+
 }
 
 var createLocalContainer = function() {
+  var rmAppContainer = ['docker',
+    ['rm', '-f', 'app']];
+  var rmDbContainer = ['docker' ,
+    ['rm', '-f', 'app-db']];
+
   var settings = helpers.readYAML();
   //docker build -t username_on_docker_hub/create_new_repo_name .
   var appContainerName = settings.containerName;
@@ -151,9 +158,11 @@ var createLocalContainer = function() {
      '--name', appContainerName, 
      '--link', dbContainerName+':'+dbLinkName,
      '-p', settings.portPrivate+':'+settings.portPublic, 
-     '-v', settings.launchPath+':/src:ro', imageName, 'sh', '/src/app.sh']];
+     '-v', settings.currentWorkingDir+':/src:ro', imageName, 'sh', '/src/.lifter/app.sh']];
 
   dockerSpawnSeries([
+    rmAppContainer,
+    rmDbContainer,
     buildCmd,
     dbRunCmd,
     appRunCmd
@@ -161,6 +170,7 @@ var createLocalContainer = function() {
 }
 
 var printInstructions = function() {
+  console.log('Local docker environment created!');
   if (exitInstructions.length > 0) {
     console.log("Run these commands:")
     exitInstructions.forEach(function(str) {
@@ -170,13 +180,7 @@ var printInstructions = function() {
 }
 
 var finishInit = function () {
-  aync.series([
-    checkHostsFileForDockerhost,
-    createShellScript,
-    createLocalContainer
-  ]);
-  console.log('Local docker environment created!');
-  printInstructions();
+  console.log('FINISHED FINISH INIT');
 }
 
 module.exports = {
