@@ -134,13 +134,7 @@ var createShellScript = function() {
 }
 
 var createLocalContainer = function() {
-  var rmAppContainer = ['docker',
-    ['rm', '-f', 'app']];
-  var rmDbContainer = ['docker' ,
-    ['rm', '-f', 'app-db']];
-
   var settings = helpers.readYAML();
-  //docker build -t username_on_docker_hub/create_new_repo_name .
   var appContainerName = settings.containerName;
   var imageName = settings.username + '/' + settings.repoName;
 
@@ -148,16 +142,23 @@ var createLocalContainer = function() {
   var dbImageName = settings.dbTag;
   var dbLinkName = dbContainerName+'-link';
 
-  var buildCmd = ['docker', 
+  var rmAppContainer = ['docker',
+    ['rm', '-f', appContainerName]];
+  var rmDbContainer = ['docker' ,
+    ['rm', '-f', dbContainerName]];
+
+  //docker build -t username_on_docker_hub/create_new_repo_name .
+
+  var buildCmd = ['docker',
     ['build', '-t', imageName, '.']];
-  var dbRunCmd = ['docker', 
-    ['run', '--restart=always', '-d', 
+  var dbRunCmd = ['docker',
+    ['run', '--restart=always', '-d',
      '--name', dbContainerName, dbImageName]];
-  var appRunCmd = ['docker', 
-    ['run', '--restart=always', 
-     '--name', appContainerName, 
+  var appRunCmd = ['docker',
+    ['run', '--restart=always',
+     '--name', appContainerName,
      '--link', dbContainerName+':'+dbLinkName,
-     '-p', settings.portPrivate+':'+settings.portPublic, 
+     '-p', settings.portPrivate+':'+settings.portPublic,
      '-v', settings.currentWorkingDir+':/src:ro', imageName, 'sh', '/src/.lifter/app.sh']];
 
   dockerSpawnSeries([
