@@ -5,6 +5,7 @@ var helpers = require('../helpers/helpers.js');
 var builder = require('../helpers/dockerfileBuilder.js');
 var docker = require('../helpers/dockerLib.js');
 var configFile = "./.lifter/lifter.yml";
+var lifterShell = require('lifterShell.js');
 
 var exitInstructions = [];
 
@@ -181,6 +182,7 @@ var printInstructions = function() {
 }
 
 var finishInit = function () {
+  lifterShell.printCommand();
   console.log('FINISHED FINISH INIT');
 }
 
