@@ -122,7 +122,7 @@ var createShellScript = function() {
                          // otherwise it runns the launch command
                          'done\n' +
                          'echo "Containers linked, running application launch command"\n' +
-                         'cd prod\n' +
+                         'cd /prod\n' +
                          '$LAUNCH_CMD';
 
   fs.writeFile("./.lifter/app.sh", shellFileContent, function(err) {
@@ -170,7 +170,7 @@ var createLocalContainer = function() {
      '--restart=always', '--name', appContainerName,
      '--link', dbContainerName+':'+dbLinkName,
      '-p', settings.portPublic+':'+settings.portPrivate,
-     '-v', settings.currentWorkingDir+':/src:ro', 
+     '-v', settings.currentWorkingDir+':/src', 
      imageName,
      '/bin/bash']];
 
