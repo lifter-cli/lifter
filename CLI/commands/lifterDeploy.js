@@ -52,18 +52,14 @@ var getVMInfo = function(){
   prompt.start();
 
   prompt.get(vmSetupQs.vmInfo, function(err, result){
-
     if(err){
       console.log('ERR: ', err);
     }
-
     fs.readFile('./.lifter/lifter.yml', 'utf8', function (err,data) {
       if (err) {
         return console.log(err);
       }
-
       var replace = data.replace(/vmNameHere/g, result.vmName).replace(/vmUsernameHere/g, result.vmUsername);
-
       fs.writeFile('./.lifter/lifter.yml', replace, 'utf8', function (err) {
          if (err) {
           return console.log(err);
@@ -127,18 +123,31 @@ var createAzureVM = function(creds) {
       fs.readFile('./.lifter/lifter.yml', 'utf8', function (err,data) {
         if (err) {
           return console.log(err);
-        }
+      }
 
-        var replace = data.replace(/vmNameHere/g, creds[0]).replace(/vmUsernameHere/g, creds[1]);
+        fs.readFile('./.lifter/lifter.yml', function(err, data){
+          if(err){
+            console.log("ERR: ", err);
+          } else {
+            if(/vmName|vmUsername/.test(data)){
+              var replace = data.replace()
+              fs.writeFile('./.lifter/lifter.yml', replace, 'utf8', function(err){
 
-        fs.writeFile('./.lifter/lifter.yml', replace, 'utf8', function (err) {
-           if (err) {
-            return console.log(err);
-           } else {
-             console.log('Writing deploy script...');
-             writeDeployScript();
-           }
+              });
+            }
+          }
         });
+
+        // var replace = data.replace(/vmNameHere/g, creds[0]).replace(/vmUsernameHere/g, creds[1]);
+
+        // fs.writeFile('./.lifter/lifter.yml', replace, 'utf8', function (err) {
+        //    if (err) {
+        //     return console.log(err);
+        //    } else {
+        //      console.log('Writing deploy script...');
+        //      writeDeployScript();
+        //    }
+        // });
       });
     }
   });
