@@ -5,9 +5,9 @@ var Docker = require('dockerode');
 // // var docker4 = new Docker({host: '127.0.0.1', port: 3000}); //defaults to http
 // //
 
-var caPath = process.env.docker_caPath || (process.env.DOCKER_CERT_PATH + '/ca.pem');
-var certPath = process.env.docker_certPath || (process.process.env.DOCKER_CERT_PATH + '/cert.pem');
-var keyPath = process.env.docker_keyPath || (process.env.DOCKER_CERT_PATH + '/key.pem');
+var caPath = process.env.DOCKER_CA_PATH || (process.env.DOCKER_CERT_PATH + '/ca.pem');
+var certPath = process.env.DOCKER_CERT_PATH || (process.process.env.DOCKER_CERT_PATH + '/cert.pem');
+var keyPath = process.env.DOCKER_KEY_PATH || (process.env.DOCKER_CERT_PATH + '/key.pem');
 
 var fs = require('fs');
 var docker = new Docker({
