@@ -190,15 +190,15 @@ var createLocalContainer = function() {
   // If user selected no database, remove link and command
   if (dbImageName === null) {
     // remove db run command from docker commands
-    var dbCmdIdx = dockerCommands.indexOf(dbRunCmd);
-    if (dbCmdIdx) {
-      dockerCommands.splice(dbCmdIdx,1);
+    var dbCommandIndex = dockerCommands.indexOf(dbRunCmd);
+    if (dbCommandIndex) {
+      dockerCommands.splice(dbCommandIndex,1);
     }
 
     // remove DB link from app run command
-    var idx = appRunCmd.indexOf('--link');
-    if (idx) {
-      appRunCmd.splice(idx,2);
+    var linkIndex = appRunCmd[1].indexOf('--link');
+    if (linkIndex) {
+      appRunCmd[1].splice(linkIndex,2);
     }
   }
 
