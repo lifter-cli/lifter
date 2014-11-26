@@ -177,7 +177,7 @@ var writeDeployScript = function(){
                     'echo "Creating application container"\n' +
                     'echo "Linking to database container"\n' +
                     'echo "Running application script"\n' +
-                    'sudo docker $DOCKER_OPTS run --name ' +app+ ' -it -p ' +pub+ ':' +priv+ ' --link ' +db+ ':' +dbLink+ ' ' +appImage+ ' sh prod/app.sh\n' +
+                    'sudo docker $DOCKER_OPTS run --name ' +app+ ' -it -p ' +pub+ ':' +priv+ ' --link ' +db+ ':' +dbLink+ ' ' +appImage+ ' sh prod/.lifter/app.sh\n' +
 
                     'echo "Before you can access your deployed application, you must open the following port: ' +pub +'\n';
                     'echo "Please follow the instructions at: \n';
