@@ -3,7 +3,7 @@
 */
 var fs = require('fs');
 var yaml = require('../../node_modules/js-yaml');
-var configFile = './.lifter/lifter.yml'
+var configFile = './.lifter/lifter.yml';
 
 /**
 * Function that takes in an array of tasks that will be individually
@@ -65,8 +65,49 @@ var readYAML = function() {
   return out;
 }
 
+/**
+* Function that writes new vm info into lifter.yml
+* @function
+* @memberof module:helpers
+*/
+
+var sendVMInfoToYAML = function(vmName, vmUser, callback){
+
+  var newVMName = 'vmName: ' + vmName;
+  var newVMUsername = 'vmUserName: ' + vmUser;
+
+  fs.readFile(configFile, 'utf8', function(err, data){
+    if(err){
+      console.log('ERR: ', err);
+    // overwrites vm info in yaml file if it already exits
+    } else if(/vmName|vmUserName/g.test(data)) {
+      console.log("Overwriting existing vm info in YAML file");
+      var replace = data.replace(/vmName.*/g, newVMName).replace(/vmUserName.*/g, newVMUsername);
+      fs.writeFile(configFile, replace, 'utf8', function(err){
+        if(err){
+          console.log('ERROR Could not update YAML with new vm info: ', err);
+        }
+        console.log("Writing Deploy script...");
+        callback();
+      });
+    // appends new vm info to yaml file if the info is not already there
+    } else {
+      console.log("Appending vm info into YAML file");
+      var append = '\n'+ newVMName + '\n' + newVMUsername;      
+      fs.appendFile(configFile, append, function(err){
+        if(err){
+          console.log('ERROR Could not update YAML with new vm info: ', err);
+        }
+        console.log("Writing Deploy script...");
+        callback();
+      });
+    }    
+  });
+};
+
 module.exports = {
   spawnSeries: spawnSeries,
   readYAML: readYAML,
+  sendVMInfoToYAML: sendVMInfoToYAML,
   configFile: configFile
 }

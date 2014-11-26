@@ -52,27 +52,11 @@ var getVMInfo = function(){
   prompt.start();
 
   prompt.get(vmSetupQs.vmInfo, function(err, result){
-
     if(err){
       console.log('ERR: ', err);
+    } else {
+      helper.sendVMInfoToYAML(result.vmName, result.vmUsername, writeDeployScript);
     }
-
-    fs.readFile('./.lifter/lifter.yml', 'utf8', function (err,data) {
-      if (err) {
-        return console.log(err);
-      }
-
-      var replace = data.replace(/vmNameHere/g, result.vmName).replace(/vmUsernameHere/g, result.vmUsername);
-
-      fs.writeFile('./.lifter/lifter.yml', replace, 'utf8', function (err) {
-         if (err) {
-          return console.log(err);
-         } else {
-           console.log('Writing deploy script...');
-           writeDeployScript();
-         }
-      });
-    });
   });
 }
 
@@ -111,7 +95,8 @@ var setupAzureVM = function() {
 var createAzureVM = function(creds) {
 
   var ubuntuImage = 'b39f27a8b8c64d52b05eac6a62ebad85__Ubuntu-14_04-LTS-amd64-server-20140724-en-us-30GB';
-  var command = 'azure vm docker create -e 22 -l "West US" '+ creds[0] +' "' + ubuntuImage + '" ' + creds[1] + ' ' + creds[2];
+  // var command = 'azure vm docker create -e 22 -l "West US" '+ creds[0] +' "' + ubuntuImage + '" ' + creds[1] + ' ' + creds[2];
+  var command = 'azure vm list';
 
   exec(command, function(err, stdout, stderr){
     if(err){
@@ -123,26 +108,11 @@ var createAzureVM = function(creds) {
       }
     } else {
       console.log('Azure VM "'+ creds[0] + '" created');
-
-      fs.readFile('./.lifter/lifter.yml', 'utf8', function (err,data) {
-        if (err) {
-          return console.log(err);
-        }
-
-        var replace = data.replace(/vmNameHere/g, creds[0]).replace(/vmUsernameHere/g, creds[1]);
-
-        fs.writeFile('./.lifter/lifter.yml', replace, 'utf8', function (err) {
-           if (err) {
-            return console.log(err);
-           } else {
-             console.log('Writing deploy script...');
-             writeDeployScript();
-           }
-        });
-      });
+      helper.sendVMInfoToYAML(creds[0], creds[1], writeDeployScript);
     }
   });
 }
+
 
 // writes deploy script for vm
 var writeDeployScript = function(){
@@ -188,9 +158,9 @@ var writeDeployScript = function(){
     if (err) {
       console.log('Err deploy script not written: ', err);
     }
-    console.log('Created deploy script');
+    console.log('Created deploy script: deploy.sh');
     console.log('Checking vm status');
-    checkVMStatus();
+    // checkVMStatus();
   });
 };
 
