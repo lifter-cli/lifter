@@ -87,6 +87,7 @@ var checkHostsFileForDockerhost = function() {
       // addDockerhostToHostsFile(ip);
     }
     printInstructions();
+    finishInit();
   });
 
 }
@@ -174,16 +175,6 @@ var createLocalContainer = function() {
      imageName,
      '/bin/bash']];
 
-  if (dbImageName === null) {
-    appRunCmd = ['docker',
-    ['run', '-it', '-d',
-     '--restart=always', '--name', appContainerName,
-     '-p', settings.portPublic+':'+settings.portPrivate,
-     '-v', settings.currentWorkingDir+':/src', 
-     imageName,
-     '/bin/bash']];
-  }
-
   var dockerPsCmd = ['docker',
     ['ps', '-a']];
 
@@ -196,11 +187,22 @@ var createLocalContainer = function() {
     dockerPsCmd
   ];
 
+  // If user selected no database, remove link and command
   if (dbImageName === null) {
-    dockerCommands.splice(3,1);
+    // remove db run command from docker commands
+    var dbCmdIdx = dockerCommands.indexOf(dbRunCmd);
+    if (dbCmdIdx) {
+      dockerCommands.splice(dbCmdIdx,1);
+    }
+
+    // remove DB link from app run command
+    var idx = appRunCmd.indexOf('--link');
+    if (idx) {
+      appRunCmd.splice(idx,2);
+    }
   }
 
-  docker.spawnSeries(dockerCommands, finishInit);
+  docker.spawnSeries(dockerCommands, checkHostsFileForDockerhost);
 }
 
 var printInstructions = function() {
@@ -217,7 +219,6 @@ var printInstructions = function() {
 
 var finishInit = function () {
   lifterShell.printCommand();
-  checkHostsFileForDockerhost();
 }
 
 module.exports = {
