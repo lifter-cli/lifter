@@ -6,7 +6,8 @@ sudo su
 # Install node properly
 apt-get --purge -y remove node
 apt-get --purge -y remove nodejs
-apt-get install -y nodejs
+apt-get --purge -y remove nodejs-legacy
+apt-get install -y nodejs-legacy
 
 # Install npm
 apt-get install -y npm
