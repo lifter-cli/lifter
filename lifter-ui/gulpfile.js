@@ -17,7 +17,6 @@ var path = require('path');
 var merge = require('merge-stream');
 var runSequence = require('run-sequence');
 var webpack = require('webpack');
-var browserSync = require('browser-sync');
 var pagespeed = require('psi');
 var fs = require('fs');
 var url = require('url');
@@ -92,19 +91,6 @@ gulp.task('assets', function() {
     .pipe(gulp.dest(DEST))
     .pipe($.size({title: 'assets'}));
 });
-
-// Images
-// gulp.task('images', function() {
-//   src.images = 'src/images/**';
-//   return gulp.src(src.images)
-//     .pipe($.changed(DEST + '/images'))
-//     .pipe($.imagemin({
-//       progressive: true,
-//       interlaced: true
-//     }))
-//     .pipe(gulp.dest(DEST + '/images'))
-//     .pipe($.size({title: 'images'}));
-// });
 
 // HTML pages
 gulp.task('pages', function() {
@@ -210,34 +196,3 @@ gulp.task('serve', function(cb) {
     cb();
   });
 });
-
-// Deploy to GitHub Pages
-gulp.task('deploy', function() {
-
-  // Remove temp folder
-  if (argv.clean) {
-    var os = require('os');
-    var path = require('path');
-    var repoPath = path.join(os.tmpdir(), 'tmpRepo');
-    $.util.log('Delete ' + $.util.colors.magenta(repoPath));
-    del.sync(repoPath, {force: true});
-  }
-
-  return gulp.src(DEST + '/**/*')
-    .pipe($.if('**/robots.txt', !argv.production ? $.replace('Disallow:', 'Disallow: /') : $.util.noop()))
-    .pipe($.ghPages({
-      remoteUrl: 'https://github.com/{name}/{name}.github.io.git',
-      branch: 'master'
-    }));
-});
-
-// Run PageSpeed Insights
-// Update `url` below to the public URL for your site
-gulp.task('pagespeed', pagespeed.bind(null, {
-  // By default, we use the PageSpeed Insights
-  // free (no API key) tier. You can use a Google
-  // Developer API key if you have one. See
-  // http://goo.gl/RkN0vE for info key: 'YOUR_API_KEY'
-  url: 'https://example.com',
-  strategy: 'mobile'
-}));

@@ -4,7 +4,7 @@ var exec = require('child_process').exec;
 var start = function() {
   // src is where the mounted files exist
   // app is where the copied files will be transeffered to
-  var command = './lifter-ui/run-lifter-ui.sh';
+  var command = __dirname + '/../../lifter-ui/run-lifter-ui.sh:';
   exec(command, function(err, stdout, stderr){
     if(err){
       console.log("ERR: ", stderr);
