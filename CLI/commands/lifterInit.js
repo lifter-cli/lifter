@@ -191,15 +191,11 @@ var createLocalContainer = function() {
   if (dbImageName === null) {
     // remove db run command from docker commands
     var dbCommandIndex = dockerCommands.indexOf(dbRunCmd);
-    if (dbCommandIndex) {
-      dockerCommands.splice(dbCommandIndex,1);
-    }
+    dockerCommands.splice(dbCommandIndex,1);
 
     // remove DB link from app run command
     var linkIndex = appRunCmd[1].indexOf('--link');
-    if (linkIndex) {
-      appRunCmd[1].splice(linkIndex,2);
-    }
+    appRunCmd[1].splice(linkIndex,2);
   }
 
   docker.spawnSeries(dockerCommands, checkHostsFileForDockerhost);
