@@ -3,8 +3,7 @@ var aync = require('async');
 var exec = require('child_process').exec;
 var helpers = require('../helpers/helpers.js');
 var builder = require('../helpers/dockerfileBuilder.js');
-var spawnSeriesLib = require('../helpers/spawnSeries.js');
-var dockerSpawnSeries = spawnSeriesLib.dockerSpawnSeries;
+var docker = require('../helpers/dockerLib.js');
 var configFile = "./.lifter/lifter.yml";
 
 var exitInstructions = [];
@@ -134,6 +133,7 @@ var createShellScript = function() {
 }
 
 var createLocalContainer = function() {
+  console.log('local container creation starting');
   var settings = helpers.readYAML();
   var appContainerName = settings.containerName;
   var imageName = settings.username + '/' + settings.repoName;
@@ -154,14 +154,14 @@ var createLocalContainer = function() {
   var dbRunCmd = ['docker',
     ['run', '--restart=always', '-d',
      '--name', dbContainerName, dbImageName]];
-  var appRunCmd = ['docker',
-    ['run', '--restart=always',
-     '--name', appContainerName,
+  var appRunCmd = ['docker', 
+    ['run', '-it', '--restart=always', 
+     '--name', appContainerName, 
      '--link', dbContainerName+':'+dbLinkName,
-     '-p', settings.portPublic+':'+settings.portPrivate,
-     '-v', settings.currentWorkingDir+':/src:ro', imageName, 'sh', '/src/.lifter/app.sh']];
-
-  dockerSpawnSeries([
+     '-p', settings.portPrivate+':'+settings.portPublic, 
+     '-v', settings.currentWorkingDir+':/src:ro', imageName]];
+  
+  docker.spawnSeries([
     rmAppContainer,
     rmDbContainer,
     buildCmd,
