@@ -122,7 +122,7 @@ var createShellScript = function() {
                          // otherwise it runns the launch command
                          'done\n' +
                          'echo "Containers linked, running application launch command"\n' +
-                         'cd /src\n' +
+                         'cd prod\n' +
                          '$LAUNCH_CMD';
 
   fs.writeFile("./.lifter/app.sh", shellFileContent, function(err) {
