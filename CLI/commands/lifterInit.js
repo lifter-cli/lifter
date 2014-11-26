@@ -86,7 +86,7 @@ var checkHostsFileForDockerhost = function() {
           'echo ' + ip + ' dockerhost | sudo tee -a /etc/hosts');
       // addDockerhostToHostsFile(ip);
     }
-    // console.log(exitInstructions);
+    printInstructions();
   });
 
 }
@@ -164,25 +164,33 @@ var createLocalContainer = function() {
   }
 
   var appRunCmd = ['docker',
-    ['run',
+    ['run', '-it', '-d',
      '--restart=always', '--name', appContainerName,
      '--link', dbContainerName+':'+dbLinkName,
      '-p', settings.portPrivate+':'+settings.portPublic,
-     '-v', settings.currentWorkingDir+':/src:ro', imageName]];
+     '-v', settings.currentWorkingDir+':/src:ro', 
+     imageName,
+     '/bin/bash']];
+
+  var dockerPsCmd = ['docker',
+    ['ps', '-a']];
 
   docker.spawnSeries([
     rmAppContainer,
     rmDbContainer,
     buildCmd,
     dbRunCmd,
-    appRunCmd
+    appRunCmd,
+    dockerPsCmd
   ], finishInit);
 }
 
 var printInstructions = function() {
-  console.log('Local docker environment created!');
+  var settings = helpers.readYAML();
+  console.log('Once you launch your app, you can use this url to access it: \n\n'+
+    '    http://dockerhost:' + settings.portPublic + '\n\n');
   if (exitInstructions.length > 0) {
-    console.log("Run these commands:")
+    console.log("Run these to correct your /etc/hosts file:")
     exitInstructions.forEach(function(str) {
       console.log("    " + str);
     });
@@ -191,7 +199,7 @@ var printInstructions = function() {
 
 var finishInit = function () {
   lifterShell.printCommand();
-  console.log('FINISHED FINISH INIT');
+  checkHostsFileForDockerhost();
 }
 
 module.exports = {
