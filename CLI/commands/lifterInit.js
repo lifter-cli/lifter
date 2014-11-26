@@ -152,16 +152,24 @@ var createLocalContainer = function() {
 
   var buildCmd = ['docker',
     ['build', '-t', imageName, '.']];
-  var dbRunCmd = ['docker',
-    ['run', '--restart=always', '-d',
-     '--name', dbContainerName, dbImageName]];
-  var appRunCmd = ['docker', 
-    ['run', '-it', '--restart=always', 
-     '--name', appContainerName, 
+
+  // Handle mongo DB differently (use smaller file sizes to accomodate boot2docker VM)
+  var dbRunCmd;
+  if ( dbImageName === 'mongo:latest' ) {
+    dbRunCmd = ['docker', ['run', '-d', '--restart=always', '--name',
+      dbContainerName, dbImageName, 'mongod', '--smallfiles']];
+  } else {
+    dbRunCmd = ['docker', ['run', '-d', '--restart=always', '--name',
+      dbContainerName, dbImageName]];
+  }
+
+  var appRunCmd = ['docker',
+    ['run',
+     '--restart=always', '--name', appContainerName,
      '--link', dbContainerName+':'+dbLinkName,
-     '-p', settings.portPrivate+':'+settings.portPublic, 
+     '-p', settings.portPrivate+':'+settings.portPublic,
      '-v', settings.currentWorkingDir+':/src:ro', imageName]];
-  
+
   docker.spawnSeries([
     rmAppContainer,
     rmDbContainer,
