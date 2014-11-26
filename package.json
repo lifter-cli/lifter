@@ -1,6 +1,6 @@
 {
   "name": "lifter",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "lifter: A tool to make Docker Containers",
   "repository": {
     "type": "git",
