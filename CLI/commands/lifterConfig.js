@@ -110,8 +110,10 @@ var askConfigQuestion = function(obj) {
         if(nextEvent !== null) {
           askConfigQuestion(lifterPrompts.promptList[nextEvent]);
         } else {
-            console.log('If you have selected a database, make sure you update your application configurations\n' +
-            'and change the host of the database reference to the following format: mongodb://appContainerName-db-link');
+          if(containerProperties.db !== 'None') {
+            console.log('Update your application configurations\n' +
+            'and change the host of the database reference to the following format: mongodb://'+containerProperties.dbContainerName+'-link');
+          }
             console.log('Good work.  Run lifter init to build a container.');
 //             console.log(containerProperties);
 
