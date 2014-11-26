@@ -54,21 +54,9 @@ var getVMInfo = function(){
   prompt.get(vmSetupQs.vmInfo, function(err, result){
     if(err){
       console.log('ERR: ', err);
+    } else {
+      helper.sendVMInfoToYAML(result.vmName, result.vmUsername, writeDeployScript);
     }
-    fs.readFile('./.lifter/lifter.yml', 'utf8', function (err,data) {
-      if (err) {
-        return console.log(err);
-      }
-      var replace = data.replace(/vmNameHere/g, result.vmName).replace(/vmUsernameHere/g, result.vmUsername);
-      fs.writeFile('./.lifter/lifter.yml', replace, 'utf8', function (err) {
-         if (err) {
-          return console.log(err);
-         } else {
-           console.log('Writing deploy script...');
-           writeDeployScript();
-         }
-      });
-    });
   });
 }
 
@@ -120,37 +108,7 @@ var createAzureVM = function(creds) {
       }
     } else {
       console.log('Azure VM "'+ creds[0] + '" created');
-
-      fs.readFile('./.lifter/lifter.yml', 'utf8', function(err, data){
-        if(err){
-          console.log("ERR: ", err);
-        } else {
-          if(/vmName|vmUsername/.test(data)){
-
-            var next = 'vmName: ' + creds[0];
-            var wah = 'vmUsername: ' + creds[1];
-            
-            var replace = data.replace(/vmName.*/g, next).replace(/vmUsername.*/g, wah);
-
-            fs.writeFile('./.lifter/lifter.yml', replace, 'utf8', function(err){
-              if(err){
-                console.log("ERR: ", err);
-              } else {
-                console.log("Writing deploy script...");
-              }
-            });
-          } else {
-            var text = 'vmName: ' + creds[0] + '\n' + 'vmUsername: ' + creds[1];
-            fs.appendFile('./.lifter/lifter.yml', text, function(err){
-              if(err){
-                console.log("ERR: ", err);
-              } else {
-                console.log("Writing deploy script...");
-              }
-            });
-          }
-        }
-      });
+      helper.sendVMInfoToYAML(creds[0], creds[1], writeDeployScript);
     }
   });
 }
@@ -200,9 +158,9 @@ var writeDeployScript = function(){
     if (err) {
       console.log('Err deploy script not written: ', err);
     }
-    console.log('Created deploy script');
+    console.log('Created deploy script: deploy.sh');
     console.log('Checking vm status');
-    checkVMStatus();
+    // checkVMStatus();
   });
 };
 
