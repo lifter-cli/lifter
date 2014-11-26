@@ -5,7 +5,7 @@ var helpers = require('../helpers/helpers.js');
 var builder = require('../helpers/dockerfileBuilder.js');
 var docker = require('../helpers/dockerLib.js');
 var configFile = "./.lifter/lifter.yml";
-var lifterShell = require('lifterShell.js');
+var lifterShell = require('./lifterShell.js');
 
 var exitInstructions = [];
 
