@@ -54,6 +54,18 @@ var spawnSeries = function(tasks, callback) {
   run();
 }
 
+// EXAMPLE
+// dockerExec('exec app ls');
+var dockerExec = function(command, callback) {
+  getDockerDefaults(function(defaults) {
+    defaults = defaults.join(' ');
+    console.log(defaults+' '+command);
+
+    exec('docker ' + defaults+' '+command, function(err, stdout, stderr) {
+      callback(err, stdout, stderr);
+    });
+  });
+}
 
 /**
 * Function that takes in an array of docker commands that will be  
@@ -79,6 +91,14 @@ var dockerSpawnSeries = function(commands, callback) {
   })
 }
 
+// EXAMPLE
+// dockerSpawn(['docker', ['pull', 'ubuntu:latest']]);
+var dockerSpawn = function(command, callback) {
+  var arr = [];
+  arr.push(command);
+  dockerSpawnSeries(arr, callback);
+}
+
 var getDockerDefaults = function(callback) {
   exec('boot2docker shellinit', function(err, stdout, stderr) {
     parseDefaults(stdout.split('\n'), callback);
@@ -102,6 +122,7 @@ var parseDefaults = function(arr, callback) {
 }
 
 module.exports = {
-  spawnSeries: spawnSeries,
-  dockerSpawnSeries: dockerSpawnSeries
+  spawnSeries: dockerSpawnSeries,
+  spawn: dockerSpawn,
+  exec: dockerExec
 }
