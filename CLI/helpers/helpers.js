@@ -65,16 +65,21 @@ var readYAML = function() {
   return out;
 }
 
+/**
+* Function that writes new vm info into lifter.yml
+* @function
+* @memberof module:helpers
+*/
 
 var sendVMInfoToYAML = function(vmName, vmUser, callback){
 
   var newVMName = 'vmName: ' + vmName;
   var newVMUsername = 'vmUserName: ' + vmUser;
 
-  console.log(newVMName, newVMUsername);
   fs.readFile(configFile, 'utf8', function(err, data){
     if(err){
       console.log('ERR: ', err);
+    // overwrites vm info in yaml file if it already exits
     } else if(/vmName|vmUserName/g.test(data)) {
       console.log("Overwriting existing vm info in YAML file");
       var replace = data.replace(/vmName.*/g, newVMName).replace(/vmUserName.*/g, newVMUsername);
@@ -85,6 +90,7 @@ var sendVMInfoToYAML = function(vmName, vmUser, callback){
         console.log("Writing Deploy script...");
         callback();
       });
+    // appends new vm info to yaml file if the info is not already there
     } else {
       console.log("Appending vm info into YAML file");
       var append = '\n'+ newVMName + '\n' + newVMUsername;      
