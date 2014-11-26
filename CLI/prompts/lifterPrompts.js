@@ -46,7 +46,7 @@ var promptList = {
     promptText: 'Enter the command you want to launch when you start up your container.',
     promptClass: 'launchCommand',
     validation: validation.hasValue,
-    nextClass: function() {return 'portPrivate';}
+    nextClass: function() {return 'portPublic';}
   },
 
   // launchPath: {
@@ -56,19 +56,21 @@ var promptList = {
   //   nextClass: function() {return 'portPrivate';}
   // },
 
-  portPrivate: {
-    promptText: 'What port does your application use? (Example: 49160)',
-    promptClass: 'portPrivate',
-    validation: validation.inPortRange,
-    nextClass: function() {return 'portPublic';}
-  },
-
   portPublic: {
     promptText: 'What port can access your Docker container? (Example: 80)',
     promptClass: 'portPublic',
     validation: validation.inPortRange,
+    nextClass: function() {return 'portPrivate';}
+  },
+
+  portPrivate: {
+    promptText: 'What port does your application use? (Example: 49160)',
+    promptClass: 'portPrivate',
+    validation: validation.inPortRange,
     nextClass: function() {return 'db';}
   },
+
+
 
   // Future Linux OS options may include 'Ubuntu', 'Fedora', 'Red Hat', 'Linux'
 /*
@@ -93,8 +95,12 @@ var promptList = {
 
   db: {
     promptText: 'Pick a database',
+    promptOptions: ['mongoDB', 'No Database'],
+    yamlSyntax: {'mongoDB': 'mongoDB', 'No Database': 'None'},
+/*
     promptOptions: ['mongoDB', 'mySQL', 'redis', 'No Database'],
     yamlSyntax: {'mongoDB': 'mongoDB', 'mySQL': 'mySQL', 'redis': 'redis', 'No Database': 'None'},
+*/
     promptClass: 'db',
     validation: validation.inOptions,
     nextClass: function() {return null;}
