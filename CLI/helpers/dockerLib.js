@@ -27,6 +27,12 @@ var spawnSeries = function(tasks, callback) {
   var run = function() {
     var task = tasks[completed];
 
+    // If there is explanation text, log it out for user
+    if (task[2] !== undefined) {
+      var text = task.splice(2).join('');
+      console.log(text);
+    }
+
     var commandText = "docker ";
       for(var i = 6; i < task[1].length; i++) {
         commandText += task[1][i] + " ";
@@ -43,7 +49,7 @@ var spawnSeries = function(tasks, callback) {
     proc.on('exit', function(code) {
       // show error code if error
       if (code !== 0) {
-        console.log('DOCKER COMMAND RAN:');
+        console.log('DOCKER COMMAND FAILED:');
         console.log(commandText);
         console.log('EXITED WITH CODE:', code);
       }

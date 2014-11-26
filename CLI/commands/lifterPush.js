@@ -12,26 +12,28 @@ var runLifterPush = function() {
   var copy = ['docker', [
     'exec', yamlContent.containerName, 
     'cp', '-r', 'src/', '/prod'
-  ]];
+  ], 'Copying mounted volume files into container...'];
 
   // commits changes and creates a docker image
   var commit = ['docker', [
     'commit', yamlContent.containerName, 
     yamlContent.username+'/'+yamlContent.repoName+':latest'
-  ]];
+  ], 'Source code copied: /prod \nCommiting changes to container...'];
 
   // pushes docker image to docker hub
   var push = ['docker', [
     'push', yamlContent.username+'/'+yamlContent.repoName+':latest'
-  ]];
+  ], 'Pushing changes to Docker Hub...'];
 
   docker.spawnSeries([
     copy,
     commit,
     push
-  ], function() {
-    console.log("Your container's latest state is now on Docker Hub.\nType 'lifter deploy' to deploy your application containers.");
-  });
+  ], finishDeploy);
+}
+
+var finishDeploy = function() {
+  console.log("Your container's latest state is now on Docker Hub.\nType 'lifter deploy' to deploy your application containers.");
 }
 
 
