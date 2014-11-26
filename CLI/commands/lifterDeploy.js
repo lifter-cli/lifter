@@ -107,7 +107,8 @@ var setupAzureVM = function() {
 var createAzureVM = function(creds) {
 
   var ubuntuImage = 'b39f27a8b8c64d52b05eac6a62ebad85__Ubuntu-14_04-LTS-amd64-server-20140724-en-us-30GB';
-  var command = 'azure vm docker create -e 22 -l "West US" '+ creds[0] +' "' + ubuntuImage + '" ' + creds[1] + ' ' + creds[2];
+  // var command = 'azure vm docker create -e 22 -l "West US" '+ creds[0] +' "' + ubuntuImage + '" ' + creds[1] + ' ' + creds[2];
+  var command = 'azure vm list';
 
   exec(command, function(err, stdout, stderr){
     if(err){
@@ -120,38 +121,40 @@ var createAzureVM = function(creds) {
     } else {
       console.log('Azure VM "'+ creds[0] + '" created');
 
-      fs.readFile('./.lifter/lifter.yml', 'utf8', function (err,data) {
-        if (err) {
-          return console.log(err);
-      }
+      fs.readFile('./.lifter/lifter.yml', 'utf8', function(err, data){
+        if(err){
+          console.log("ERR: ", err);
+        } else {
+          if(/vmName|vmUsername/.test(data)){
 
-        fs.readFile('./.lifter/lifter.yml', function(err, data){
-          if(err){
-            console.log("ERR: ", err);
+            var next = 'vmName: ' + creds[0];
+            var wah = 'vmUsername: ' + creds[1];
+            
+            var replace = data.replace(/vmName.*/g, next).replace(/vmUsername.*/g, wah);
+
+            fs.writeFile('./.lifter/lifter.yml', replace, 'utf8', function(err){
+              if(err){
+                console.log("ERR: ", err);
+              } else {
+                console.log("Writing deploy script...");
+              }
+            });
           } else {
-            if(/vmName|vmUsername/.test(data)){
-              var replace = data.replace()
-              fs.writeFile('./.lifter/lifter.yml', replace, 'utf8', function(err){
-
-              });
-            }
+            var text = 'vmName: ' + creds[0] + '\n' + 'vmUsername: ' + creds[1];
+            fs.appendFile('./.lifter/lifter.yml', text, function(err){
+              if(err){
+                console.log("ERR: ", err);
+              } else {
+                console.log("Writing deploy script...");
+              }
+            });
           }
-        });
-
-        // var replace = data.replace(/vmNameHere/g, creds[0]).replace(/vmUsernameHere/g, creds[1]);
-
-        // fs.writeFile('./.lifter/lifter.yml', replace, 'utf8', function (err) {
-        //    if (err) {
-        //     return console.log(err);
-        //    } else {
-        //      console.log('Writing deploy script...');
-        //      writeDeployScript();
-        //    }
-        // });
+        }
       });
     }
   });
 }
+
 
 // writes deploy script for vm
 var writeDeployScript = function(){
