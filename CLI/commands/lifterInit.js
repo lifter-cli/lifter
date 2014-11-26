@@ -158,31 +158,49 @@ var createLocalContainer = function() {
   if ( dbImageName === 'mongo:latest' ) {
     dbRunCmd = ['docker', ['run', '-d', '--restart=always', '--name',
       dbContainerName, dbImageName, 'mongod', '--smallfiles']];
-  } else {
+  } else if ( dbImageName !== null) {
     dbRunCmd = ['docker', ['run', '-d', '--restart=always', '--name',
       dbContainerName, dbImageName]];
+  } else {
+    dbRunCmd = '';
   }
 
   var appRunCmd = ['docker',
     ['run', '-it', '-d',
      '--restart=always', '--name', appContainerName,
      '--link', dbContainerName+':'+dbLinkName,
-     '-p', settings.portPrivate+':'+settings.portPublic,
+     '-p', settings.portPublic+':'+settings.portPrivate,
      '-v', settings.currentWorkingDir+':/src:ro', 
      imageName,
      '/bin/bash']];
 
+  if (dbImageName === null) {
+    appRunCmd = ['docker',
+    ['run', '-it', '-d',
+     '--restart=always', '--name', appContainerName,
+     '-p', settings.portPublic+':'+settings.portPrivate,
+     '-v', settings.currentWorkingDir+':/src', 
+     imageName,
+     '/bin/bash']];
+  }
+
   var dockerPsCmd = ['docker',
     ['ps', '-a']];
 
-  docker.spawnSeries([
+  var dockerCommands = [
     rmAppContainer,
     rmDbContainer,
     buildCmd,
     dbRunCmd,
     appRunCmd,
     dockerPsCmd
-  ], finishInit);
+  ];
+
+  if (dbImageName === null) {
+    dockerCommands.splice(3,1);
+  }
+
+  docker.spawnSeries(dockerCommands, finishInit);
 }
 
 var printInstructions = function() {
