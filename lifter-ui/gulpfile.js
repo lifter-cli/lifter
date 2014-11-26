@@ -17,7 +17,6 @@ var path = require('path');
 var merge = require('merge-stream');
 var runSequence = require('run-sequence');
 var webpack = require('webpack');
-var pagespeed = require('psi');
 var fs = require('fs');
 var url = require('url');
 var ReactTools = require('react-tools');
