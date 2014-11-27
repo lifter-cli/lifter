@@ -74,7 +74,7 @@ var checkHostsFileForDockerhost = function() {
         console.log('dockerhost IP incorrect... removing');
         // removeIPinHostsFile(ip);
         exitInstructions.push(
-          'echo sed \'/dockerhost/d\' /etc/hosts | sudo tee /etc/hosts');
+          'sed \'/dockerhost/d\' /etc/hosts | sudo tee /etc/hosts');
         exitInstructions.push(
           'echo ' + ip + ' dockerhost | sudo tee -a /etc/hosts');
       } else {
