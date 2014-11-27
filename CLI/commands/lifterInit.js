@@ -96,11 +96,12 @@ var checkHostsFileForDockerhost = function() {
 var createShellScript = function() {
   // asynchronously build dockerfile
   builder.buildDockerfile();
+
+  var shellFileContent;
   var settings = helpers.readYAML();
+  var dbLink = settings.dbContainerName + '-link';          
 
-  var dbLink = settings.dbContainerName + '-link';
-
-  var shellFileContent = '#!/bin/sh\n' +
+  var withDB = '#!/bin/sh\n' +
 
                          // wait 10 seconds for containers to be configured
                          'sleep 10\n' +
@@ -114,7 +115,7 @@ var createShellScript = function() {
 
                          // checking if application and database container are linked
                          'until [[ $CURL_OUTPUT == $SUCCESS ]]\n' +
-                         // if they are not, waits 20seconds and checks again
+                         // if they are not, wait 20 seconds and check again
                          'do\n' +
                          'echo "Linking database container"\n' +
                          'sleep 20\n' +
@@ -125,6 +126,19 @@ var createShellScript = function() {
                          'echo "Containers linked, running application launch command"\n' +
                          'cd /prod\n' +
                          '$LAUNCH_CMD';
+
+  var noDB = '#!/bin/sh\n' +
+             // wait 10 seconds for containers to be configured
+             'sleep 10\n' + 
+             'cd /prod\n' +
+             'echo "Running application launch command"\n' +
+             settings.launchCommand;  
+  
+  if(settings.db === 'None'){
+    shellFileContent = noDB;
+  } else {
+    shellFileContent = withDB;
+  }
 
   fs.writeFile("./.lifter/app.sh", shellFileContent, function(err) {
     if (err) console.log(err);
