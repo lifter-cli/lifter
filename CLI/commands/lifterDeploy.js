@@ -95,8 +95,7 @@ var setupAzureVM = function() {
 var createAzureVM = function(creds) {
 
   var ubuntuImage = 'b39f27a8b8c64d52b05eac6a62ebad85__Ubuntu-14_04-LTS-amd64-server-20140724-en-us-30GB';
-  // var command = 'azure vm docker create -e 22 -l "West US" '+ creds[0] +' "' + ubuntuImage + '" ' + creds[1] + ' ' + creds[2];
-  var command = 'azure vm list';
+  var command = 'azure vm docker create -e 22 -l "West US" '+ creds[0] +' "' + ubuntuImage + '" ' + creds[1] + ' ' + creds[2];
 
   exec(command, function(err, stdout, stderr){
     if(err){
@@ -125,11 +124,21 @@ var writeDeployScript = function(){
   var db = yamlContent.dbContainerName;
   var dbImage = yamlContent.dbTag;
   var dbLink = db + '-link';
+  var dbCMDs;
 
   var pub = yamlContent.portPublic;
   var priv = yamlContent.portPrivate;
 
-  var deployScript = 'cat /etc/default/docker.io | sed \'s/0.0.0.0/localhost/g\' | sed \'s/tlsverify/tls/\' | sudo tee /etc/default/docker.io\n' +
+  var noDBCMDs = 'echo "Running application script"\n' +
+                 'sudo docker $DOCKER_OPTS run --name ' +app+ ' -it -p ' +pub+ ':' +priv+ ' ' +appImage+ ' sh prod/.lifter/app.sh\n';
+  
+  var withDBCMDs = 'echo "Starting database container"\n' +
+                   'sudo docker $DOCKER_OPTS run -d --name ' +db+ ' ' +dbImage+ '\n' +
+                   'echo "Linking to database container"\n' +
+                   'echo "Running application script"\n' +
+                   'sudo docker $DOCKER_OPTS run --name ' +app+ ' -it -p ' +pub+ ':' +priv+ ' ' +appImage+ ' sh prod/.lifter/app.sh\n';
+
+  var pullImage = 'cat /etc/default/docker.io | sed \'s/0.0.0.0/localhost/g\' | sed \'s/tlsverify/tls/\' | sudo tee /etc/default/docker.io\n' +
 
                     'export DOCKER_OPTS="$(cat /etc/default/docker.io | grep DOCKER_OPTS | sed \'s/DOCKER_OPTS=//\' | sed \'s/\\\"//g\')"\n' +
 
@@ -138,29 +147,29 @@ var writeDeployScript = function(){
                     'echo "Pulling image from DockerHub"\n' +
                     'sudo docker $DOCKER_OPTS pull ' +appImage+ '\n' +
 
-                    'echo "Starting database container"\n' +
-                    'sudo docker $DOCKER_OPTS run -d --name ' +db+ ' ' +dbImage+ '\n' +
-
                     'echo "Shutting down existing application container (if one exists)"\n' +
-                    'sudo docker $DOCKER_OPTS rm -f ' +app+ '\n' +
+                    'sudo docker $DOCKER_OPTS rm -f ' +app+ '\n';
 
-                    'echo "Creating application container"\n' +
-                    'echo "Linking to database container"\n' +
-                    'echo "Running application script"\n' +
-                    'sudo docker $DOCKER_OPTS run --name ' +app+ ' -it -p ' +pub+ ':' +priv+ ' --link ' +db+ ':' +dbLink+ ' ' +appImage+ ' sh prod/.lifter/app.sh\n' +
-
-                    'echo "Before you can access your deployed application, you must open the following port: ' +pub +'\n';
-                    'echo "Please follow the instructions at: \n';
-                    'http://azure.microsoft.com/en-us/documentation/articles/virtual-machines-set-up-endpoints/ \n';
+  var deployInfo =  'echo "Before you can access your deployed application, you must open the following port: ' +pub+ '"\n' +
+                    'echo "Please follow the instructions at:"\n' + 
+                    'echo "http://azure.microsoft.com/en-us/documentation/articles/virtual-machines-set-up-endpoints/"\n' +
                     'echo "Your application is deployed at: http://' +yamlContent.vmName+ '.cloudapp.net:' +pub+ '"';
+  
+  if(db === 'None'){
+    dbCMDs = noDBCMDs;
+  } else {
+    dbCMDs = withDBCMDs;
+  }
+
+  var deployScript = pullImage + dbCMDs + deployInfo;
 
   fs.writeFile('./.lifter/deploy.sh', deployScript, function (err) {
     if (err) {
       console.log('Err deploy script not written: ', err);
     }
     console.log('Created deploy script: deploy.sh');
-    console.log('Checking vm status');
-    // checkVMStatus();
+    console.log('Checking vm status...');
+    checkVMStatus();
   });
 };
 
@@ -177,8 +186,8 @@ var checkVMStatus = function() {
       console.log('VM status is "Ready", ready to send deploy script');
       sendDeployScript();
     } else {
-      console.log('VM is not ready yet... retrying in 15 seconds')
-      setTimeout(checkVMStatus, 15000);
+      console.log('VM not ready...retrying in 20 seconds')
+      setTimeout(checkVMStatus, 20000);
     }
   });
 }
@@ -187,10 +196,10 @@ var checkVMStatus = function() {
 var sendDeployScript = function(){
 
   var yamlContent = helper.readYAML();
-  var sshPath = yamlContent.vmUsername+ '@' +yamlContent.vmName+ '.cloudapp.net';
+  var sshPath = yamlContent.vmUserName+ '@' +yamlContent.vmName+ '.cloudapp.net';
 
   console.log('\nPlease run the following commands:\n\n' +
-              '1. Send the deploy script to your vm: scp ./.lifter/deploy.sh ' +sshPath+ ':/home/' +yamlContent.vmUsername+ '\n\n' +
+              '1. Send the deploy script to your vm: scp ./.lifter/deploy.sh ' +sshPath+ ':/home/' +yamlContent.vmUserName+ '\n\n' +
               'You will be prompted for the vm\'s password after running this command. If this is your first time ssh-ing into the vm,\n'+
               'you will need to respond "yes" when asked to authenticate the host\n\n'+
               '2. ssh into your vm: ssh ' +sshPath+ '\n\n'+
