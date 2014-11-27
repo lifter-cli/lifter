@@ -2,6 +2,8 @@ var child_process = require('child_process');
 var spawn = child_process.spawn;
 var exec = child_process.exec;
 
+
+
 /**
 * Function that takes in an array of tasks that will be individually
 *   passed to the spawn function, then runs each task in series. At the 
@@ -15,6 +17,7 @@ var exec = child_process.exec;
 *   ], function() { console.log('all done!'); });
 */
 var spawnSeries = function(tasks, callback) {
+  var sendBuildRegEx = /Sending build context to Docker daemon.*B/;
   callback = callback || function() {};
   var completed = 0;
   var iterate = function() {
@@ -44,7 +47,13 @@ var spawnSeries = function(tasks, callback) {
       console.log(data.toString());
     });
     proc.stderr.on('data', function(data) {
-      console.log(data.toString());
+      var output = data.toString();
+      if (sendBuildRegEx.test(output)) {
+        // write progress on same line if sending build context
+        process.stdout.write(output+'\r');
+      } else {
+        console.log(data.toString());
+      }
     });
     proc.on('exit', function(code) {
       // show error code if error
