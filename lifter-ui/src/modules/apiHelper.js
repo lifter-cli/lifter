@@ -13,7 +13,6 @@ var getContainerDetail = function(context, id){
     url: config.dockerContainerDetailAPI + id,
     type: 'GET',
     success: function(data){
-      console.log(data);
       context.setState({
         containerDetail: data
       });
@@ -29,7 +28,6 @@ var getContainers = function(context){
     url: config.dockerContainersAPI,
     type: 'GET',
     success: function(data){
-      console.log(data);
       context.setState({
         containers: data
       });

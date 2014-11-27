@@ -26,18 +26,32 @@ var Header = React.createClass({
 });
 
 var Display = React.createClass({
+  handleContainerClick(containerId) {
+    console.log('handling container click');
+    this.setState({
+      containerId: containerId,
+      containerView: true
+    });
+  },
+
+  handleMainClick(){
+    this.setState({
+      containerView: false
+    });
+  },
+
   getInitialState() {
     return {
-      dashboardView: true
+      containerView: false
     }
   },
 
   render() {
     var currentView
-    if ( this.state.dashboardView ){
-      currentView = <ContainersTable />;
+    if ( !this.state.containerView ){
+      currentView = <ContainersTable handleClick={this.handleContainerClick} />;
     } else {
-      currentView = <DetailedView />;
+      currentView = <DetailedView containerId={this.state.containerId} handleMainClick={this.handleMainClick}/>;
     }
     return (
       <div className="container">

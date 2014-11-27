@@ -21,13 +21,12 @@ var ContainerComponent = React.createClass({
 var DetailedView = React.createClass({
   getInitialState() {
     return {
-      containerId: 'a02820a1e53d',
       containerDetail: {}
     };
   },
 
   componentDidMount() {
-    getContainerDetail(this, this.state.containerId);
+    getContainerDetail(this, this.props.containerId);
   },
 
   render() {
@@ -38,7 +37,7 @@ var DetailedView = React.createClass({
     });
     return (
       <div>
-        Detailed View
+        <a onClick={this.props.handleMainClick}>Detailed View</a>
         <div>
         </div>
         <div>
