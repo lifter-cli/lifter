@@ -27,14 +27,20 @@ var ContainersTable = React.createClass({
   componentDidMount(){
     getContainers(this)
     var self = this;
-    setInterval( function(){ getContainers(self) }, 3000);
+    this.getContainerInterval = setInterval( function(){ getContainers(self) }, 3000);
   },
 
   componentWillUnmount(){
     clearInterval();
   },
 
+  handleClick( containerId ){
+    this.props.handleClick( containerId );
+    clearInterval(this.getContainerInterval);
+  },
+
   render() {
+    var handleClick = this.handleClick;
     var rows = this.state.containers.map(function(container){
       if ( container.Ports.length ) {
         var ports = container.Ports[0].Type + ' ' + container.Ports[0].PublicPort +
@@ -45,7 +51,7 @@ var ContainersTable = React.createClass({
       var nameAndLinks = parseContainerNames(container);
       return (
         <ContainerRow name={nameAndLinks.containerName} links={nameAndLinks.links} status={container.Status} ports = {ports}
-          image={container.Image} command={container.Command} />
+          image={container.Image} command={container.Command} handleClick={handleClick} containerId={container.Id}/>
       )
     });
     return (
