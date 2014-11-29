@@ -11,7 +11,8 @@ While Docker containers can dramatically improve the predictability of deploying
 Even for familiar users of Docker, our tool is designed to reduce your time managing your containers by eliminating the need to execute a series of Docker commands as part of your typical development workflow.
 
 ## Requirements
-- Install the Docker and Boot2Docker package (lightweight Linux VM to run the Docker server) - [Download at the official Docker site](https://github.com/boot2docker/osx-installer/releases/latest)
+- Install the Docker and Boot2Docker package (lightweight Linux VM to run the Docker server)
+  - [Download the latest version at the official Docker site](https://github.com/boot2docker/osx-installer/releases/latest)
 - [Create a Docker Hub account](https://hub.docker.com/account/signup/) (free), which is the equivalent of GitHub for the Docker world
 
 ## Getting Started
@@ -19,9 +20,11 @@ Even for familiar users of Docker, our tool is designed to reduce your time mana
 ### Install Lifter
 0. Make sure you meet the requirements before moving on to the next steps. 
 1. Install our command line tool via NPM as a global module so you can access it via the command line:
+   
     ```
     npm install -g lifter
     ```
+
 2. Run the `lifter` command to receive an overview of the four main Lifter commands.
 
 ### Containerize Your Application
@@ -30,8 +33,28 @@ Even for familiar users of Docker, our tool is designed to reduce your time mana
 3. Run the `lifter push` command to save the state of your application as a Docker image and push it to Docker Hub
 4. Run the `lifter deploy` command to deploy your application on a VM in your production environment
 
+Congrats! You have deployed your application to the cloud using Docker containers.
+
 ### Monitor Your Containers
-1. Your containers are now up and running in both your development and production environments. You can monitor the status of your containers through our Lifter UI by going to `http://localhost:3123/`
+The Lifter Monitor tool which provides a dashboard view and detailed view of your Docker containers so you can see the status of your containers and troubleshoot if any issues arise.
+
+A. Once you have run `lifter init` and have Docker containers running in your local dev environment, you can install Lifter Monitor for Mac OS X by running the following shell script via curl:
+```
+curl http://lifter-cli.github.io/lifter/install-lifter-monitor-osx.sh | sh
+```
+  - Note: You may need to execute the shell script using sudo depending on your computer's settings.
+(e.g. `curl http://lifter-cli.github.io/lifter/install-lifter-monitor-osx.sh | sudo sh`) 
+
+  - You can now monitor the status of your local development containers at: `http://localhost:3123/`
+
+B. Once you have run `lifter deploy` and have Docker containers running in production, you can install Lifter Monitor on Azure by SSH-ing into your VM and running the following shell script using sudo via curl:
+```
+curl http://lifter-cli.github.io/lifter/install-lifter-monitor-ubuntu.sh | sudo sh
+```
+
+  - Open up port 3123 for your Azure VM by [following these instructions](http://azure.microsoft.com/en-us/documentation/articles/virtual-machines-set-up-endpoints/)
+  
+  - You can now monitor the status of your Azure production containers at: `http://azure-vm-name.cloudapp.net:3123/`
 
 ## Indepth Guide of How Lifter Works
 This section explains what exactly is happening under the hood with each Lifter command.
