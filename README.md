@@ -15,17 +15,23 @@ Even for familiar users of Docker, our tool is designed to reduce your time mana
 - [Create a Docker Hub account](https://hub.docker.com/account/signup/) (free), which is the equivalent of GitHub for the Docker world
 
 ## Getting Started
+
+### Install Lifter
 0. Make sure you meet the requirements before moving on to the next steps. 
 1. Install our command line tool via NPM as a global module so you can access it via the command line:
     ```
     npm install -g lifter
     ```
 2. Run the `lifter` command to receive an overview of the four main Lifter commands.
-3. Run the `lifter config` command to configure the settings for your Docker containers.
-4. Run the `lifter init` command to start the Docker containers in your local dev environment
-5. Run the `lifter push` command to save the state of your application as a Docker image and push it to Docker Hub
-6. Run the `lifter deploy` command to deploy your application on a VM in your production environment
-7. Your containers are now up and running in both your development and production environments. You can monitor the status of your containers through our Lifter UI by going to `http://localhost:3123/`
+
+### Containerize Your Application
+1. Run the `lifter config` command to configure the settings for your Docker containers.
+2. Run the `lifter init` command to start the Docker containers in your local dev environment
+3. Run the `lifter push` command to save the state of your application as a Docker image and push it to Docker Hub
+4. Run the `lifter deploy` command to deploy your application on a VM in your production environment
+
+### Monitor Your Containers
+1. Your containers are now up and running in both your development and production environments. You can monitor the status of your containers through our Lifter UI by going to `http://localhost:3123/`
 
 ## Indepth Guide of How Lifter Works
 This section explains what exactly is happening under the hood with each Lifter command.
