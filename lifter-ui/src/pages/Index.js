@@ -9,7 +9,6 @@
 'use strict';
 
 var React = require('react');
-var PageActions = require('../actions/PageActions');
 var ContainersTable = require('./_ContainersTable');
 var DetailedView = require('./_DetailedView');
 

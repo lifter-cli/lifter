@@ -5,7 +5,6 @@
   "source": {
     "exclude": [ "/Users/willchen/HR/lifter/node_modules" ],
     "includePattern": ".+\\.js(doc)?$",
-    "excludePattern": "(^|\\/|\\\\)_"
   },
   "plugins": [],
   "templates": {

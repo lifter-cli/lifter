@@ -1,7 +1,4 @@
 var React = require('react');
-var DefaultLayout = require('../layouts/DefaultLayout');
-var PageActions = require('../actions/PageActions');
-
 var ContainerRow = require('./_ContainerRow');
 
 var apiHelper = require('../modules/apiHelper');
@@ -16,12 +13,7 @@ var ContainersTable = React.createClass({
     };
   },
 
-  statics: {
-    layout: DefaultLayout
-  },
-
   componentWillMount() {
-    PageActions.setTitle('Lifter UI');
   },
 
   componentDidMount(){

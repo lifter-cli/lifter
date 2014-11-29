@@ -96,19 +96,6 @@ gulp.task('pages', function() {
   src.pages = ['src/pages/**/*.js', 'src/pages/404.html'];
 
   var data = {};
-  var ActionTypes = require('./src/constants/ActionTypes');
-  var AppDispatcher = require('./src/AppDispatcher');
-
-  // Capture document.title changes
-  AppDispatcher.register(function(payload) {
-    switch (payload.action.actionType)
-    {
-      case ActionTypes.SET_PAGE_TITLE:
-        data.title = payload.action.text;
-        break;
-    }
-    return true;
-  });
 
   var render = $.render({
       template: './src/pages/_template.html',
