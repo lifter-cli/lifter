@@ -35,9 +35,10 @@ Even for familiar users of Docker, our tool is designed to reduce your time mana
 
 Congrats! You have deployed your application to the cloud using Docker containers.
 
-### Monitor Your Containers
+## Monitor Your Containers
 The Lifter Monitor tool which provides a dashboard view and detailed view of your Docker containers so you can see the status of your containers and troubleshoot if any issues arise.
 
+### Local (Mac OS X)
 A. Once you have run `lifter init` and have Docker containers running in your local dev environment, you can install Lifter Monitor for Mac OS X by running the following shell script via curl:
 ```
 curl http://lifter-cli.github.io/lifter/install-lifter-monitor-osx.sh | sh
@@ -47,6 +48,7 @@ curl http://lifter-cli.github.io/lifter/install-lifter-monitor-osx.sh | sh
 
   - You can now monitor the status of your local development containers at: `http://localhost:3123/`
 
+### Azure (Ubuntu)
 B. Once you have run `lifter deploy` and have Docker containers running in production, you can install Lifter Monitor on Azure by SSH-ing into your VM and running the following shell script using sudo via curl:
 ```
 curl http://lifter-cli.github.io/lifter/install-lifter-monitor-ubuntu.sh | sudo sh
