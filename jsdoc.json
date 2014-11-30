@@ -1,0 +1,15 @@
+{
+  "tags": {
+    "allowUnknownTags": true
+  },
+  "source": {
+    "exclude": [ "/Users/willchen/HR/lifter/node_modules",
+      "/Users/willchen/HR/lifter/lifter-ui/server/public/app.js" ],
+    "includePattern": ".+\\.js(doc)?$"
+  },
+  "plugins": ["plugins/handleReact.js"],
+  "templates": {
+    "cleverLinks": false,
+    "monospaceLinks": false
+  }
+}

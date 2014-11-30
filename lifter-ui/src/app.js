@@ -11,32 +11,7 @@
 var React = require('react');
 var ExecutionEnvironment = require('react/lib/ExecutionEnvironment');
 var {Router} = require('director');
-var AppDispatcher = require('./AppDispatcher');
-var ActionTypes = require('./constants/ActionTypes');
 var router;
-
-// Export React so the dev tools can find it
-(window !== window.top ? window.top : window).React = React;
-
-AppDispatcher.register((payload) => {
-
-  var action = payload.action;
-
-  switch (action.actionType)
-  {
-    case ActionTypes.SET_CURRENT_ROUTE:
-      router.setRoute(action.route);
-      break;
-
-    case ActionTypes.SET_PAGE_TITLE:
-      if (ExecutionEnvironment.canUseDOM) {
-        document.title = action.text;
-      }
-      break;
-  }
-
-  return true; // No errors.  Needed by promise in Dispatcher.
-});
 
 /**
  * Check if Page component has a layout property; and if yes, wrap the page

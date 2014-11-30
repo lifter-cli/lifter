@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: CLI/validation/validation.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: CLI/validation/validation.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+* @module validation
+*/
+
+/**
+* Checks to make sure they entered a non-empty response
+* @function
+* @memberof module:validation
+*/
+var hasValue = function(obj) {
+  if(typeof obj.value === 'string' &amp;&amp; obj.value.length > 0) {
+    return true;
+  } else {
+    console.log('Please make a choice. Literally, anything would be better than just hitting \'enter\' before typing a single thing.'.red);
+    return false;
+  }
+};
+
+/**
+* Placeholder function that just returns true instead of running any sort of validation on input data
+* @function
+* @memberof module:validation
+*/
+var noValidation = function(obj) {
+  return true;
+};
+
+/**
+* Function checks whether input is a valid Docker hub repo name
+* Rule #1: 3 - 30 characters.
+* Rule #2: Only lowercase letters, digits and _ - .
+* @function
+* @memberof module:validation
+*/
+var isValidRepoName = function(obj) {
+
+  if(typeof obj.value !=='string'){
+    console.log('Input is invalid because it is not a string');
+    return false;
+  }
+
+  if(!isRepoValidLength(obj.value)){
+    console.log('Input must be between 3- 30 characters');
+    return false;
+  }
+
+  if(!isRepoValidCharacters(obj.value)){
+    console.log('Input must be lowercase, number, or "_" "-" "." ');
+    return false;
+  }
+  return true;
+};
+
+var isRepoValidLength = function(string){
+  if(string.length &lt; 3 || string.length > 30){
+    return false;
+  } else {
+    return true;
+  }
+};
+
+// NOTE: Hyphen is still throwing a false for some reason
+var isRepoValidCharacters = function(string){
+  // Regex tests for input must be lowercase, number, or "_" "-" "."
+  var regex = /^[a-z0-9_\-\\.]+$/;
+  if ( regex.test(string) ){
+    return true;
+  } else {
+    return false;
+  }
+}
+/**
+* Function that authenticates input username and password against Dockerhub API
+* @function
+* @memberof module:validation
+* @param {object} obj Object of parameters passed in with username and password
+*/
+var authenticateUser = function(obj) {
+
+  var options = {
+  url: 'https://index.docker.io/v1/users',
+  auth: {
+    username: username,
+    password: password
+    },
+    method: 'GET'
+  };
+
+/*
+  request(options,function(err, response, body){
+    if(err) {
+      console.log('Something went wrong.  Try again.');
+      return false;
+    } else {
+      if(!JSON.parse(body) === 'OK') {
+        console.log('Invalid password.  Try again.');
+        return false;
+      }
+      return true;
+    }
+  });
+*/
+};
+
+/**
+* Function that checks whether input ports are valid
+* @function
+* @memberof module:validation
+* @param {object} obj Object with portPublic or portPrivate parameter
+*/
+var inPortRange = function(obj) {
+  if(parseInt(obj.value) >= 0 &amp;&amp; parseInt(obj.value) &lt;= 65535 &amp;&amp; obj.value.length>= 1) {
+    return true;
+  } else {
+    console.log('Please choose a port between 1024 and 65535.  Thanks a bunch.'.red);
+    return false;
+  }
+};
+
+/**
+* Function that checks whether input data is within available options displayed in prompt
+* @function
+* @memberof module:validation
+* @param {object} obj Object with input value and array of options
+*/
+var inOptions = function(obj) {
+  if(obj.options.indexOf(obj.value) >-1) {
+    return true;
+  } else {
+    console.log('Please choose an option from the list below.'.red);
+    return false;
+  }
+};
+
+module.exports = {
+  hasValue: hasValue,
+  noValidation: noValidation,
+  isValidRepoName: isValidRepoName,
+  isRepoValidLength: isRepoValidLength,
+  isRepoValidCharacters: isRepoValidCharacters,
+  inPortRange: inPortRange,
+  inOptions: inOptions
+}</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-Docker-API.html">Docker-API</a></li><li><a href="module-globalDependencies.html">globalDependencies</a></li><li><a href="module-helpers.html">helpers</a></li><li><a href="module-lifterPrompts.html">lifterPrompts</a></li><li><a href="module-validation.html">validation</a></li></ul><h3>Classes</h3><ul><li><a href="Header.html">Header</a></li></ul><h3>Global</h3><ul><li><a href="global.html#askConfigQuestion">askConfigQuestion</a></li><li><a href="global.html#buildDockerfile">buildDockerfile</a></li><li><a href="global.html#ContainerComponent">ContainerComponent</a></li><li><a href="global.html#containerProperties">containerProperties</a></li><li><a href="global.html#ContainerRow">ContainerRow</a></li><li><a href="global.html#ContainersTable">ContainersTable</a></li><li><a href="global.html#DetailedView">DetailedView</a></li><li><a href="global.html#Display">Display</a></li><li><a href="global.html#dockerfileContents">dockerfileContents</a></li><li><a href="global.html#getContainerDetail">getContainerDetail</a></li><li><a href="global.html#makeDescription">makeDescription</a></li><li><a href="global.html#render">render</a></li><li><a href="global.html#validateResponse">validateResponse</a></li></ul>
+</nav>
+
+<br clear="both">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-dev</a> on Sun Nov 30 2014 14:12:36 GMT-0800 (PST)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

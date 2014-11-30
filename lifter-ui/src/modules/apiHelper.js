@@ -8,6 +8,13 @@ var config = {
   dockerContainerDetailAPI: '/api/docker/container/'
 };
 
+/**
+* Function to do an AJAX GET request on the express REST-ful API to access
+* detailed Docker information for a specific container
+* @function
+* @param {object} context Reference to the React component that will store the container detail information
+* @param {string} id Docker container's unique hash ID
+*/
 var getContainerDetail = function(context, id){
   $.ajax({
     url: config.dockerContainerDetailAPI + id,

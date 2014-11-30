@@ -1,5 +1,9 @@
 var React = require('react');
 
+/**
+* Provides high-level information of a container
+* @name ContainerRow
+*/
 var ContainerRow = React.createClass({
 
   handleClick: function() {

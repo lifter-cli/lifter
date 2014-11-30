@@ -1,13 +1,15 @@
 var React = require('react');
-var DefaultLayout = require('../layouts/DefaultLayout');
-var PageActions = require('../actions/PageActions');
-
 var ContainerRow = require('./_ContainerRow');
 
 var apiHelper = require('../modules/apiHelper');
 var getContainers = apiHelper.getContainers;
 var parseContainerNames = apiHelper.parseContainerNames;
 
+/**
+* Lists all active and inactive containers in a table
+* (similar to info from docker ps -a command)
+* @name ContainersTable
+*/
 var ContainersTable = React.createClass({
 
   getInitialState() {
@@ -16,12 +18,7 @@ var ContainersTable = React.createClass({
     };
   },
 
-  statics: {
-    layout: DefaultLayout
-  },
-
   componentWillMount() {
-    PageActions.setTitle('Lifter UI');
   },
 
   componentDidMount(){

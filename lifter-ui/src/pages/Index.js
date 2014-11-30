@@ -9,10 +9,13 @@
 'use strict';
 
 var React = require('react');
-var PageActions = require('../actions/PageActions');
 var ContainersTable = require('./_ContainersTable');
 var DetailedView = require('./_DetailedView');
 
+/**
+* Header section of Lifter Monitor user interface
+* @class Header
+*/
 var Header = React.createClass({
   render() {
     return (
@@ -25,6 +28,11 @@ var Header = React.createClass({
   }
 });
 
+/**
+* Main section of the Lifter Monitor user interface that switches
+* between dashboard view and detaield view
+* @name Display
+*/
 var Display = React.createClass({
   handleContainerClick(containerId) {
     console.log('handling container click');
