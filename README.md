@@ -73,6 +73,10 @@ Lifter then starts an application container that is linked to a folder with your
 ### Lifter Push
 This saves the state of your application into a Docker image and then pushes this Docker image to Docker Hub. This workflow mirrors the Git workflow where you commit your changes and push to a remote repository on Git Hub. 
 
+### Lifter Shell
+This prints the command for entering the shell of your local application containers. Once inside your applicaton container, you can navigate to the
+"src" directory to find your application's codebase. Your codebase and application container are always in sync so you may choose to develop in either setting. Most often developers will enter the shell of the application container to run their application's launch command. 
+
 ### Lifter Deploy
 Once you are ready to deploy your application, you can either choose to create a new VM or use an existing VM on Azure to deploy to. This will copy and execute a shell script that will replicate a set-up similar to your development environment and start your application and database containers. The shell script automatically executes the launch command that you specified in the lifter config stage, which will then start the server for your app.
 
