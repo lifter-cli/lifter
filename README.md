@@ -59,7 +59,7 @@ curl http://lifter-cli.github.io/lifter/install-lifter-monitor-ubuntu.sh | sudo 
   
   - You can now monitor the status of your Azure production containers at: `http://azure-vm-name.cloudapp.net:3123/`
 
-## In depth Guide of How Lifter Works
+## In Depth Guide of How Lifter Works
 This section explains what exactly is happening under the hood with each Lifter command.
 
 ### Lifter Config
