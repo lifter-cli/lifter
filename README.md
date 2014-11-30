@@ -68,17 +68,52 @@ This prompts the user to answer a series of questions that are used in Lifter In
 ### Lifter Init
 This will start the Docker server in your local dev environment (Mac OS X) by starting Boot2Docker, which is a lightweight Linux VM that allows you to run the Docker server because it cannot natively run on OS X (although the Docker client can run natively in in the OS X terminal).
 
-Lifter then starts an application container that is linked to a folder with your codebase and a database container that is linked to your application container. Now you can make changes to your codebase as you normally do in your text editor / IDE and the changes will automatically be synced to the application container. This enables you to test and run your application in a Docker container that will mimic your production environment. We do this by using a feature in Docker called mounted volumes which allows you to select a directory (in this case, a local directory with your application code) and have that directory and its contents directly exposed to the container. In other words, the container has a reference to your application code, which allows your container to always be synced with the codebase on your computer.
+`boot2docker init` - Creates the VM (done once)
+
+`boot2docker up`  - Starts running the VM (done every session)
+
+Lifter then uses the `lifter.yaml` that was created in the previous step to generate a Dockerfile. The Dockerfile is a series of steps that tells Docker how to create an image, which is a static snapshot of a container. This initial image includes a light-weight OS (in this case CentOS) as well as other dependencies such as node.js/npm.
+
+`docker build -t image_name .`
+
+Lifter then starts an application container that is linked to a folder with your codebase and a database container that is linked to your application container. 
+
+```
+docker run -it -d --restart=always --name shortly-deploy -p 80:4568 -v /Users/willchen/HR/2014-09-shortly-express:/src willchen90/shortly-deploy /bin/bash
+```
+This command starts the application container with several important settings:
+ - Port 80 of your Boot2Docker VM is now connected to port 4568 of your application container
+ - The local host directory with your application code is mounted in your application container inside the `src` folder. This means your container has a live reference to your application code and as you make any changes to your codebase using your favorite text editor / IDE as you normally do, all the changes will be reflected within your container
+ - The container is started with a psuedo-terminal using bash so you can enter into the shell of your container
 
 ### Lifter Push
 This saves the state of your application into a Docker image and then pushes this Docker image to Docker Hub. This workflow mirrors the Git workflow where you commit your changes and push to a remote repository on Git Hub. 
 
+Before we can save your application container into a Docker image, we need to copy the files in your mounted volume into your actual application container. As mentioned earlier, the mounted volume provides a reference to the files, which mean they don't actually exist in the container yet.
+
+`docker exec container_name cp -r src/ /prod`
+This command copies the files in your application container from the `src` folder to the `prod` folder
+
+`docker commit container_name docker_hub_username/repository:latest`
+This command saves the state of our application container into an image. This is similar to the `commit` command in `git` and diffs to save only the incremental changes.
+
+`docker push docker_hub_username/repository:latest`
+Now, we can push our image onto Docker Hub which is similar to what GitHub is for Git.
+
 ### Lifter Shell
-This prints the command for entering the shell of your local application containers. Once inside your application container, you can navigate to the
-"src" directory to find your application's codebase. Your codebase and application container are always in sync so you may choose to develop in either setting. Most often developers will enter the shell of the application container to run their application's launch command. 
+This prints the command for entering the shell of your local application containers. Once inside your application container, you can navigate to the "src" directory to find your application's codebase. Your codebase and application container are always in sync so you may choose to develop in either setting. Most often developers will enter the shell of the application container to run their application's launch command. 
+
+`$(boot2docker shellinit) && docker exec -it shortly-deploy bash`
 
 ### Lifter Deploy
 Once you are ready to deploy your application, you can either choose to create a new VM or use an existing VM on Azure to deploy to. This will copy and execute a shell script that will replicate a set-up similar to your development environment and start your application and database containers. The shell script automatically executes the launch command that you specified in the lifter config stage, which will then start the server for your app.
+
+```
+docker $DOCKER_OPTS run --name container_name -d -p 80:8080  docker_hub_username/repository:latest sh prod/.lifter/app.sh
+```
+This command should look similar to the one in Lifter init with a couple of notable differences:
+ - the $DOCKER_OPTS option references the location of our security certificates which is necessary on Azure Ubuntu VM
+ - the final argument in the command is executing a shell script in the container which executes the launch command chosen in `lifter config`
 
 ## FAQ
 Q: Can I use Lifter to deploy to AWS, Google, [insert favorite cloud service provider]?
