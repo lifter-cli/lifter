@@ -121,47 +121,46 @@ var writeDeployScript = function(){
   var app = yamlContent.containerName;
   var appImage = yamlContent.username+ '/' +yamlContent.repoName+ ':latest';
 
-  var db = yamlContent.dbContainerName;
-  var dbImage = yamlContent.dbTag;
-  var dbLink = db + '-link';
-  var dbCMDs;
-
   var pub = yamlContent.portPublic;
   var priv = yamlContent.portPrivate;
 
-  var noDBCMDs = 'echo "Running application script"\n' +
-                 'sudo docker $DOCKER_OPTS run --name ' +app+ ' -it -p ' +pub+ ':' +priv+ ' ' +appImage+ ' sh prod/.lifter/app.sh\n';
-  
-  var withDBCMDs = 'echo "Starting database container"\n' +
-                   'sudo docker $DOCKER_OPTS run -d --name ' +db+ ' ' +dbImage+ '\n' +
-                   'echo "Linking to database container"\n' +
-                   'echo "Running application script"\n' +
-                   'sudo docker $DOCKER_OPTS run --name ' +app+ ' -it -p ' +pub+ ':' +priv+ ' --link ' +db+ ':' +dbLink+ ' ' +appImage+ ' sh prod/.lifter/app.sh\n';
+  var runContainerCMDS;
 
-  var pullImage = 'cat /etc/default/docker.io | sed \'s/0.0.0.0/localhost/g\' | sed \'s/tlsverify/tls/\' | sudo tee /etc/default/docker.io\n' +
+  // checks if user is creating a db container
+  if(yamlContent.dbPort !== null){
+    var db = yamlContent.dbContainerName;
+    var dbImage = yamlContent.dbTag;
+    var dbLink = db + '-link';
 
-                    'export DOCKER_OPTS="$(cat /etc/default/docker.io | grep DOCKER_OPTS | sed \'s/DOCKER_OPTS=//\' | sed \'s/\\\"//g\')"\n' +
-
-                    'sudo service docker.io restart\n' +
-
-                    'echo "Pulling image from DockerHub"\n' +
-                    'sudo docker $DOCKER_OPTS pull ' +appImage+ '\n' +
-
-                    'echo "Shutting down existing application container (if one exists)"\n' +
-                    'sudo docker $DOCKER_OPTS rm -f ' +app+ '\n';
-
-  var deployInfo =  'echo "Before you can access your deployed application, you must open the following port: ' +pub+ '"\n' +
-                    'echo "Please follow the instructions at:"\n' + 
-                    'echo "http://azure.microsoft.com/en-us/documentation/articles/virtual-machines-set-up-endpoints/"\n' +
-                    'echo "Your application is deployed at: http://' +yamlContent.vmName+ '.cloudapp.net:' +pub+ '"';
-  
-  if(db === 'None'){
-    dbCMDs = noDBCMDs;
+    runContainerCMDS = 'echo "Starting database container"\n' +
+                       'sudo docker $DOCKER_OPTS run -d --name ' +db+ ' ' +dbImage+ '\n' +
+                       'echo "Linking to database container"\n' +
+                       'echo "Running application script"\n' +
+                       'sudo docker $DOCKER_OPTS run --name ' +app+ ' -it -p ' +pub+ ':' +priv+ ' --link ' +db+ ':' +dbLink+ ' ' +appImage+ ' sh prod/.lifter/app.sh\n';
   } else {
-    dbCMDs = withDBCMDs;
+    runContainerCMDS = 'echo "Running application script"\n' +
+                       'sudo docker $DOCKER_OPTS run --name ' +app+ ' -it -p ' +pub+ ':' +priv+ ' ' +appImage+ ' sh prod/.lifter/app.sh\n';
   }
 
-  var deployScript = pullImage + dbCMDs + deployInfo;
+  var deployScript = 'cat /etc/default/docker.io | sed \'s/0.0.0.0/localhost/g\' | sed \'s/tlsverify/tls/\' | sudo tee /etc/default/docker.io\n' +
+
+                     'export DOCKER_OPTS="$(cat /etc/default/docker.io | grep DOCKER_OPTS | sed \'s/DOCKER_OPTS=//\' | sed \'s/\\\"//g\')"\n' +
+
+                     'sudo service docker.io restart\n' +
+
+                     'echo "Pulling image from DockerHub"\n' +
+                     'sudo docker $DOCKER_OPTS pull ' +appImage+ '\n' +
+
+                     'echo "Shutting down existing application container (if one exists)"\n' +
+                     'sudo docker $DOCKER_OPTS rm -f ' +app+ '\n' +
+
+                     runContainerCMDS +
+
+                     'echo "Before you can access your deployed application, you must open the following port: ' +pub+ '"\n' +
+                     'echo "Please follow the instructions at:"\n' + 
+                     'echo "http://azure.microsoft.com/en-us/documentation/articles/virtual-machines-set-up-endpoints/"\n' +
+                     'echo "After your endpoints have been configure, your application will be deployed at: http://' +yamlContent.vmName+ '.cloudapp.net:' +pub+ '"';
+  
 
   fs.writeFile('./.lifter/deploy.sh', deployScript, function (err) {
     if (err) {
