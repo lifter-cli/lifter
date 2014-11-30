@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Class: Transaction</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Class: Transaction</h1>
+
+    
+
+
+
+
+<section>
+
+<header>
+    
+        <h2>
+        Transaction
+        </h2>
+        
+    
+</header>
+
+<article>
+    <div class="container-overview">
+    
+        
+<dt>
+    
+        
+        <h2>Constructor</h2>
+        
+        
+        <h4 class="name" id="Transaction"><span class="type-signature"></span>new Transaction<span class="signature">(transactionWrapper)</span><span class="type-signature"> &rarr; {<a href="Transaction.html">Transaction</a>}</span></h4>
+
+        
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        `Transaction` creates a black box that is able to wrap any method such that
+certain invariants are maintained before and after the method is invoked
+(Even if an exception is thrown while invoking the wrapped method). Whoever
+instantiates a transaction can provide enforcers of the invariants at
+creation time. The `Transaction` class itself will supply one additional
+automatic invariant for you - the invariant that any transaction instance
+should not be run while it is already being run. You would typically create a
+single instance of a `Transaction` for reuse multiple times, that potentially
+is used to wrap several different methods. Wrappers are extremely simple -
+they only require implementing two methods.
+
+<pre>
+                      wrappers (injected at creation time)
+                                     +        +
+                                     |        |
+                   +-----------------|--------|--------------+
+                   |                 v        |              |
+                   |      +---------------+   |              |
+                   |   +--|    wrapper1   |---|----+         |
+                   |   |  +---------------+   v    |         |
+                   |   |          +-------------+  |         |
+                   |   |     +----|   wrapper2  |--------+   |
+                   |   |     |    +-------------+  |     |   |
+                   |   |     |                     |     |   |
+                   |   v     v                     v     v   | wrapper
+                   | +---+ +---+   +---------+   +---+ +---+ | invariants
+perform(anyMethod) | |   | |   |   |         |   |   | |   | | maintained
++----------------->|-|---|-|---|-->|anyMethod|---|---|-|---|-|-------->
+                   | |   | |   |   |         |   |   | |   | |
+                   | |   | |   |   |         |   |   | |   | |
+                   | |   | |   |   |         |   |   | |   | |
+                   | +---+ +---+   +---------+   +---+ +---+ |
+                   |  initialize                    close    |
+                   +-----------------------------------------+
+</pre>
+
+Use cases:
+- Preserving the input selection ranges before/after reconciliation.
+  Restoring selection even in the event of an unexpected error.
+- Deactivating events while rearranging the DOM, preventing blurs/focuses,
+  while guaranteeing that afterwards, the event system is reactivated.
+- Flushing a queue of collected DOM mutations to the main UI thread after a
+  reconciliation takes place in a worker thread.
+- Invoking any collected `componentDidUpdate` callbacks after rendering new
+  content.
+- (Future use case): Wrapping particular flushes of the `ReactWorker` queue
+  to preserve the `scrollTop` (an automatic scroll aware DOM).
+- (Future use case): Layout calculations before and after DOM upates.
+
+Transactional plugin API:
+- A module that has an `initialize` method that returns any precomputation.
+- and a `close` method that accepts the precomputation. `close` is invoked
+  when the wrapped process is completed, or has failed.
+    </div>
+    
+
+    
+
+    
+
+    
+
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>transactionWrapper</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array.&lt;TransactionalWrapper></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Wrapper modules
+that implement `initialize` and `close`.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+    
+
+    
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="lifter-ui_server_public_app.js.html">lifter-ui/server/public/app.js</a>, <a href="lifter-ui_server_public_app.js.html#line21885">line 21885</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    Single transaction for reuse in thread.
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type"><a href="Transaction.html">Transaction</a></span>
+
+
+    </dd>
+</dl>
+
+        
+
+    
+</dd>
+
+    
+    </div>
+
+    
+
+    
+
+    
+
+     
+
+    
+
+    
+
+    
+
+    
+
+    
+</article>
+
+</section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-Docker-API.html">Docker-API</a></li><li><a href="module-globalDependencies.html">globalDependencies</a></li><li><a href="module-helpers.html">helpers</a></li><li><a href="module-lifterPrompts.html">lifterPrompts</a></li><li><a href="module-validation.html">validation</a></li></ul><h3>Classes</h3><ul><li><a href="X_.html">_</a></li><li><a href="EventPropagators.html">EventPropagators</a></li><li><a href="ForEachBookKeeping.html">ForEachBookKeeping</a></li><li><a href="MapBookKeeping.html">MapBookKeeping</a></li><li><a href="ReactComponent.html">ReactComponent</a></li><li><a href="ReactCompositeComponent.html">ReactCompositeComponent</a></li><li><a href="ReactDOMComponent.html">ReactDOMComponent</a></li><li><a href="ReactMountReady.html">ReactMountReady</a></li><li><a href="ReactMultiChild.html">ReactMultiChild</a></li><li><a href="ReactOwner.html">ReactOwner</a></li><li><a href="ReactPropTransferer.html">ReactPropTransferer</a></li><li><a href="ReactReconcileTransaction.html">ReactReconcileTransaction</a></li><li><a href="ReactServerRenderingTransaction.html">ReactServerRenderingTransaction</a></li><li><a href="ReactTextComponent.html">ReactTextComponent</a></li><li><a href="Transaction.html">Transaction</a></li></ul><h3>Global</h3><ul><li><a href="global.html#askConfigQuestion">askConfigQuestion</a></li><li><a href="global.html#buildDockerfile">buildDockerfile</a></li><li><a href="global.html#config">config</a></li><li><a href="global.html#containerProperties">containerProperties</a></li><li><a href="global.html#DEFINE_MANY">DEFINE_MANY</a></li><li><a href="global.html#DEFINE_MANY_MERGED">DEFINE_MANY_MERGED</a></li><li><a href="global.html#DEFINE_ONCE">DEFINE_ONCE</a></li><li><a href="global.html#destructor">destructor</a></li><li><a href="global.html#dockerfileContents">dockerfileContents</a></li><li><a href="global.html#enqueue">enqueue</a></li><li><a href="global.html#ensureScrollValueMonitoring">ensureScrollValueMonitoring</a></li><li><a href="global.html#isEnabled">isEnabled</a></li><li><a href="global.html#isPersistent">isPersistent</a></li><li><a href="global.html#listenTo">listenTo</a></li><li><a href="global.html#makeDescription">makeDescription</a></li><li><a href="global.html#mountComponent">mountComponent</a></li><li><a href="global.html#MOUNTED">MOUNTED</a></li><li><a href="global.html#MOUNTING">MOUNTING</a></li><li><a href="global.html#notifyAll">notifyAll</a></li><li><a href="global.html#OVERRIDE_BASE">OVERRIDE_BASE</a></li><li><a href="global.html#persist">persist</a></li><li><a href="global.html#ReactEventListener">ReactEventListener</a></li><li><a href="global.html#receiveComponent">receiveComponent</a></li><li><a href="global.html#RECEIVING_PROPS">RECEIVING_PROPS</a></li><li><a href="global.html#render">render</a></li><li><a href="global.html#reset">reset</a></li><li><a href="global.html#setEnabled">setEnabled</a></li><li><a href="global.html#UNMOUNTED">UNMOUNTED</a></li><li><a href="global.html#UNMOUNTING">UNMOUNTING</a></li><li><a href="global.html#validateResponse">validateResponse</a></li></ul>
+</nav>
+
+<br clear="both">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-dev</a> on Sat Nov 29 2014 18:42:40 GMT-0800 (PST)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

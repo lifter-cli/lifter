@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: lifter-ui/server/api/dockerRemoteAPI.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: lifter-ui/server/api/dockerRemoteAPI.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>var Docker = require('dockerode');
+// var docker = new Docker({socketPath: '/var/run/docker.sock'});
+// // var docker2 = new Docker({host: 'http://192.168.1.10', port: 3000});
+// // var docker3 = new Docker({protocol:'http', host: '127.0.0.1', port: 3000});
+// // var docker4 = new Docker({host: '127.0.0.1', port: 3000}); //defaults to http
+// //
+
+/**
+* Uses Dockerode to create a REST-ful API for accessing Docker Remote API
+* @module Docker-API
+*/
+var caPath = process.env.DOCKER_MONITOR_CA_PATH || (process.env.DOCKER_CERT_PATH + '/ca.pem');
+var certPath = process.env.DOCKER_MONITOR_CERT_PATH || (process.env.DOCKER_CERT_PATH + '/cert.pem');
+var keyPath = process.env.DOCKER_MONITOR_KEY_PATH || (process.env.DOCKER_CERT_PATH + '/key.pem');
+var host = process.env.DOCKER_MONITOR_HOST_IP || '192.168.59.103';
+
+var fs = require('fs');
+var dockerSettings = {};
+if ( process.env.AZURE_UBUNTU ) {
+  dockerSettings = {
+    socketPath: '/var/run/docker.sock'
+  };
+} else {
+  dockerSettings = {
+    protocol: 'https',
+    host: host,
+    port: process.env.DOCKER_PORT || 2376,
+    ca: fs.readFileSync(caPath),
+    cert: fs.readFileSync(certPath),
+    key: fs.readFileSync(keyPath)
+  };
+}
+var docker = new Docker(dockerSettings);
+
+exports.docker = docker;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-Docker-API.html">Docker-API</a></li><li><a href="module-globalDependencies.html">globalDependencies</a></li><li><a href="module-helpers.html">helpers</a></li><li><a href="module-lifterPrompts.html">lifterPrompts</a></li><li><a href="module-validation.html">validation</a></li></ul><h3>Classes</h3><ul><li><a href="X_.html">_</a></li><li><a href="EventPropagators.html">EventPropagators</a></li><li><a href="ForEachBookKeeping.html">ForEachBookKeeping</a></li><li><a href="MapBookKeeping.html">MapBookKeeping</a></li><li><a href="ReactComponent.html">ReactComponent</a></li><li><a href="ReactCompositeComponent.html">ReactCompositeComponent</a></li><li><a href="ReactDOMComponent.html">ReactDOMComponent</a></li><li><a href="ReactMountReady.html">ReactMountReady</a></li><li><a href="ReactMultiChild.html">ReactMultiChild</a></li><li><a href="ReactOwner.html">ReactOwner</a></li><li><a href="ReactPropTransferer.html">ReactPropTransferer</a></li><li><a href="ReactReconcileTransaction.html">ReactReconcileTransaction</a></li><li><a href="ReactServerRenderingTransaction.html">ReactServerRenderingTransaction</a></li><li><a href="ReactTextComponent.html">ReactTextComponent</a></li><li><a href="Transaction.html">Transaction</a></li></ul><h3>Global</h3><ul><li><a href="global.html#askConfigQuestion">askConfigQuestion</a></li><li><a href="global.html#buildDockerfile">buildDockerfile</a></li><li><a href="global.html#config">config</a></li><li><a href="global.html#containerProperties">containerProperties</a></li><li><a href="global.html#DEFINE_MANY">DEFINE_MANY</a></li><li><a href="global.html#DEFINE_MANY_MERGED">DEFINE_MANY_MERGED</a></li><li><a href="global.html#DEFINE_ONCE">DEFINE_ONCE</a></li><li><a href="global.html#destructor">destructor</a></li><li><a href="global.html#dockerfileContents">dockerfileContents</a></li><li><a href="global.html#enqueue">enqueue</a></li><li><a href="global.html#ensureScrollValueMonitoring">ensureScrollValueMonitoring</a></li><li><a href="global.html#isEnabled">isEnabled</a></li><li><a href="global.html#isPersistent">isPersistent</a></li><li><a href="global.html#listenTo">listenTo</a></li><li><a href="global.html#makeDescription">makeDescription</a></li><li><a href="global.html#mountComponent">mountComponent</a></li><li><a href="global.html#MOUNTED">MOUNTED</a></li><li><a href="global.html#MOUNTING">MOUNTING</a></li><li><a href="global.html#notifyAll">notifyAll</a></li><li><a href="global.html#OVERRIDE_BASE">OVERRIDE_BASE</a></li><li><a href="global.html#persist">persist</a></li><li><a href="global.html#ReactEventListener">ReactEventListener</a></li><li><a href="global.html#receiveComponent">receiveComponent</a></li><li><a href="global.html#RECEIVING_PROPS">RECEIVING_PROPS</a></li><li><a href="global.html#render">render</a></li><li><a href="global.html#reset">reset</a></li><li><a href="global.html#setEnabled">setEnabled</a></li><li><a href="global.html#UNMOUNTED">UNMOUNTED</a></li><li><a href="global.html#UNMOUNTING">UNMOUNTING</a></li><li><a href="global.html#validateResponse">validateResponse</a></li></ul>
+</nav>
+
+<br clear="both">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-dev</a> on Sat Nov 29 2014 18:42:39 GMT-0800 (PST)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

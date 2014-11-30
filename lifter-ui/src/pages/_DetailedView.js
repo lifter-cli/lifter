@@ -3,6 +3,11 @@ var _ = lodash = require('../../../node_modules/lodash/lodash');
 var apiHelper = require('../modules/apiHelper');
 var getContainerDetail = apiHelper.getContainerDetail;
 
+/**
+* Panel of a container's specific characteristic
+* (similar to info from docker inspect command)
+* @class ContainerComponent
+*/
 var ContainerComponent = React.createClass({
   render() {
     return(
@@ -18,6 +23,11 @@ var ContainerComponent = React.createClass({
   }
 });
 
+/**
+* Detailed view of Lifter Monitor that shows all the properties of the containers
+* in a panel format
+* @class DetailedView
+*/
 var DetailedView = React.createClass({
   getInitialState() {
     return {

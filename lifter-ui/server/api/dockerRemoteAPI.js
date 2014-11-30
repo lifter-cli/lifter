@@ -5,6 +5,10 @@ var Docker = require('dockerode');
 // // var docker4 = new Docker({host: '127.0.0.1', port: 3000}); //defaults to http
 // //
 
+/**
+* Uses Dockerode to create a REST-ful API for accessing Docker Remote API
+* @module Docker-API
+*/
 var caPath = process.env.DOCKER_MONITOR_CA_PATH || (process.env.DOCKER_CERT_PATH + '/ca.pem');
 var certPath = process.env.DOCKER_MONITOR_CERT_PATH || (process.env.DOCKER_CERT_PATH + '/cert.pem');
 var keyPath = process.env.DOCKER_MONITOR_KEY_PATH || (process.env.DOCKER_CERT_PATH + '/key.pem');
