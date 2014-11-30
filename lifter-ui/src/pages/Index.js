@@ -31,7 +31,7 @@ var Header = React.createClass({
 /**
 * Main section of the Lifter Monitor user interface that switches
 * between dashboard view and detaield view
-* @class Display
+* @name Display
 */
 var Display = React.createClass({
   handleContainerClick(containerId) {

@@ -2,7 +2,7 @@ var React = require('react');
 
 /**
 * Provides high-level information of a container
-* @class ContainerRow
+* @name ContainerRow
 */
 var ContainerRow = React.createClass({
 

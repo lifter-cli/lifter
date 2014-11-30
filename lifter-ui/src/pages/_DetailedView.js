@@ -6,7 +6,7 @@ var getContainerDetail = apiHelper.getContainerDetail;
 /**
 * Panel of a container's specific characteristic
 * (similar to info from docker inspect command)
-* @class ContainerComponent
+* @name ContainerComponent
 */
 var ContainerComponent = React.createClass({
   render() {
@@ -26,7 +26,7 @@ var ContainerComponent = React.createClass({
 /**
 * Detailed view of Lifter Monitor that shows all the properties of the containers
 * in a panel format
-* @class DetailedView
+* @name DetailedView
 */
 var DetailedView = React.createClass({
   getInitialState() {

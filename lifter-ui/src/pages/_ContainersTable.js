@@ -8,7 +8,7 @@ var parseContainerNames = apiHelper.parseContainerNames;
 /**
 * Lists all active and inactive containers in a table
 * (similar to info from docker ps -a command)
-* @class ContainersTable
+* @name ContainersTable
 */
 var ContainersTable = React.createClass({
 
