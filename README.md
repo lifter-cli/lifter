@@ -25,11 +25,12 @@ Even for familiar users of Docker, our tool is designed to reduce your time mana
     npm install -g lifter
     ```
 
-2. Run the `lifter` command to receive an overview of the four main Lifter commands.
+2. Run the `lifter` command to receive a quick overview of each Lifter command.
 
 ### Containerize Your Application
 1. Run the `lifter config` command to configure the settings for your Docker containers.
 2. Run the `lifter init` command to start the Docker containers in your local dev environment
+3. Run the `lifter shell` command to learn how to enter the shell of your local Docker containers.
 3. Run the `lifter push` command to save the state of your application as a Docker image and push it to Docker Hub
 4. Run the `lifter deploy` command to deploy your application on a VM in your production environment
 
