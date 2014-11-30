@@ -136,10 +136,10 @@ var writeDeployScript = function(){
                        'sudo docker $DOCKER_OPTS run -d --name ' +db+ ' ' +dbImage+ '\n' +
                        'echo "Linking to database container"\n' +
                        'echo "Running application script"\n' +
-                       'sudo docker $DOCKER_OPTS run --name ' +app+ ' -it -p ' +pub+ ':' +priv+ ' --link ' +db+ ':' +dbLink+ ' ' +appImage+ ' sh prod/.lifter/app.sh\n';
+                       'sudo docker $DOCKER_OPTS run --name ' +app+ ' -d -p ' +pub+ ':' +priv+ ' --link ' +db+ ':' +dbLink+ ' ' +appImage+ ' sh prod/.lifter/app.sh\n';
   } else {
     runContainerCMDS = 'echo "Running application script"\n' +
-                       'sudo docker $DOCKER_OPTS run --name ' +app+ ' -it -p ' +pub+ ':' +priv+ ' ' +appImage+ ' sh prod/.lifter/app.sh\n';
+                       'sudo docker $DOCKER_OPTS run --name ' +app+ ' -d -p ' +pub+ ':' +priv+ ' ' +appImage+ ' sh prod/.lifter/app.sh\n';
   }
 
   var deployScript = 'cat /etc/default/docker.io | sed \'s/0.0.0.0/localhost/g\' | sed \'s/tlsverify/tls/\' | sudo tee /etc/default/docker.io\n' +
