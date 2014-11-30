@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: CLI/helpers/helpers.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: CLI/helpers/helpers.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+* @module helpers
+*/
+var fs = require('fs');
+var yaml = require('../../node_modules/js-yaml');
+var configFile = './.lifter/lifter.yml';
+
+/**
+* Function that takes in an array of tasks that will be individually
+*   passed to the spawn function, then runs each task in series. At the 
+*   end of all the tasks, a final callback will be invoked.
+* @function
+* @memberof module:helpers
+* EXAMPLE
+*   spawnSeries([
+*    ['ls', ['-lh', '/usr']],
+*    ['ls', ['-la']]
+*   ], function() { console.log('all done!'); });
+*/
+var spawnSeries = function(tasks, callback) {
+  callback = callback || function() {};
+  var completed = 0;
+  var iterate = function() {
+    if (++completed &lt; tasks.length) {
+      run();
+    } else {
+      callback();
+    }
+  }
+  var run = function() {
+    var task = tasks[completed];
+    var proc = spawn.apply(null, task);
+    proc.stdout.on('data', function(data) {
+      console.log(data.toString());
+    });
+    proc.stderr.on('data', function(data) {
+      console.log(data.toString());
+    });
+    proc.on('exit', function(code) {
+      // console.log('EXIT CODE:', code);
+      iterate();
+    });
+  }
+  run();
+}
+
+/**
+* Function that reads the lifter.yml file
+* @function
+* @memberof module:helpers
+*/
+
+var readYAML = function() {
+  var out;
+  try {
+    var content = fs.readFileSync(configFile);
+    out = yaml.safeLoad(content);
+  } catch (e) {
+    console.log(e.code, e.path);
+    if (e.code === 'ENOENT') {
+      console.log('... config file does not exist, please run lifter config');
+    }
+    process.exit();
+  }
+  return out;
+}
+
+/**
+* Function that writes new vm info into lifter.yml
+* @function
+* @memberof module:helpers
+*/
+
+var sendVMInfoToYAML = function(vmName, vmUser, callback){
+
+  var newVMName = 'vmName: ' + vmName;
+  var newVMUsername = 'vmUserName: ' + vmUser;
+
+  fs.readFile(configFile, 'utf8', function(err, data){
+    if(err){
+      console.log('ERR: ', err);
+    // overwrites vm info in yaml file if it already exits
+    } else if(/vmName|vmUserName/g.test(data)) {
+      console.log("Overwriting existing vm info in YAML file");
+      var replace = data.replace(/vmName.*/g, newVMName).replace(/vmUserName.*/g, newVMUsername);
+      fs.writeFile(configFile, replace, 'utf8', function(err){
+        if(err){
+          console.log('ERROR Could not update YAML with new vm info: ', err);
+        }
+        console.log("Writing Deploy script...");
+        callback();
+      });
+    // appends new vm info to yaml file if the info is not already there
+    } else {
+      console.log("Appending vm info into YAML file");
+      var append = '\n'+ newVMName + '\n' + newVMUsername;      
+      fs.appendFile(configFile, append, function(err){
+        if(err){
+          console.log('ERROR Could not update YAML with new vm info: ', err);
+        }
+        console.log("Writing Deploy script...");
+        callback();
+      });
+    }    
+  });
+};
+
+module.exports = {
+  spawnSeries: spawnSeries,
+  readYAML: readYAML,
+  sendVMInfoToYAML: sendVMInfoToYAML,
+  configFile: configFile
+}</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-Docker-API.html">Docker-API</a></li><li><a href="module-globalDependencies.html">globalDependencies</a></li><li><a href="module-helpers.html">helpers</a></li><li><a href="module-lifterPrompts.html">lifterPrompts</a></li><li><a href="module-validation.html">validation</a></li></ul><h3>Classes</h3><ul><li><a href="Header.html">Header</a></li></ul><h3>Global</h3><ul><li><a href="global.html#askConfigQuestion">askConfigQuestion</a></li><li><a href="global.html#buildDockerfile">buildDockerfile</a></li><li><a href="global.html#ContainerComponent">ContainerComponent</a></li><li><a href="global.html#containerProperties">containerProperties</a></li><li><a href="global.html#ContainerRow">ContainerRow</a></li><li><a href="global.html#ContainersTable">ContainersTable</a></li><li><a href="global.html#DetailedView">DetailedView</a></li><li><a href="global.html#Display">Display</a></li><li><a href="global.html#dockerfileContents">dockerfileContents</a></li><li><a href="global.html#getContainerDetail">getContainerDetail</a></li><li><a href="global.html#makeDescription">makeDescription</a></li><li><a href="global.html#render">render</a></li><li><a href="global.html#validateResponse">validateResponse</a></li></ul>
+</nav>
+
+<br clear="both">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-dev</a> on Sun Nov 30 2014 14:12:36 GMT-0800 (PST)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
