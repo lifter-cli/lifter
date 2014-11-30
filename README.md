@@ -25,11 +25,12 @@ Even for familiar users of Docker, our tool is designed to reduce your time mana
     npm install -g lifter
     ```
 
-2. Run the `lifter` command to receive an overview of the four main Lifter commands.
+2. Run the `lifter` command to receive a quick overview of each Lifter command.
 
 ### Containerize Your Application
 1. Run the `lifter config` command to configure the settings for your Docker containers.
 2. Run the `lifter init` command to start the Docker containers in your local dev environment
+3. Run the `lifter shell` command to learn how to enter the shell of your local Docker containers.
 3. Run the `lifter push` command to save the state of your application as a Docker image and push it to Docker Hub
 4. Run the `lifter deploy` command to deploy your application on a VM in your production environment
 
@@ -58,11 +59,11 @@ curl http://lifter-cli.github.io/lifter/install-lifter-monitor-ubuntu.sh | sudo 
   
   - You can now monitor the status of your Azure production containers at: `http://azure-vm-name.cloudapp.net:3123/`
 
-## Indepth Guide of How Lifter Works
+## In depth Guide of How Lifter Works
 This section explains what exactly is happening under the hood with each Lifter command.
 
 ### Lifter Config
-This prompts the user to answer a series of questions that are used in Lifter Init to setup the containers in the local dev environment. The output of this command is the `lifter.yaml` file which is read by the next step.
+This prompts the user to answer a series of questions that are used in Lifter Init to set up the containers in the local dev environment. The output of this command is the `lifter.yaml` file which is read by the next step.
 
 ### Lifter Init
 This will start the Docker server in your local dev environment (Mac OS X) by starting Boot2Docker, which is a lightweight Linux VM that allows you to run the Docker server because it cannot natively run on OS X (although the Docker client can run natively in in the OS X terminal).
@@ -71,6 +72,10 @@ Lifter then starts an application container that is linked to a folder with your
 
 ### Lifter Push
 This saves the state of your application into a Docker image and then pushes this Docker image to Docker Hub. This workflow mirrors the Git workflow where you commit your changes and push to a remote repository on Git Hub. 
+
+### Lifter Shell
+This prints the command for entering the shell of your local application containers. Once inside your application container, you can navigate to the
+"src" directory to find your application's codebase. Your codebase and application container are always in sync so you may choose to develop in either setting. Most often developers will enter the shell of the application container to run their application's launch command. 
 
 ### Lifter Deploy
 Once you are ready to deploy your application, you can either choose to create a new VM or use an existing VM on Azure to deploy to. This will copy and execute a shell script that will replicate a set-up similar to your development environment and start your application and database containers. The shell script automatically executes the launch command that you specified in the lifter config stage, which will then start the server for your app.
