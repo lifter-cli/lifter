@@ -43,7 +43,7 @@ The Lifter Monitor tool which provides a dashboard view and detailed view of you
 ### Local (Mac OS X)
 A. Once you have run `lifter init` and have Docker containers running in your local dev environment, you can install Lifter Monitor for Mac OS X by running the following shell script via curl. Please ensure you are in the folder that you want to install Lifter Monitor in when you run the following command:
 ```
-curl http://lifter-cli.github.io/lifter/install-lifter-monitor-osx.sh | sh
+$(boot2docker shellinit) && curl http://lifter-cli.github.io/lifter/install-lifter-monitor-osx.sh | sh
 ```
   - Note: You may need to execute the shell script using sudo depending on your computer's settings.
 (e.g. `curl http://lifter-cli.github.io/lifter/install-lifter-monitor-osx.sh | sudo sh`) 
