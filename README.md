@@ -10,6 +10,8 @@ While Docker containers can dramatically improve the predictability of deploying
 
 Even for familiar users of Docker, our tool is designed to reduce your time managing your containers by eliminating the need to execute a series of Docker commands as part of your typical development workflow.
 
+[View documentation](http://lifter-cli.github.io/lifter/docs/)
+
 ## Requirements
 - Install the Docker and Boot2Docker package (lightweight Linux VM to run the Docker server)
   - [Download the latest version at the official Docker site](https://github.com/boot2docker/osx-installer/releases/latest)
