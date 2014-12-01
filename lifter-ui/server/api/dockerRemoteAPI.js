@@ -9,10 +9,13 @@ var Docker = require('dockerode');
 * Uses Dockerode to create a REST-ful API for accessing Docker Remote API
 * @module Docker-API
 */
+
+var hostIp = process.env.DOCKER_HOST.slice(6, -5);
+
 var caPath = process.env.DOCKER_MONITOR_CA_PATH || (process.env.DOCKER_CERT_PATH + '/ca.pem');
 var certPath = process.env.DOCKER_MONITOR_CERT_PATH || (process.env.DOCKER_CERT_PATH + '/cert.pem');
 var keyPath = process.env.DOCKER_MONITOR_KEY_PATH || (process.env.DOCKER_CERT_PATH + '/key.pem');
-var host = process.env.DOCKER_MONITOR_HOST_IP || '192.168.59.103';
+var host = process.env.DOCKER_MONITOR_HOST_IP || hostIp;
 
 var fs = require('fs');
 var dockerSettings = {};
