@@ -8,6 +8,11 @@ var getContainerDetail = apiHelper.getContainerDetail;
 * (similar to info from docker inspect command)
 * @name ContainerComponent
 */
+
+var componentStyle = {
+  "word-wrap": "break-word"
+};
+
 var ContainerComponent = React.createClass({
   render() {
     return(
@@ -15,7 +20,7 @@ var ContainerComponent = React.createClass({
         <div className="panel-heading">
           <h3 className="panel-title">{this.props.propertyType}</h3>
         </div>
-        <div className="panel-body">
+        <div style={componentStyle} className="panel-body">
           {this.props.value}
         </div>
       </div>
@@ -47,7 +52,7 @@ var DetailedView = React.createClass({
     });
     return (
       <div>
-        <a onClick={this.props.handleMainClick}>Detailed View</a>
+        <a onClick={this.props.handleMainClick}>Return to Dashboard view</a>
         <div>
         </div>
         <div>
