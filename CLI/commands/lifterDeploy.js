@@ -159,6 +159,7 @@ var writeDeployScript = function(){
                      'echo "Before you can access your deployed application, you must open the following port: ' +pub+ '"\n' +
                      'echo "Please follow the instructions at:"\n' + 
                      'echo "http://azure.microsoft.com/en-us/documentation/articles/virtual-machines-set-up-endpoints/"\n' +
+                     'echo "It may take a few minutes for your vm endpoints to be configured."'
                      'echo "After your endpoints have been configure, your application will be deployed at: http://' +yamlContent.vmName+ '.cloudapp.net:' +pub+ '"';
   
 
