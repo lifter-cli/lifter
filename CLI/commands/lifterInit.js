@@ -87,7 +87,6 @@ var checkHostsFileForDockerhost = function() {
       // addDockerhostToHostsFile(ip);
     }
     printInstructions();
-    finishInit();
   });
 
 }
@@ -217,17 +216,17 @@ var createLocalContainer = function() {
 
 var printInstructions = function() {
   var settings = helpers.readYAML();
-  console.log('Once you launch your app, you can use this url to access it: \n\n'+
+  console.log('INFORMATION'.red);
+  console.log('Your code has been mounted to the /src path in your container'.green);
+  console.log('Remember you have to be outside your container to run lifter commit and deploy'.green);
+  console.log('Once you launch your app, you can use this url to access it: \n\n'.green+
     '    http://dockerhost:' + settings.portPublic + '\n\n');
   if (exitInstructions.length > 0) {
-    console.log("Run these to correct your /etc/hosts file:")
+    console.log("Run these to correct your /etc/hosts file:".green)
     exitInstructions.forEach(function(str) {
       console.log("    " + str);
     });
   }
-}
-
-var finishInit = function () {
   lifterShell.printCommand();
 }
 
