@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: CLI/helpers/dockerfileBuilder.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: CLI/helpers/dockerfileBuilder.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>var fs = require('fs');
+var path = require('path');
+var yaml = require('../../node_modules/js-yaml');
+var dependencies = require('./globalDependencyList.js');
+var helpers = require('./helpers.js');
+
+/**
+* Array that constructs basic template to build Dockerfile
+* Each subarray of dockerfileContents will render as its own line in Dockerfile - THIS SEEMS HACKY
+* @array
+*/
+var dockerfileContents = [
+  ['#','DOCKER-VERSION 0.3.4'],
+  ['FROM'],
+  ['MAINTAINER'],
+  ['#','Enable EPEL for Node.js'],
+  ['RUN', 'rpm -Uvh http://download.fedoraproject.org/pub/epel/6/i386/epel-release-6-8.noarch.rpm'],
+  ['#','Install Node.js, npm, and git, etc.'],
+  ['RUN', 'yum install -y npm'],
+  ['RUN', 'yum install -y git'],
+  ['EXPOSE'],
+];
+
+/**
+* Function that authenticates input username and password against Dockerhub API
+* @function
+* @memberof module:validation
+* @param {string} filename Filename of YML file that will be loaded and parsed
+* @param {array} dockerfile Array of sub-arrays that will render as a Dockerfile
+*/
+var addToDockerfile = function(dockerfile) {
+  var settings = helpers.readYAML();
+  for(var i=0;i&lt;dockerfile.length;i++) {
+
+    if(dockerfile[i][0] === 'FROM') {
+      dockerfile[i].push(settings.linuxOS);
+    }
+    if(dockerfile[i][0] === 'MAINTAINER') {
+      dockerfile[i].push(settings.username);
+    }
+    if(dockerfile[i][0] === 'EXPOSE') {
+      dockerfile[i].push(settings.portPublic);
+    }
+  }
+};
+
+/**
+* Function that searches root directory for files that require global dependencies
+* @function
+* @memberof module:validation
+* @param {string} dir Filepath of directory to check
+* @param {array} dockerfile Array of sub-arrays that will render as a Dockerfile
+*/
+var readDirectory = function(dir,dockerfile) {
+  var files = fs.readdirSync(dir);
+
+  for(var j=0;j&lt;dockerfile.length;j++) {
+    if(dockerfile[j].indexOf('EXPOSE') > -1) {
+      var splicePoint = j;
+    }
+  }
+
+  for(var i=0;i&lt;files.length;i++) {
+    var file = files[i];
+
+    // All file names will be matched in lower case for consistency
+    // E.g. gruntfile might be named 'Gruntfile.js' or 'gruntfile.js'
+    if(typeof file === 'string') {
+      file = file.toLowerCase();
+    }
+
+    if(dependencies.files.indexOf(file) > -1) {
+      var installCommand = dependencies.installCommands[file];
+      if(splicePoint) {
+        dockerfile.splice(splicePoint,0,installCommand);
+      } else {
+        dockerfile.push(installCommand);
+      }
+    }
+  }
+};
+
+
+/**
+* Function that searches root directory for files that require global dependencies
+* @function
+* @param {function} callback Callback function that is invoked once Dockerfile is ready
+*/
+var buildDockerfile = function() {
+  addToDockerfile(dockerfileContents);
+  readDirectory('./',dockerfileContents);
+  prepDockerfile(dockerfileContents);
+  fs.writeFileSync('./Dockerfile',dockerfileContents.join('\n'));
+  console.log('Dockerfile exists now.  High five!');
+};
+
+/**
+* Function that formats each line of Dockerfile
+* @function
+* @memberof module:validation
+* @param {array} dockerfile Array of sub-arrays that will render as a Dockerfile
+*/
+var prepDockerfile = function(dockerfile) {
+  for(var i=0;i&lt;dockerfile.length;i++) {
+    if (Array.isArray(dockerfile[i])) {
+      var lineStart = dockerfile[i][0];
+      if(lineStart !== '#') {
+        var cmdLength = lineStart.length;
+        dockerfile[i][0] = lineStart + spaces(cmdLength);
+      }
+      dockerfile[i] = dockerfile[i].join('');
+    }
+  }
+  return dockerfile.join('\n');
+};
+
+/**
+* Function returns number of spaces required after command in Dockerfile
+* @function
+* @memberof module:validation
+* @param {number} num Length of command converted to num of spaces
+*/
+var spaces = function(num) {
+  num = 8 - num;
+  num = num &lt; 2 ? 2 : num;
+  return Array(num).join(" ");
+}
+
+module.exports = {
+  buildDockerfile : buildDockerfile
+}
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-Docker-API.html">Docker-API</a></li><li><a href="module-globalDependencies.html">globalDependencies</a></li><li><a href="module-helpers.html">helpers</a></li><li><a href="module-lifterPrompts.html">lifterPrompts</a></li><li><a href="module-validation.html">validation</a></li></ul><h3>Classes</h3><ul><li><a href="Header.html">Header</a></li></ul><h3>Global</h3><ul><li><a href="global.html#askConfigQuestion">askConfigQuestion</a></li><li><a href="global.html#buildDockerfile">buildDockerfile</a></li><li><a href="global.html#ContainerComponent">ContainerComponent</a></li><li><a href="global.html#containerProperties">containerProperties</a></li><li><a href="global.html#ContainerRow">ContainerRow</a></li><li><a href="global.html#ContainersTable">ContainersTable</a></li><li><a href="global.html#DetailedView">DetailedView</a></li><li><a href="global.html#Display">Display</a></li><li><a href="global.html#dockerfileContents">dockerfileContents</a></li><li><a href="global.html#getContainerDetail">getContainerDetail</a></li><li><a href="global.html#makeDescription">makeDescription</a></li><li><a href="global.html#render">render</a></li><li><a href="global.html#validateResponse">validateResponse</a></li></ul>
+</nav>
+
+<br clear="both">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-dev</a> on Sun Nov 30 2014 14:12:36 GMT-0800 (PST)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

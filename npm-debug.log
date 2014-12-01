@@ -1,0 +1,58 @@
+0 info it worked if it ends with ok
+1 verbose cli [ '/Users/willchen/.nvm/v0.10.32/bin/node',
+1 verbose cli   '/Users/willchen/.nvm/v0.10.32/bin/npm',
+1 verbose cli   'install',
+1 verbose cli   '-g' ]
+2 info using npm@1.4.28
+3 info using node@v0.10.32
+4 verbose cache add [ '.', null ]
+5 verbose cache add name=undefined spec="." args=[".",null]
+6 verbose parsed url { protocol: null,
+6 verbose parsed url   slashes: null,
+6 verbose parsed url   auth: null,
+6 verbose parsed url   host: null,
+6 verbose parsed url   port: null,
+6 verbose parsed url   hostname: null,
+6 verbose parsed url   hash: null,
+6 verbose parsed url   search: null,
+6 verbose parsed url   query: null,
+6 verbose parsed url   pathname: '.',
+6 verbose parsed url   path: '.',
+6 verbose parsed url   href: '.' }
+7 silly lockFile 3a52ce78- .
+8 verbose lock . /Users/willchen/.npm/3a52ce78-.lock
+9 verbose tar pack [ '/Users/willchen/.npm/lifter/0.0.2/package.tgz', '.' ]
+10 verbose tarball /Users/willchen/.npm/lifter/0.0.2/package.tgz
+11 verbose folder .
+12 info prepublish lifter@0.0.2
+13 silly lockFile 1f1177db-tar tar://.
+14 verbose lock tar://. /Users/willchen/.npm/1f1177db-tar.lock
+15 silly lockFile 37b3b280-hen-npm-lifter-0-0-2-package-tgz tar:///Users/willchen/.npm/lifter/0.0.2/package.tgz
+16 verbose lock tar:///Users/willchen/.npm/lifter/0.0.2/package.tgz /Users/willchen/.npm/37b3b280-hen-npm-lifter-0-0-2-package-tgz.lock
+17 silly lockFile 1f1177db-tar tar://.
+18 silly lockFile 1f1177db-tar tar://.
+19 silly lockFile 37b3b280-hen-npm-lifter-0-0-2-package-tgz tar:///Users/willchen/.npm/lifter/0.0.2/package.tgz
+20 silly lockFile 37b3b280-hen-npm-lifter-0-0-2-package-tgz tar:///Users/willchen/.npm/lifter/0.0.2/package.tgz
+21 silly lockFile 86c341e6-illchen-npm-lifter-0-0-2-package /Users/willchen/.npm/lifter/0.0.2/package
+22 verbose lock /Users/willchen/.npm/lifter/0.0.2/package /Users/willchen/.npm/86c341e6-illchen-npm-lifter-0-0-2-package.lock
+23 silly lockFile 86c341e6-illchen-npm-lifter-0-0-2-package /Users/willchen/.npm/lifter/0.0.2/package
+24 silly lockFile 86c341e6-illchen-npm-lifter-0-0-2-package /Users/willchen/.npm/lifter/0.0.2/package
+25 silly lockFile 3a52ce78- .
+26 silly lockFile 3a52ce78- .
+27 error addLocal Could not install .
+28 error Error: EACCES, open '/Users/willchen/.npm/lifter/0.0.2/package/package.json'
+28 error  { [Error: EACCES, open '/Users/willchen/.npm/lifter/0.0.2/package/package.json']
+28 error   errno: 3,
+28 error   code: 'EACCES',
+28 error   path: '/Users/willchen/.npm/lifter/0.0.2/package/package.json' }
+29 error Please try running this command again as root/Administrator.
+30 error System Darwin 13.3.0
+31 error command "/Users/willchen/.nvm/v0.10.32/bin/node" "/Users/willchen/.nvm/v0.10.32/bin/npm" "install" "-g"
+32 error cwd /Users/willchen/HR/lifter
+33 error node -v v0.10.32
+34 error npm -v 1.4.28
+35 error path /Users/willchen/.npm/lifter/0.0.2/package/package.json
+36 error code EACCES
+37 error errno 3
+38 error stack Error: EACCES, open '/Users/willchen/.npm/lifter/0.0.2/package/package.json'
+39 verbose exit [ 3, true ]
