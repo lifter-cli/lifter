@@ -1,6 +1,5 @@
 [![Stories in Ready](https://badge.waffle.io/lifter-cli/lifter.svg?label=ready&title=Ready)](http://waffle.io/lifter-cli/lifter)
 [![Build Status](https://travis-ci.org/lifter-cli/lifter.svg?branch=master)](https://travis-ci.org/lifter-cli/lifter)
-[![Coverage Status](https://coveralls.io/repos/hrdocker/hrdocker/badge.png)](https://coveralls.io/r/hrdocker/hrdocker)
 
 Lifter
 ========
@@ -42,7 +41,7 @@ Congrats! You have deployed your application to the cloud using Docker container
 The Lifter Monitor tool which provides a dashboard view and detailed view of your Docker containers so you can see the status of your containers and troubleshoot if any issues arise.
 
 ### Local (Mac OS X)
-A. Once you have run `lifter init` and have Docker containers running in your local dev environment, you can install Lifter Monitor for Mac OS X by running the following shell script via curl:
+A. Once you have run `lifter init` and have Docker containers running in your local dev environment, you can install Lifter Monitor for Mac OS X by running the following shell script via curl. Please ensure you are in the folder that you want to install Lifter Monitor in when you run the following command:
 ```
 curl http://lifter-cli.github.io/lifter/install-lifter-monitor-osx.sh | sh
 ```
